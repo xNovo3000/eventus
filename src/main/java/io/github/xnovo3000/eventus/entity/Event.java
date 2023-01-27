@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,5 +38,8 @@ public class Event {
 
     @Column(nullable = false)
     private Boolean approved;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<Participation> holdings = List.of();
 
 }

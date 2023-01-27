@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user", "event"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "event_id"}))
 public class Participation {
 
     @Id

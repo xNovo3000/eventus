@@ -29,10 +29,13 @@ public class User {
     @Column(nullable = false)
     private Boolean active;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Authority> authorities = List.of();
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private List<Event> events = List.of();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Participation> holdings = List.of();
 
 }
