@@ -1,6 +1,7 @@
-package io.github.xnovo3000.eventus.security;
+package io.github.xnovo3000.eventus.configuration;
 
 import io.github.xnovo3000.eventus.repository.UserRepository;
+import io.github.xnovo3000.eventus.security.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
