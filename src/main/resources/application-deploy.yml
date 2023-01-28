@@ -1,10 +1,8 @@
 spring:
-  config:
-    import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:mysql://${DB_HOST}:3306/eventus?serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: ${DB_USER}
-    password: ${DB_PSWD}
+    url: jdbc:mysql://database:3306/eventus?serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: 4a3b6702b7144887a0dd28312c36d31e
+    password: 90e72b30d0be44f1966fc51fc9b1b4f5
   jpa:
     hibernate:
       ddl-auto: validate
@@ -13,12 +11,15 @@ spring:
         show_sql: false
         dialect: org.hibernate.dialect.MySQLDialect
 
+io:
+  github:
+    xnovo3000:
+      eventus:
+        admin-password: 8627341495ce4ae9b771fd5b53740785
+        page-size: 12
+
 logging:
   level:
     root: warn
     web: error
     sql: error
-    io:
-      github:
-        xnovo3000:
-          eventus: info

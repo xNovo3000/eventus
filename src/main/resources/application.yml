@@ -13,3 +13,10 @@ spring:
         show_sql: true
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+
+io:
+  github:
+    xnovo3000:
+      eventus:
+        admin-password: admin
+        page-size: 24

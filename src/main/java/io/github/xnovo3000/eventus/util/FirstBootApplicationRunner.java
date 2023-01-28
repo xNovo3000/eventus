@@ -22,20 +22,18 @@ public class FirstBootApplicationRunner implements ApplicationRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RandomStringGenerator randomStringGenerator;
+    private final String adminPassword;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
         // Check if admin user is present
         if (userRepository.findByUsername("admin").isEmpty()) {
-            LOGGER.debug("Admin user not present, creating one");
-            // Create the password
-            String password = randomStringGenerator.generateSafeAlphanumericString(8);
+            LOGGER.info("Admin user not present, creating one");
             // Create the user
             User admin = new User();
             admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode(password));
+            admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.setEmail("admin@eventus");
             admin.setActive(true);
             // Create the authorities
@@ -51,7 +49,7 @@ public class FirstBootApplicationRunner implements ApplicationRunner {
             // Save the user
             try {
                 userRepository.save(admin);
-                LOGGER.info("Successfully created admin user with password: " + password);
+                LOGGER.info("Successfully created admin user");
             } catch (Exception e) {
                 LOGGER.error("Cannot create admin user", e);
                 throw e;
