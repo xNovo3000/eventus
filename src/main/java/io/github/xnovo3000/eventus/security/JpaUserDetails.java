@@ -1,7 +1,6 @@
 package io.github.xnovo3000.eventus.security;
 
 import io.github.xnovo3000.eventus.entity.User;
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,15 +8,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@AllArgsConstructor
 public class JpaUserDetails implements UserDetails {
 
     private final User user;
+    private final List<SimpleGrantedAuthority> authorities;
 
-    private final List<SimpleGrantedAuthority> authorities =
-            user.getAuthorities().stream()
-            .map(authority -> new SimpleGrantedAuthority(authority.getName()))
-            .toList();
+    public JpaUserDetails(User user) {
+        this.user = user;
+        this.authorities = user.getAuthorities().stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+                .toList();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
