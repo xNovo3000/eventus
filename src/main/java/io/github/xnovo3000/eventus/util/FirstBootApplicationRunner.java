@@ -4,6 +4,7 @@ import io.github.xnovo3000.eventus.entity.Authority;
 import io.github.xnovo3000.eventus.entity.User;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class FirstBootApplicationRunner implements ApplicationRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FirstBootApplicationRunner.class);
@@ -22,21 +24,12 @@ public class FirstBootApplicationRunner implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
     private final RandomStringGenerator randomStringGenerator;
 
-    public FirstBootApplicationRunner(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            RandomStringGenerator randomStringGenerator
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.randomStringGenerator = randomStringGenerator;
-    }
-
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
         // Check if admin user is present
         if (userRepository.findByUsername("admin").isEmpty()) {
+            LOGGER.debug("Admin user not present, creating one");
             // Create the password
             String password = randomStringGenerator.generateSafeAlphanumericString(8);
             // Create the user

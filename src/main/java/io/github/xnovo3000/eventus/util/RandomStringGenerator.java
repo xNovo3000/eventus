@@ -1,17 +1,17 @@
 package io.github.xnovo3000.eventus.util;
 
+import lombok.AllArgsConstructor;
+
 import java.util.Random;
 
+@AllArgsConstructor
 public class RandomStringGenerator {
 
-    private final String RND_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final String LOWERCASE_RND_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
-    private final String SAFE_RND_ALPHABET = "123456789abcdefghimnopqrstuvzABCDEFGHLMNPQRSTUVZ";
-    private final Random random;
+    private static final String RND_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWERCASE_RND_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
+    private static final String SAFE_RND_ALPHABET = "123456789abcdefghimnopqrstuvzABCDEFGHLMNPQRSTUVZ";
 
-    public RandomStringGenerator(Random random) {
-        this.random = random;
-    }
+    private final Random random;
 
     /**
      * Generates an alphanumeric string
