@@ -1,5 +1,7 @@
 package io.github.xnovo3000.eventus.configuration;
 
+import io.github.xnovo3000.eventus.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.entity.Event;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.util.FirstBootApplicationRunner;
 import org.modelmapper.ModelMapper;
@@ -30,9 +32,16 @@ public class AppConfiguration {
 
     @Bean
     public ModelMapper modelMapper(BeanFactory beanFactory) {
+        // Setup mapper
         ModelMapper modelMapper = new ModelMapper();
+        // Set Spring provider
         Provider<?> provider = SpringIntegration.fromSpring(beanFactory);
         modelMapper.getConfiguration().setProvider(provider);
+        // Create custom mappings (not recognized by default)
+        modelMapper.typeMap(Event.class, EventBriefDto.class)
+                .addMapping(event -> event.getCreator().getUsername(), EventBriefDto::setCreatorUsername)
+                .addMapping(event -> event.getHoldings() != null ? event.getHoldings().size() : 0, EventBriefDto::setOccupiedSeats);
+        // Return mapper
         return modelMapper;
     }
 

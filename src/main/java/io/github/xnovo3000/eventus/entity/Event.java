@@ -37,6 +37,9 @@ public class Event {
     private OffsetDateTime end;
 
     @Column(nullable = false)
+    private Integer seats;
+
+    @Column(nullable = false)
     private Boolean approved;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
