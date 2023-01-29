@@ -5,9 +5,6 @@ import io.github.xnovo3000.eventus.entity.Event;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.util.FirstBootApplicationRunner;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.Provider;
-import org.modelmapper.spring.SpringIntegration;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -31,12 +28,9 @@ public class AppConfiguration {
     }
 
     @Bean
-    public ModelMapper modelMapper(BeanFactory beanFactory) {
+    public ModelMapper modelMapper() {
         // Setup mapper
         ModelMapper modelMapper = new ModelMapper();
-        // Set Spring provider
-        Provider<?> provider = SpringIntegration.fromSpring(beanFactory);
-        modelMapper.getConfiguration().setProvider(provider);
         // Create custom mappings (not recognized by default)
         modelMapper.typeMap(Event.class, EventBriefDto.class)
                 .addMapping(event -> event.getCreator().getUsername(), EventBriefDto::setCreatorUsername)
