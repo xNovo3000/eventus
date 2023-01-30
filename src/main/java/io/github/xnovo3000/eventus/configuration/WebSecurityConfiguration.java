@@ -4,6 +4,7 @@ import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.security.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -27,6 +28,9 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set authorization for endpoints
         http.authorizeHttpRequests()
+                // RegisterController
+                .requestMatchers(HttpMethod.GET, "/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
         // Enable login
