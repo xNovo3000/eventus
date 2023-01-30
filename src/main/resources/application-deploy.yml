@@ -23,3 +23,7 @@ logging:
     root: warn
     web: error
     sql: error
+    io:
+      github:
+        xnovo3000:
+          eventus: warn

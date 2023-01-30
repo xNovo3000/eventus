@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("!deploy")
+@Profile("default")
 public class IEmailServiceDefault implements EmailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IEmailServiceDefault.class);

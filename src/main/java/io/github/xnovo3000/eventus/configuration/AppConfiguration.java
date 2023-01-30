@@ -16,11 +16,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 @Configuration
 @EntityScan(basePackages = "io.github.xnovo3000.eventus.entity")
 @EnableJpaRepositories(basePackages = "io.github.xnovo3000.eventus.repository")
 public class AppConfiguration {
+
+    @Bean("patternEmail")
+    public Pattern patternEmail() {
+        // RFC 5322 email validation
+        return Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+    }
 
     @Bean
     public Random random() {
