@@ -6,6 +6,7 @@ import io.github.xnovo3000.eventus.entity.User;
 import io.github.xnovo3000.eventus.repository.EventRepository;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,21 +20,12 @@ import java.util.stream.IntStream;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AllArgsConstructor(onConstructor_ = {@Autowired})
 public class EventServiceTest {
 
     private final EventService eventService;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-
-    public EventServiceTest(
-            @Autowired EventService eventService,
-            @Autowired EventRepository eventRepository,
-            @Autowired UserRepository userRepository
-    ) {
-        this.eventService = eventService;
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-    }
 
     @BeforeAll
     @Transactional

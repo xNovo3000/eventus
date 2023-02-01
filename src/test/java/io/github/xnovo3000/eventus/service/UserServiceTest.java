@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.service;
 
 import io.github.xnovo3000.eventus.dto.RegisterFormDto;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -10,13 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AllArgsConstructor(onConstructor_ = {@Autowired})
 public class UserServiceTest {
 
     private final UserService userService;
-
-    public UserServiceTest(@Autowired UserService userService) {
-        this.userService = userService;
-    }
 
     @Test
     @Order(1)
