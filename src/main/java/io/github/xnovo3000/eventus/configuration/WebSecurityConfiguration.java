@@ -28,6 +28,8 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set authorization for endpoints
         http.authorizeHttpRequests()
+                // HomeController
+                .requestMatchers(HttpMethod.GET, "/").authenticated()
                 // RegisterController
                 .requestMatchers(HttpMethod.GET, "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
