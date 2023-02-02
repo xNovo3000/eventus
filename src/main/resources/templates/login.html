@@ -19,21 +19,20 @@
         <div class="col-md-6">
           <h1 class="text-center mb-4">Piattaforma Eventus</h1>
           <div class="shadow p-3 m-3 bg-body rounded">
-            <h2 class="text-center mb-3">Registrati</h2>
-            <p class="text-center mb-3">Verrà inviata una email con la password che dovrai usare per effettuare il login e verrai reindirizzato direttamente alla pagina di accesso</p>
-            <form th:action="@{/register}" method="post">
-              <input class="form-control mb-3" id="email" name="email" type="email" placeholder="Email">
+            <h2 class="text-center mb-3">Accedi</h2>
+            <form th:action="@{/login}" method="post">
               <input class="form-control mb-3" id="username" name="username" type="text" placeholder="Username">
+              <input class="form-control mb-3" id="password" name="password" type="password" placeholder="Password">
               <div class="d-flex mb-3">
-                <input class="btn btn-primary flex-fill" type="submit" value="Registrati">
-                <a th:href="@{/login}" class="btn btn-secondary ms-2">Accedi</a>
+                <input class="btn btn-primary flex-fill" type="submit" value="Accedi">
+                <a th:href="@{/register}" class="btn btn-secondary ms-2">Registrati</a>
               </div>
             </form>
-            <div th:if="${param.invalid_email}" class="alert alert-danger" role="alert">
-              Inserisci un indirizzo email valido
-            </div>
             <div th:if="${param.error}" class="alert alert-danger" role="alert">
-              Username e/o email già in uso
+              Username e/o password errati
+            </div>
+            <div th:if="${param.logout}" class="alert alert-info" role="alert">
+              Logout avvenuto con successo
             </div>
           </div>
         </div>

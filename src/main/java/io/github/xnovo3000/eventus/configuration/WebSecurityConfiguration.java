@@ -34,7 +34,7 @@ public class WebSecurityConfiguration {
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
         // Enable login
-        http.formLogin().permitAll();
+        http.formLogin().loginPage("/login").permitAll();
         // Enable logout
         http.logout().permitAll();
         // Build chain
