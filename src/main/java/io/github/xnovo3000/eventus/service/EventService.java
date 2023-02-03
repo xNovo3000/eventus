@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.service;
 
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -21,5 +22,14 @@ public interface EventService {
      * @return A page of future events
      */
     Page<EventBriefDto> getFutureEvents(int pageNumber);
+
+    /**
+     * Create a new unapproved event
+     *
+     * @param proposeEventDto The event DTO
+     * @param username The username that generated the event
+     * @return True if the event has been created, false otherwise
+     */
+    boolean proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
 
 }

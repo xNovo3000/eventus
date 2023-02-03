@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.serviceimpl;
 
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.repository.EventRepository;
 import io.github.xnovo3000.eventus.service.EventService;
 import jakarta.transaction.Transactional;
@@ -50,6 +51,18 @@ public class IEventService implements EventService {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(event -> modelMapper.map(event, EventBriefDto.class));
+    }
+
+    @Override
+    public boolean proposeEvent(ProposeEventDtoZoned proposeEventDto, String username) {
+        LOGGER.debug("proposeEvent called with payload: " + proposeEventDto);
+        // Ensure start is before end
+        if (proposeEventDto.getStart().isAfter(proposeEventDto.getEnd())) {
+            LOGGER.warn("Received start after end. Start: " + proposeEventDto.getStart() + ", end: " + proposeEventDto.getEnd());
+            return false;
+        }
+        // TODO: Implement
+        return false;
     }
 
 }

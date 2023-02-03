@@ -21,14 +21,15 @@ public class WebSecurityConfiguration {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         // Ignore HTTP authentication chain for these static files
-        return web -> web.ignoring()
-                .requestMatchers("/favicon.ico", "/css/**", "/js/**");
+        return web -> web.ignoring().requestMatchers("/favicon.ico");
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set authorization for endpoints
         http.authorizeHttpRequests()
+                // ActionController
+                .requestMatchers(HttpMethod.POST, "/action/propose_event").authenticated()
                 // HomeController
                 .requestMatchers(HttpMethod.GET, "/").authenticated()
                 // RegisterController

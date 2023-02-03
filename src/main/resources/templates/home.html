@@ -97,6 +97,7 @@
               <li class="list-group-item">Fine: <span th:text="${#temporals.format(event.end, 'd/M/yyyy H:mm')}"></span></li>
             </ul>
             <div class="card-body">
+              <!-- TODO: Every button of this must be a form because it is a POST action -->
               <button class="btn btn-success" th:if="${!#lists.contains(event.holdingsUsername, principal.username)}">Partecipa</button>
               <button class="btn btn-danger" th:if="${#lists.contains(event.holdingsUsername, principal.username)}">Non partecipare più</button>
               <button class="btn btn-outline-secondary"><a th:href="@{/event(id=${event.id})}">Visualizza evento</a></button>

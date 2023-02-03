@@ -3,8 +3,6 @@ package io.github.xnovo3000.eventus.configuration;
 import io.github.xnovo3000.eventus.converter.ParticipationToUsernameConverter;
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
 import io.github.xnovo3000.eventus.entity.Event;
-import io.github.xnovo3000.eventus.entity.Participation;
-import io.github.xnovo3000.eventus.repository.EventRepository;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.util.FirstBootApplicationRunner;
 import org.modelmapper.ModelMapper;

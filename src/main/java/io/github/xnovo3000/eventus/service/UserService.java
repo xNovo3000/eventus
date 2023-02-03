@@ -8,7 +8,7 @@ public interface UserService {
      * Register a new user
      *
      * @param registerFormDto The payload
-     * @return True if the user has been created, false otherwise
+     * @return True if the user has been created, false if email and/or username is already taken
      */
     boolean registerNewUser(RegisterFormDto registerFormDto);
 
