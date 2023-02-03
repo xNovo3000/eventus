@@ -3,6 +3,7 @@ package io.github.xnovo3000.eventus.dto;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 public class EventBriefDto {
@@ -13,5 +14,5 @@ public class EventBriefDto {
     private OffsetDateTime start;
     private OffsetDateTime end;
     private Integer seats;
-    private Integer occupiedSeats;
+    private List<String> holdingsUsername;
 }

@@ -1,8 +1,10 @@
 package io.github.xnovo3000.eventus.configuration;
 
-import io.github.xnovo3000.eventus.converter.ParticipationCountConverter;
+import io.github.xnovo3000.eventus.converter.ParticipationToUsernameConverter;
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
 import io.github.xnovo3000.eventus.entity.Event;
+import io.github.xnovo3000.eventus.entity.Participation;
+import io.github.xnovo3000.eventus.repository.EventRepository;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.util.FirstBootApplicationRunner;
 import org.modelmapper.ModelMapper;
@@ -44,13 +46,13 @@ public class AppConfiguration {
     }
 
     @Bean
-    public ModelMapper modelMapper(ParticipationCountConverter participationCountConverter) {
+    public ModelMapper modelMapper(ParticipationToUsernameConverter participationToUsernameConverter) {
         // Setup mapper
         ModelMapper modelMapper = new ModelMapper();
         // Create custom mappings (not recognized by default)
         modelMapper.typeMap(Event.class, EventBriefDto.class).addMappings(mapper -> {
             mapper.map(event -> event.getCreator().getUsername(), EventBriefDto::setCreatorUsername);
-            mapper.using(participationCountConverter).map(Event::getHoldings, EventBriefDto::setOccupiedSeats);
+            mapper.using(participationToUsernameConverter).map(Event::getHoldings, EventBriefDto::setHoldingsUsername);
         });
         // Return mapper
         return modelMapper;

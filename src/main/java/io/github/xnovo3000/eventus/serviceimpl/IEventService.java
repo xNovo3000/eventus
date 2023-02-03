@@ -48,7 +48,7 @@ public class IEventService implements EventService {
     public Page<EventBriefDto> getFutureEvents(int pageNumber) {
         OffsetDateTime now = OffsetDateTime.now();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        return eventRepository.findAllByApprovedIsTrueAndStartIsAfter(now, pageable)
+        return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(event -> modelMapper.map(event, EventBriefDto.class));
     }
 
