@@ -2,7 +2,10 @@ package io.github.xnovo3000.eventus.serviceimpl;
 
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
 import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.entity.Event;
+import io.github.xnovo3000.eventus.entity.User;
 import io.github.xnovo3000.eventus.repository.EventRepository;
+import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.service.EventService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,16 +28,19 @@ public class IEventService implements EventService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IEventService.class);
 
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final Integer pageSize;
 
     public IEventService(
             EventRepository eventRepository,
             ModelMapper modelMapper,
+            UserRepository userRepository,
             @Value("${io.github.xnovo3000.eventus.page-size}") Integer pageSize
     ) {
         this.eventRepository = eventRepository;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
         this.pageSize = pageSize;
     }
 
@@ -54,15 +61,32 @@ public class IEventService implements EventService {
     }
 
     @Override
-    public boolean proposeEvent(ProposeEventDtoZoned proposeEventDto, String username) {
+    public Optional<EventBriefDto> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username) {
         LOGGER.debug("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end
         if (proposeEventDto.getStart().isAfter(proposeEventDto.getEnd())) {
-            LOGGER.warn("Received start after end. Start: " + proposeEventDto.getStart() + ", end: " + proposeEventDto.getEnd());
-            return false;
+            LOGGER.debug("Received start after end. Start: " + proposeEventDto.getStart() + ", end: " + proposeEventDto.getEnd());
+            return Optional.empty();
         }
-        // TODO: Implement
-        return false;
+        // Get the user with that username
+        Optional<User> maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            LOGGER.warn("Username not found: " + username);
+            return Optional.empty();
+        }
+        // Create the event
+        Event event = new Event();
+        event.setName(proposeEventDto.getName());
+        event.setDescription(proposeEventDto.getDescription());
+        event.setCreator(maybeUser.get());
+        event.setStart(proposeEventDto.getStart());
+        event.setEnd(proposeEventDto.getEnd());
+        event.setSeats(proposeEventDto.getSeats());
+        event.setApproved(false);
+        // Insert into the database
+        event = eventRepository.save(event);
+        // Return success
+        return Optional.of(modelMapper.map(event, EventBriefDto.class));
     }
 
 }

@@ -12,14 +12,14 @@ public class ExceptionManagementControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public String handleConstraintViolationException(Model model) {
-        return handleInternal(model, "400: Bad Request", "La richiesta non è valida");
+    public String handleConstraintViolationException(ConstraintViolationException exception, Model model) {
+        return handleInternal(model, "400: Bad Request", exception.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public String handleException(Model model) {
-        return handleInternal(model, "500: Internal Server Error", "Errore sconosciuto");
+    public String handleException(Exception exception, Model model) {
+        return handleInternal(model, "500: Internal Server Error", exception.getMessage());
     }
 
     private String handleInternal(Model model, String title, String description) {

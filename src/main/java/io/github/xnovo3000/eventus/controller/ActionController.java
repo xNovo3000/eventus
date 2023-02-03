@@ -35,12 +35,11 @@ public class ActionController {
         proposeEventDtoZoned.setDescription(proposeEventDto.getDescription());
         proposeEventDtoZoned.setStart(proposeEventDto.getStart().atZone(timeZone.toZoneId()).toOffsetDateTime());
         proposeEventDtoZoned.setEnd(proposeEventDto.getEnd().atZone(timeZone.toZoneId()).toOffsetDateTime());
-        // Create event
-        if (eventService.proposeEvent(proposeEventDtoZoned, userDetails.getUsername())) {
-            return "redirect:/?event_proposal_success";
-        } else {
-            return "redirect:/?event_proposal_error";
-        }
+        proposeEventDtoZoned.setSeats(proposeEventDto.getSeats());
+        // Try to create event. Success: go to the event page. Error: return to home with error
+        return eventService.proposeEvent(proposeEventDtoZoned, userDetails.getUsername())
+                .map(eventBriefDto -> "redirect:/event/" + eventBriefDto.getId())
+                .orElse("redirect:/?propose_event_error");
     }
 
 }

@@ -41,7 +41,7 @@
           <div class="d-flex align-items-center justify-content-between">
             <span class="h5 m-0" sec:authentication="name"></span>
             <form th:action="@{/logout}" method="post">
-              <button class="btn btn-outline-secondary ms-2" type="submit">Logout</button>
+              <input class="btn btn-outline-secondary ms-2" type="submit" value="Logout">
             </form>
           </div>
         </div>
@@ -63,7 +63,7 @@
               <h5 class="card-title"><span th:text="${event.name}"></span></h5>
               <h6 class="card-subtitle text-muted mb-2">Creato da: <span th:text="${event.creatorUsername}"></span></h6>
               <p class="card-text"><span th:text="${event.description}"></span></p>
-              <p class="card-text">Posti occupati: <span th:text="${event.holdings.size()}"></span>/<span th:text="${event.seats}"></span></p>
+              <p class="card-text">Posti occupati: <span th:text="${event.holdingsUsername.size()}"></span>/<span th:text="${event.seats}"></span></p>
             </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">Inizio: <span th:text="${#temporals.format(event.start, 'd/M/yyyy H:mm')}"></span></li>
@@ -90,17 +90,21 @@
               <h5 class="card-title"><span th:text="${event.name}"></span></h5>
               <h6 class="card-subtitle text-muted mb-2">Creato da: <span th:text="${event.creatorUsername}"></span></h6>
               <p class="card-text"><span th:text="${event.description}"></span></p>
-              <p class="card-text">Posti occupati: <span th:text="${event.holdings.size()}"></span>/<span th:text="${event.seats}"></span></p>
+              <p class="card-text">Posti occupati: <span th:text="${event.holdingsUsername.size()}"></span>/<span th:text="${event.seats}"></span></p>
             </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">Inizio: <span th:text="${#temporals.format(event.start, 'd/M/yyyy H:mm')}"></span></li>
               <li class="list-group-item">Fine: <span th:text="${#temporals.format(event.end, 'd/M/yyyy H:mm')}"></span></li>
             </ul>
-            <div class="card-body">
-              <!-- TODO: Every button of this must be a form because it is a POST action -->
-              <button class="btn btn-success" th:if="${!#lists.contains(event.holdingsUsername, principal.username)}">Partecipa</button>
-              <button class="btn btn-danger" th:if="${#lists.contains(event.holdingsUsername, principal.username)}">Non partecipare più</button>
-              <button class="btn btn-outline-secondary"><a th:href="@{/event(id=${event.id})}">Visualizza evento</a></button>
+            <div class="card-body d-flex flex-wrap">
+              <!--/*@thymesVar id="username" type="java.lang.String"*/-->
+              <form th:action="@{/action/participate(id=${event.id})}" method="post" th:if="${!#lists.contains(event.holdingsUsername, #authentication.principal.username)}">
+                <input class="btn btn-success me-2 mb-2" type="submit" value="Partecipa">
+              </form>
+              <form th:action="@{/action/dont_participate(id=${event.id})}" method="post" th:if="${#lists.contains(event.holdingsUsername, #authentication.principal.username)}">
+                <input class="btn btn-danger me-2 mb-2" type="submit" value="Non partecipare più">
+              </form>
+              <a class="btn btn-outline-secondary" th:href="@{/event(id=${event.id})}">Visualizza evento</a>
             </div>
           </div>
         </div>
@@ -124,12 +128,14 @@
               <textarea class="form-control mb-2" id="description" name="description" required></textarea>
               <label class="form-label" for="start">Inizio</label>
               <input class="form-control mb-2" type="datetime-local" id="start" name="start" placeholder="Inizio" required>
-              <label class="form-label" for="start">Fine</label>
+              <label class="form-label" for="end">Fine</label>
               <input class="form-control mb-2" type="datetime-local" id="end" name="end" placeholder="Fine" required>
+              <label class="form-label" for="end">Numero di posti (minimo 1)</label>
+              <input class="form-control mb-2" type="number" min="1" id="seats" name="seats" placeholder="Posti" required>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-              <button type="submit" class="btn btn-primary">Proponi</button>
+              <input type="submit" class="btn btn-primary" value="Proponi">
             </div>
           </form>
         </div>

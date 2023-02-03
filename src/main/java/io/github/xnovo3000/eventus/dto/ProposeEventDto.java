@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.dto;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,5 +27,9 @@ public class ProposeEventDto {
     @NotNull
     @Future
     private LocalDateTime end;
+
+    @NotNull
+    @Min(1)
+    private Integer seats;
 
 }

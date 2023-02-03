@@ -5,6 +5,7 @@ import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EventService {
 
@@ -28,8 +29,8 @@ public interface EventService {
      *
      * @param proposeEventDto The event DTO
      * @param username The username that generated the event
-     * @return True if the event has been created, false otherwise
+     * @return The event DTO if it has been created, empty Optional otherwise
      */
-    boolean proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
+    Optional<EventBriefDto> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
 
 }

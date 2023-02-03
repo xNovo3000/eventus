@@ -10,4 +10,5 @@ public class ProposeEventDtoZoned {
     private String description;
     private OffsetDateTime start;
     private OffsetDateTime end;
+    private Integer seats;
 }
