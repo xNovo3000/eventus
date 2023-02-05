@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.service;
 
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.entity.Event;
 import io.github.xnovo3000.eventus.entity.User;
 import io.github.xnovo3000.eventus.repository.EventRepository;
@@ -15,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -63,6 +66,32 @@ public class EventServiceTest {
         for (EventBriefDto event : events) {
             Assertions.assertNotEquals(0, event.getId() % 15);
         }
+    }
+
+    @Test
+    public void proposeEvent_Success() {
+        // Create DTO
+        ProposeEventDtoZoned eventDtoZoned = new ProposeEventDtoZoned();
+        eventDtoZoned.setName("name");
+        eventDtoZoned.setDescription("des");
+        eventDtoZoned.setStart(OffsetDateTime.now().plusHours(1));
+        eventDtoZoned.setEnd(OffsetDateTime.now().plusHours(3));
+        eventDtoZoned.setSeats(2);
+        // Test
+        Assertions.assertNotEquals(Optional.empty(), eventService.proposeEvent(eventDtoZoned, "admin"));
+    }
+
+    @Test
+    public void proposeEvent_ErrorStartAfterEnd() {
+        // Create DTO
+        ProposeEventDtoZoned eventDtoZoned = new ProposeEventDtoZoned();
+        eventDtoZoned.setName("name");
+        eventDtoZoned.setDescription("des");
+        eventDtoZoned.setStart(OffsetDateTime.now().plusHours(3));
+        eventDtoZoned.setEnd(OffsetDateTime.now().plusHours(1));
+        eventDtoZoned.setSeats(2);
+        // Test
+        Assertions.assertEquals(Optional.empty(), eventService.proposeEvent(eventDtoZoned, "admin"));
     }
 
 }

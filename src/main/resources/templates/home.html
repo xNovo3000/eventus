@@ -51,6 +51,11 @@
     <!-- Main content -->
     <div class="container-lg mt-2 mb-2">
 
+      <!-- Alert when you cannot create a new event -->
+      <div class="alert alert-danger" th:if="${param.propose_event_error}">
+        Non è stato possibile proporre l'evento per un errore generico. Contatta l'amministratore.
+      </div>
+
       <!-- Ongoing events -->
       <div class="my-2 d-flex align-items-center">
         <span class="h1 m-0 flex-fill">Eventi in corso</span>
