@@ -1,11 +1,7 @@
 package io.github.xnovo3000.eventus.configuration;
 
-import io.github.xnovo3000.eventus.converter.ParticipationToUsernameConverter;
-import io.github.xnovo3000.eventus.dto.EventBriefDto;
-import io.github.xnovo3000.eventus.entity.Event;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.util.FirstBootApplicationRunner;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -34,19 +30,6 @@ public class AppConfiguration {
             @Value("${io.github.xnovo3000.eventus.admin-password}") String adminPassword
     ) {
         return new FirstBootApplicationRunner(userRepository, passwordEncoder, adminPassword);
-    }
-
-    @Bean
-    public ModelMapper modelMapper(ParticipationToUsernameConverter participationToUsernameConverter) {
-        // Setup mapper
-        ModelMapper modelMapper = new ModelMapper();
-        // Create custom mappings (not recognized by default)
-        modelMapper.typeMap(Event.class, EventBriefDto.class).addMappings(mapper -> {
-            mapper.map(event -> event.getCreator().getUsername(), EventBriefDto::setCreatorUsername);
-            mapper.using(participationToUsernameConverter).map(Event::getHoldings, EventBriefDto::setHoldingsUsername);
-        });
-        // Return mapper
-        return modelMapper;
     }
 
 }

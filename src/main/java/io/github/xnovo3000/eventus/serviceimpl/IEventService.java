@@ -7,8 +7,8 @@ import io.github.xnovo3000.eventus.entity.User;
 import io.github.xnovo3000.eventus.repository.EventRepository;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.service.EventService;
+import io.github.xnovo3000.eventus.util.DtoMapper;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,17 +29,17 @@ public class IEventService implements EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
+    private final DtoMapper dtoMapper;
     private final Integer pageSize;
 
     public IEventService(
             EventRepository eventRepository,
-            ModelMapper modelMapper,
+            DtoMapper dtoMapper,
             UserRepository userRepository,
             @Value("${io.github.xnovo3000.eventus.page-size}") Integer pageSize
     ) {
         this.eventRepository = eventRepository;
-        this.modelMapper = modelMapper;
+        this.dtoMapper = dtoMapper;
         this.userRepository = userRepository;
         this.pageSize = pageSize;
     }
@@ -48,7 +48,7 @@ public class IEventService implements EventService {
     public List<EventBriefDto> getOngoingEvents() {
         OffsetDateTime now = OffsetDateTime.now();
         return eventRepository.findAllByApprovedIsTrueAndStartIsBeforeAndEndIsAfter(now, now)
-                .stream().map(event -> modelMapper.map(event, EventBriefDto.class))
+                .stream().map(dtoMapper::toEventBriefDto)
                 .toList();
     }
 
@@ -57,7 +57,7 @@ public class IEventService implements EventService {
         OffsetDateTime now = OffsetDateTime.now();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
-                .map(event -> modelMapper.map(event, EventBriefDto.class));
+                .map(dtoMapper::toEventBriefDto);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class IEventService implements EventService {
         // Insert into the database
         event = eventRepository.save(event);
         // Return success
-        return Optional.of(modelMapper.map(event, EventBriefDto.class));
+        return Optional.of(dtoMapper.toEventBriefDto(event));
     }
 
 }
