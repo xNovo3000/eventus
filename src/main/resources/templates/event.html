@@ -45,12 +45,15 @@
     </nav>
 
     <!-- Alert when you cannot participate or not participate -->
-    <div class="alert alert-danger" th:if="${param.participate_error} || ${param.dont_participate_error}">
+    <div class="alert alert-danger" th:if="${param.participate_error}">
+      Non è stato possibile modificare lo stato di partecipazione all'evento.
+    </div>
+    <div class="alert alert-danger" th:if="${param.dont_participate_error}">
       Non è stato possibile modificare lo stato di partecipazione all'evento.
     </div>
 
     <!-- Title -->
-    <h1><span th:text=""></span></h1>
+    <h1><span th:text="${event.name}"></span></h1>
 
     <!-- Boostrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha256-m81NDyncZVbr7v9E6qCWXwx/cwjuWDlHCMzi9pjMobA=" crossorigin="anonymous"></script>

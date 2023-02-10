@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.service;
 
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.dto.EventDto;
 import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
 import org.springframework.data.domain.Page;
 
@@ -8,6 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EventService {
+
+    /**
+     * Return an event by its id
+     *
+     * @param id The id of the event
+     * @return The event if it exists, empty otherwise
+     */
+    Optional<EventDto> getById(Long id);
 
     /**
      * Get all events that have started but not finished yet

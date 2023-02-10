@@ -30,13 +30,15 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests()
                 // ActionController
                 .requestMatchers(HttpMethod.POST, "/action/propose_event").authenticated()
+                // EventController
+                .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
                 // HomeController
                 .requestMatchers(HttpMethod.GET, "/").authenticated()
                 // RegisterController
                 .requestMatchers(HttpMethod.GET, "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 // Less privileges by default
-                .anyRequest().permitAll();
+                .anyRequest().hasAuthority("unreachable");
         // Enable login
         http.formLogin().loginPage("/login").permitAll();
         // Enable logout

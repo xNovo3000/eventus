@@ -1,10 +1,13 @@
 package io.github.xnovo3000.eventus.serviceimpl;
 
 import io.github.xnovo3000.eventus.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.dto.EventDto;
 import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.entity.Event;
+import io.github.xnovo3000.eventus.entity.Participation;
 import io.github.xnovo3000.eventus.entity.User;
 import io.github.xnovo3000.eventus.repository.EventRepository;
+import io.github.xnovo3000.eventus.repository.ParticipationRepository;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import io.github.xnovo3000.eventus.service.EventService;
 import io.github.xnovo3000.eventus.util.DtoMapper;
@@ -31,17 +34,24 @@ public class IEventService implements EventService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final Integer pageSize;
+    private final ParticipationRepository participationRepository;
 
     public IEventService(
             EventRepository eventRepository,
             DtoMapper dtoMapper,
             UserRepository userRepository,
-            @Value("${io.github.xnovo3000.eventus.page-size}") Integer pageSize
-    ) {
+            @Value("${io.github.xnovo3000.eventus.page-size}") Integer pageSize,
+            ParticipationRepository participationRepository) {
         this.eventRepository = eventRepository;
         this.dtoMapper = dtoMapper;
         this.userRepository = userRepository;
         this.pageSize = pageSize;
+        this.participationRepository = participationRepository;
+    }
+
+    @Override
+    public Optional<EventDto> getById(Long id) {
+        return eventRepository.findById(id).map(dtoMapper::toEventDto);
     }
 
     @Override
@@ -87,6 +97,79 @@ public class IEventService implements EventService {
         event = eventRepository.save(event);
         // Return success
         return Optional.of(event.getId());
+    }
+
+    @Override
+    public boolean participateToEvent(Long eventId, String username) {
+        LOGGER.debug("participateToEvent called with eventId: " + eventId + ", username: " + username);
+        // Get the event
+        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.debug("Event not found");
+            return false;
+        }
+        Event event = maybeEvent.get();
+        // Get the user
+        Optional<User> maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            LOGGER.warn("Username not found: " + username);
+            return false;
+        }
+        User user = maybeUser.get();
+        // Check for validity
+        OffsetDateTime now = OffsetDateTime.now();
+        if (event.getEnd().isAfter(now)) {
+            LOGGER.debug("Event end after now");
+            return false;
+        }
+        Optional<Participation> maybeParticipation = participationRepository.findByUserAndEvent(user, event);
+        if (maybeParticipation.isPresent()) {
+            LOGGER.debug("User already participates to the event");
+            return false;
+        }
+        // Create the participation
+        Participation participation = new Participation();
+        participation.setUser(user);
+        participation.setEvent(event);
+        participation.setCreationDate(now);
+        participationRepository.save(participation);
+        // Return success
+        return true;
+    }
+
+    @Override
+    public boolean dontParticipateToEvent(Long eventId, String username) {
+        LOGGER.debug("dontParticipateToEvent called with eventId: " + eventId + ", username: " + username);
+        // Get the event
+        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.debug("Event not found");
+            return false;
+        }
+        Event event = maybeEvent.get();
+        // Get the user
+        Optional<User> maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            LOGGER.warn("Username not found: " + username);
+            return false;
+        }
+        User user = maybeUser.get();
+        // Check for validity
+        OffsetDateTime now = OffsetDateTime.now();
+        if (event.getEnd().isAfter(now)) {
+            LOGGER.debug("Event end after now");
+            return false;
+        }
+        Optional<Participation> maybeParticipation = participationRepository.findByUserAndEvent(user, event);
+        if (maybeParticipation.isEmpty()) {
+            LOGGER.debug("User already does not participate to the event");
+            return false;
+        }
+        // Remove the participation
+        Participation participation = maybeParticipation.get();
+        participationRepository.delete(participation);
+        // Return success
+        return true;
     }
 
 }

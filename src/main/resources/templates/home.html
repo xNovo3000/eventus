@@ -72,7 +72,7 @@
               <li class="list-group-item">Fine: <span th:text="${#temporals.format(event.end, 'd/M/yyyy H:mm')}"></span></li>
             </ul>
             <div class="card-body">
-              <button class="btn btn-outline-secondary"><a th:href="@{/event(id=${event.id})}">Visualizza evento</a></button>
+              <button class="btn btn-outline-secondary"><a th:href="@{/event/{id}(id=${event.id})}">Visualizza evento</a></button>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@
                 <input type="hidden" id="event-id-dp" name="event-id" th:value="${event.id}">
                 <input class="btn btn-danger me-2 mb-2" type="submit" value="Non partecipare più">
               </form>
-              <a class="btn btn-outline-secondary me-2 mb-2" th:href="@{/event(id=${event.id})}">Visualizza evento</a>
+              <a class="btn btn-outline-secondary me-2 mb-2" th:href="@{/event/{id}(id=${event.id})}">Visualizza evento</a>
             </div>
           </div>
         </div>
