@@ -1,5 +1,6 @@
 package io.github.xnovo3000.eventus.controller;
 
+import io.github.xnovo3000.eventus.dto.ParticipateToEventDto;
 import io.github.xnovo3000.eventus.dto.ProposeEventDto;
 import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
@@ -38,8 +39,32 @@ public class ActionController {
         proposeEventDtoZoned.setSeats(proposeEventDto.getSeats());
         // Try to create event. Success: go to the event page. Error: return to home with error
         return eventService.proposeEvent(proposeEventDtoZoned, userDetails.getUsername())
-                .map(eventBriefDto -> "redirect:/event/" + eventBriefDto.getId())
+                .map("redirect:/event/%d"::formatted)
                 .orElse("redirect:/?propose_event_error");
+    }
+
+    @PostMapping("/participate")
+    public String participate(
+            @AuthenticationPrincipal JpaUserDetails userDetails,
+            @ModelAttribute @Valid ParticipateToEventDto participateToEventDto
+    ) {
+        if (eventService.participateToEvent(participateToEventDto.getEventId(), userDetails.getUsername())) {
+            return "redirect:/event/%d".formatted(participateToEventDto.getEventId());
+        } else {
+            return "redirect:/event/%d?participate_error".formatted(participateToEventDto.getEventId());
+        }
+    }
+
+    @PostMapping("/dont_participate")
+    public String dontParticipate(
+            @AuthenticationPrincipal JpaUserDetails userDetails,
+            @ModelAttribute @Valid ParticipateToEventDto participateToEventDto
+    ) {
+        if (eventService.dontParticipateToEvent(participateToEventDto.getEventId(), userDetails.getUsername())) {
+            return "redirect:/event/%d".formatted(participateToEventDto.getEventId());
+        } else {
+            return "redirect:/event/%d?dont_participate_error".formatted(participateToEventDto.getEventId());
+        }
     }
 
 }

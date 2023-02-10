@@ -29,8 +29,26 @@ public interface EventService {
      *
      * @param proposeEventDto The event DTO
      * @param username The username that generated the event
-     * @return The event DTO if it has been created, empty Optional otherwise
+     * @return The created event id
      */
-    Optional<EventBriefDto> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
+    Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
+
+    /**
+     * Make a user participate an event
+     *
+     * @param eventId The id of the event
+     * @param username The username of the user generating the request
+     * @return True if it can participate, false otherwise
+     */
+    boolean participateToEvent(Long eventId, String username);
+
+    /**
+     * Make a user don't participate an event
+     *
+     * @param eventId The id of the event
+     * @param username The username of the user generating the request
+     * @return True if it can remove participation, false otherwise
+     */
+    boolean dontParticipateToEvent(Long eventId, String username);
 
 }

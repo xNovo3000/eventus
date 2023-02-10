@@ -61,7 +61,7 @@ public class IEventService implements EventService {
     }
 
     @Override
-    public Optional<EventBriefDto> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username) {
+    public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username) {
         LOGGER.debug("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end
         if (proposeEventDto.getStart().isAfter(proposeEventDto.getEnd())) {
@@ -86,7 +86,7 @@ public class IEventService implements EventService {
         // Insert into the database
         event = eventRepository.save(event);
         // Return success
-        return Optional.of(dtoMapper.toEventBriefDto(event));
+        return Optional.of(event.getId());
     }
 
 }
