@@ -48,7 +48,7 @@ public class ActionController {
             @AuthenticationPrincipal JpaUserDetails userDetails,
             @ModelAttribute @Valid ParticipateToEventDto participateToEventDto
     ) {
-        if (eventService.participateToEvent(participateToEventDto.getEventId(), userDetails.getUsername())) {
+        if (eventService.setParticipationToEvent(participateToEventDto.getEventId(), userDetails.getUsername(), true)) {
             return "redirect:/event/%d".formatted(participateToEventDto.getEventId());
         } else {
             return "redirect:/event/%d?participate_error".formatted(participateToEventDto.getEventId());
@@ -60,7 +60,7 @@ public class ActionController {
             @AuthenticationPrincipal JpaUserDetails userDetails,
             @ModelAttribute @Valid ParticipateToEventDto participateToEventDto
     ) {
-        if (eventService.dontParticipateToEvent(participateToEventDto.getEventId(), userDetails.getUsername())) {
+        if (eventService.setParticipationToEvent(participateToEventDto.getEventId(), userDetails.getUsername(), false)) {
             return "redirect:/event/%d".formatted(participateToEventDto.getEventId());
         } else {
             return "redirect:/event/%d?dont_participate_error".formatted(participateToEventDto.getEventId());

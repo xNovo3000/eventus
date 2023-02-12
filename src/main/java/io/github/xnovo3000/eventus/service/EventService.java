@@ -43,21 +43,13 @@ public interface EventService {
     Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
 
     /**
-     * Make a user participate an event
+     * Set the participation to an event
      *
      * @param eventId The id of the event
      * @param username The username of the user generating the request
-     * @return True if it can participate, false otherwise
+     * @param value true if user wants to participate, false otherwise
+     * @return True if it can set participation, false otherwise
      */
-    boolean participateToEvent(Long eventId, String username);
-
-    /**
-     * Make a user don't participate an event
-     *
-     * @param eventId The id of the event
-     * @param username The username of the user generating the request
-     * @return True if it can remove participation, false otherwise
-     */
-    boolean dontParticipateToEvent(Long eventId, String username);
+    boolean setParticipationToEvent(Long eventId, String username, boolean value);
 
 }

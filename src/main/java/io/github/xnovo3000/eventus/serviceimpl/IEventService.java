@@ -100,8 +100,8 @@ public class IEventService implements EventService {
     }
 
     @Override
-    public boolean participateToEvent(Long eventId, String username) {
-        LOGGER.debug("participateToEvent called with eventId: " + eventId + ", username: " + username);
+    public boolean setParticipationToEvent(Long eventId, String username, boolean value) {
+        LOGGER.debug("setParticipationToEvent called with eventId: " + eventId + ", username: " + username + ", value: " + value);
         // Get the event
         Optional<Event> maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
@@ -118,56 +118,39 @@ public class IEventService implements EventService {
         User user = maybeUser.get();
         // Check for validity
         OffsetDateTime now = OffsetDateTime.now();
-        if (event.getEnd().isAfter(now)) {
-            LOGGER.debug("Event end after now");
+        if (event.getStart().isBefore(now)) {
+            LOGGER.debug("Event start before now");
             return false;
         }
-        Optional<Participation> maybeParticipation = participationRepository.findByUserAndEvent(user, event);
-        if (maybeParticipation.isPresent()) {
-            LOGGER.debug("User already participates to the event");
-            return false;
+        // Check if user wants to participate or not
+        if (value) {
+            // Check if there is a seat
+            if (event.getSeats() < event.getHoldings().size()) {
+                LOGGER.debug("The seats are full!");
+                return false;
+            }
+            // Check if the user already participates
+            Optional<Participation> maybeParticipation = participationRepository.findByUserAndEvent(user, event);
+            if (maybeParticipation.isPresent()) {
+                LOGGER.debug("User already does participate to the event");
+                return false;
+            }
+            // Create the participation and save in the database
+            Participation participation = new Participation();
+            participation.setUser(user);
+            participation.setEvent(event);
+            participation.setCreationDate(now);
+            participationRepository.save(participation);
+        } else {
+            // Get the participation
+            Optional<Participation> maybeParticipation = participationRepository.findByUserAndEvent(user, event);
+            if (maybeParticipation.isEmpty()) {
+                LOGGER.debug("User already does not participate to the event");
+                return false;
+            }
+            // Remove from the database
+            participationRepository.delete(maybeParticipation.get());
         }
-        // Create the participation
-        Participation participation = new Participation();
-        participation.setUser(user);
-        participation.setEvent(event);
-        participation.setCreationDate(now);
-        participationRepository.save(participation);
-        // Return success
-        return true;
-    }
-
-    @Override
-    public boolean dontParticipateToEvent(Long eventId, String username) {
-        LOGGER.debug("dontParticipateToEvent called with eventId: " + eventId + ", username: " + username);
-        // Get the event
-        Optional<Event> maybeEvent = eventRepository.findById(eventId);
-        if (maybeEvent.isEmpty()) {
-            LOGGER.debug("Event not found");
-            return false;
-        }
-        Event event = maybeEvent.get();
-        // Get the user
-        Optional<User> maybeUser = userRepository.findByUsername(username);
-        if (maybeUser.isEmpty()) {
-            LOGGER.warn("Username not found: " + username);
-            return false;
-        }
-        User user = maybeUser.get();
-        // Check for validity
-        OffsetDateTime now = OffsetDateTime.now();
-        if (event.getEnd().isAfter(now)) {
-            LOGGER.debug("Event end after now");
-            return false;
-        }
-        Optional<Participation> maybeParticipation = participationRepository.findByUserAndEvent(user, event);
-        if (maybeParticipation.isEmpty()) {
-            LOGGER.debug("User already does not participate to the event");
-            return false;
-        }
-        // Remove the participation
-        Participation participation = maybeParticipation.get();
-        participationRepository.delete(participation);
         // Return success
         return true;
     }

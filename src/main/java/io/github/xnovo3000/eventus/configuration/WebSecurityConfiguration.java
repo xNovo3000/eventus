@@ -30,6 +30,8 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests()
                 // ActionController
                 .requestMatchers(HttpMethod.POST, "/action/propose_event").authenticated()
+                .requestMatchers(HttpMethod.POST, "/action/participate").authenticated()
+                .requestMatchers(HttpMethod.POST, "/action/dont_participate").authenticated()
                 // EventController
                 .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
                 // HomeController
@@ -37,6 +39,8 @@ public class WebSecurityConfiguration {
                 // RegisterController
                 .requestMatchers(HttpMethod.GET, "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
+                // Error
+                .requestMatchers("/error").authenticated()
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
         // Enable login
