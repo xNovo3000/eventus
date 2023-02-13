@@ -8,21 +8,18 @@ import io.github.xnovo3000.eventus.repository.EventRepository;
 import io.github.xnovo3000.eventus.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class EventServiceTest {
 
@@ -92,6 +89,42 @@ public class EventServiceTest {
         eventDtoZoned.setSeats(2);
         // Test
         Assertions.assertEquals(Optional.empty(), eventService.proposeEvent(eventDtoZoned, "admin"));
+    }
+
+    @Test
+    @Order(1)
+    public void setParticipationToEvent_True_InvalidDate() {
+        Assertions.assertFalse(eventService.setParticipationToEvent(2L, "admin", true));
+    }
+
+    @Test
+    @Order(2)
+    public void setParticipationToEvent_True_Success() {
+        Assertions.assertTrue(eventService.setParticipationToEvent(50L, "admin", true));
+    }
+
+    @Test
+    @Order(3)
+    public void setParticipationToEvent_True_AlreadyPresent() {
+        Assertions.assertFalse(eventService.setParticipationToEvent(50L, "admin", true));
+    }
+
+    @Test
+    @Order(1)
+    public void setParticipationToEvent_False_InvalidDate() {
+        Assertions.assertFalse(eventService.setParticipationToEvent(2L, "admin", false));
+    }
+
+    @Test
+    @Order(4)
+    public void setParticipationToEvent_False_Success() {
+        Assertions.assertTrue(eventService.setParticipationToEvent(50L, "admin", false));
+    }
+
+    @Test
+    @Order(5)
+    public void setParticipationToEvent_False_AlreadyNotPresent() {
+        Assertions.assertFalse(eventService.setParticipationToEvent(50L, "admin", false));
     }
 
 }

@@ -2,15 +2,13 @@ package io.github.xnovo3000.eventus.service;
 
 import io.github.xnovo3000.eventus.dto.RegisterFormDto;
 import lombok.AllArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class UserServiceTest {
 
@@ -18,7 +16,7 @@ public class UserServiceTest {
 
     @Test
     @Order(1)
-    public void createUser_Success() {
+    public void registerNewUser_Success() {
         RegisterFormDto registerFormDto = new RegisterFormDto();
         registerFormDto.setEmail("user0@eventus.com");
         registerFormDto.setUsername("user0");
@@ -27,7 +25,7 @@ public class UserServiceTest {
 
     @Test
     @Order(2)
-    public void createUser_FailUsernameAlreadyExist() {
+    public void registerNewUser_FailUsernameAlreadyExist() {
         RegisterFormDto registerFormDto = new RegisterFormDto();
         registerFormDto.setEmail("user1@eventus.com");
         registerFormDto.setUsername("user0");
@@ -36,7 +34,7 @@ public class UserServiceTest {
 
     @Test
     @Order(3)
-    public void createUser_FailEmailAlreadyExist() {
+    public void registerNewUser_FailEmailAlreadyExist() {
         RegisterFormDto registerFormDto = new RegisterFormDto();
         registerFormDto.setEmail("user0@eventus.com");
         registerFormDto.setUsername("user1");
