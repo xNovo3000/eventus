@@ -5,7 +5,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
   <head>
-    <title>Registrati | Eventus</title>
+    <title>Visualizza evento | Eventus</title>
     <!-- Mobile compatibility -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,7 +44,7 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container-lg my-2">
 
       <!-- Alert when you cannot participate or not participate -->
       <div class="alert alert-danger" th:if="${param.participate_error}">
@@ -54,7 +54,7 @@
         Non è stato possibile modificare lo stato di partecipazione all'evento.
       </div>
 
-      <div class="row my-2">
+      <div class="row">
 
         <!-- Left side: info about the event -->
         <div class="col-12 col-lg-6 mb-2">

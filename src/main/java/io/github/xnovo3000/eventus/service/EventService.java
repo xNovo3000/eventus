@@ -34,6 +34,14 @@ public interface EventService {
     Page<EventBriefDto> getFutureEvents(int pageNumber);
 
     /**
+     * Get a page of events that are in the 'proposed' state
+     *
+     * @param pageNumber The page number of the paginated result
+     * @return A page of proposed events
+     */
+    Page<EventBriefDto> getProposed(int pageNumber);
+
+    /**
      * Create a new unapproved event
      *
      * @param proposeEventDto The event DTO

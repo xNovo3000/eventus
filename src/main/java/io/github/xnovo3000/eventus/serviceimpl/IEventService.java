@@ -71,6 +71,14 @@ public class IEventService implements EventService {
     }
 
     @Override
+    public Page<EventBriefDto> getProposed(int pageNumber) {
+        OffsetDateTime now = OffsetDateTime.now();
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        return eventRepository.findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(now, pageable)
+                .map(dtoMapper::toEventBriefDto);
+    }
+
+    @Override
     public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username) {
         LOGGER.debug("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end

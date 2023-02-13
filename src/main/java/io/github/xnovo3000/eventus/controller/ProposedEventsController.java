@@ -1,8 +1,10 @@
 package io.github.xnovo3000.eventus.controller;
 
+import io.github.xnovo3000.eventus.dto.EventBriefDto;
 import io.github.xnovo3000.eventus.service.EventService;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +22,15 @@ public class ProposedEventsController {
 
     @GetMapping
     public String get(Model model, @RequestParam(defaultValue = "1") @Min(1) Integer page) {
-
+        // Get data
+        Page<EventBriefDto> proposedEvents = eventService.getProposed(page);
+        // Set model
+        model.addAttribute("proposed_event", proposedEvents);
+        model.addAttribute("page", page);
+        model.addAttribute("total_pages", Math.max(1, proposedEvents.getTotalPages()));
+        model.addAttribute("has_previous", page > 1);
+        model.addAttribute("has_next", page < proposedEvents.getTotalPages());
+        // Render HTML
         return "proposed_events";
     }
 
