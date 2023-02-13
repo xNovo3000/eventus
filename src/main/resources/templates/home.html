@@ -59,6 +59,9 @@
         <button class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#proposeModal">Proponi</button>
       </div>
       <div class="row">
+        <div th:if="${ongoing_events.isEmpty()}">
+          <h5 class="my-2">Non ci sono eventi in corso</h5>
+        </div>
         <div class="col-12 col-md-6 col-lg-4 p-2" th:each="event: ${ongoing_events}">
           <div class="card">
             <div class="card-body">
@@ -86,6 +89,9 @@
         <a class="btn btn-outline-secondary ms-2" th:if="${has_next}" th:href="@{/(page=${page} + 1)}"><i class="bi bi-arrow-right"></i></a>
       </div>
       <div class="row">
+        <div th:if="${future_events.isEmpty()}">
+          <h5 class="my-2">Non ci sono eventi futuri</h5>
+        </div>
         <div class="col-12 col-md-6 col-lg-4 p-2" th:each="event: ${future_events}">
           <div class="card">
             <div class="card-body">

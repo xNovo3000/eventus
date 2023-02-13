@@ -39,8 +39,8 @@ public class WebSecurityConfiguration {
                 // RegisterController
                 .requestMatchers(HttpMethod.GET, "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                // Error
-                .requestMatchers("/error").authenticated()
+                // ProposedEventsController
+                .requestMatchers(HttpMethod.GET, "/proposed_events").hasAuthority("EVENT_MANAGER")
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
         // Enable login
