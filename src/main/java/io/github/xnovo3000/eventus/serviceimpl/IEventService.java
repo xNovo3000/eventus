@@ -41,7 +41,8 @@ public class IEventService implements EventService {
             DtoMapper dtoMapper,
             UserRepository userRepository,
             @Value("${io.github.xnovo3000.eventus.page-size}") Integer pageSize,
-            ParticipationRepository participationRepository) {
+            ParticipationRepository participationRepository
+    ) {
         this.eventRepository = eventRepository;
         this.dtoMapper = dtoMapper;
         this.userRepository = userRepository;
@@ -111,7 +112,7 @@ public class IEventService implements EventService {
     public boolean setParticipationToEvent(Long eventId, String username, boolean value) {
         LOGGER.debug("setParticipationToEvent called with eventId: " + eventId + ", username: " + username + ", value: " + value);
         // Get the event
-        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        Optional<Event> maybeEvent = eventRepository.findByIdAndApprovedIsTrue(eventId);
         if (maybeEvent.isEmpty()) {
             LOGGER.debug("Event not found");
             return false;

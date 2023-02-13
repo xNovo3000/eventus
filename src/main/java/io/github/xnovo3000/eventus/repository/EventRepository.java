@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
+    Optional<Event> findByIdAndApprovedIsTrue(Long id);
     List<Event> findAllByApprovedIsTrueAndStartIsBeforeAndEndIsAfter(OffsetDateTime firstDate, OffsetDateTime secondDate);
     Page<Event> findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(OffsetDateTime firstDate, Pageable pageable);
     Page<Event> findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(OffsetDateTime firstDate, Pageable pageable);
