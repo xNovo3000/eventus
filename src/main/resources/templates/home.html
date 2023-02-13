@@ -17,33 +17,7 @@
   <body>
 
     <!-- Top navbar - sticky -->
-    <nav class="navbar sticky-top navbar-expand-md bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">Eventus</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/search}">Cerca</a>
-            </li>
-            <li class="nav-item" sec:authorize="hasAuthority('EVENT_MANAGER')">
-              <a class="nav-link" th:href="@{/proposed_events}">Eventi proposti</a>
-            </li>
-            <li class="nav-item" sec:authorize="hasAuthority('USER_MANAGER')">
-              <a class="nav-link" th:href="@{/users}">Gestione utenti</a>
-            </li>
-          </ul>
-          <div class="d-flex align-items-center justify-content-between">
-            <span class="h5 m-0" sec:authentication="name"></span>
-            <form th:action="@{/logout}" method="post">
-              <input class="btn btn-outline-secondary ms-2" type="submit" value="Logout">
-            </form>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <header th:insert="fragment_navbar :: nav"></header>
 
     <!-- Main content -->
     <div class="container-lg my-2">

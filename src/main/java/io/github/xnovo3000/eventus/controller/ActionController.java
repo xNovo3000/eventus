@@ -1,5 +1,6 @@
 package io.github.xnovo3000.eventus.controller;
 
+import io.github.xnovo3000.eventus.dto.ApproveRejectEventDto;
 import io.github.xnovo3000.eventus.dto.ParticipateToEventDto;
 import io.github.xnovo3000.eventus.dto.ProposeEventDto;
 import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
@@ -64,6 +65,24 @@ public class ActionController {
             return "redirect:/event/%d".formatted(participateToEventDto.getEventId());
         } else {
             return "redirect:/event/%d?dont_participate_error".formatted(participateToEventDto.getEventId());
+        }
+    }
+
+    @PostMapping("/approve_event")
+    public String approveEvent(@ModelAttribute @Valid ApproveRejectEventDto approveEventDto) {
+        if (eventService.approveOrRejectEvent(approveEventDto.getEventId(), true)) {
+            return "redirect:/event/%d".formatted(approveEventDto.getEventId());
+        } else {
+            return "redirect:/propose_event?approve_event_error";
+        }
+    }
+
+    @PostMapping("/reject_event")
+    public String rejectEvent(@ModelAttribute @Valid ApproveRejectEventDto rejectEventDto) {
+        if (eventService.approveOrRejectEvent(rejectEventDto.getEventId(), false)) {
+            return "redirect:/propose_event?reject_event_success";
+        } else {
+            return "redirect:/propose_event?reject_event_error";
         }
     }
 

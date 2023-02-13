@@ -32,6 +32,8 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/action/propose_event").authenticated()
                 .requestMatchers(HttpMethod.POST, "/action/participate").authenticated()
                 .requestMatchers(HttpMethod.POST, "/action/dont_participate").authenticated()
+                .requestMatchers(HttpMethod.POST, "/action/approve_event").hasAuthority("EVENT_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/action/reject_event").hasAuthority("EVENT_MANAGER")
                 // EventController
                 .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
                 // HomeController
@@ -44,7 +46,7 @@ public class WebSecurityConfiguration {
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
         // Enable login
-        http.formLogin().loginPage("/login").permitAll();
+        http.formLogin().loginPage("/login").defaultSuccessUrl("/", true).permitAll();
         // Enable logout
         http.logout().permitAll();
         // Build chain

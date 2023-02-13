@@ -32,7 +32,8 @@ public class EventController {
                     // Check if user can participate
                     boolean canParticipate = eventDto.getHoldings().stream()
                             .noneMatch(it -> it.getUsername().equals(userDetails.getUsername())) &&
-                            eventDto.getSeats() > eventDto.getHoldings().size();
+                            eventDto.getSeats() > eventDto.getHoldings().size() &&
+                            eventDto.getApproved();
                     // Check if user participates and can remove its participation
                     boolean canRemoveParticipation = eventDto.getHoldings()
                             .stream().anyMatch(it -> it.getUsername().equals(userDetails.getUsername()));

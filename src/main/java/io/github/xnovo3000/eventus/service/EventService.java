@@ -60,4 +60,12 @@ public interface EventService {
      */
     boolean setParticipationToEvent(Long eventId, String username, boolean value);
 
+    /**
+     * Approve or reject an event
+     *
+     * @param eventId The event id
+     * @return True if approved/rejected, false if error
+     */
+    boolean approveOrRejectEvent(Long eventId, boolean approve);
+
 }

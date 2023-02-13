@@ -23,9 +23,9 @@ io:
 
 logging:
   level:
-    root: info
-    web: info
-    sql: info
+    root: debug
+    web: debug
+    sql: debug
     io:
       github:
         xnovo3000:

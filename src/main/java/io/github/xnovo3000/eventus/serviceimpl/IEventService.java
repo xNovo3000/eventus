@@ -164,4 +164,32 @@ public class IEventService implements EventService {
         return true;
     }
 
+    @Override
+    public boolean approveOrRejectEvent(Long eventId, boolean approve) {
+        LOGGER.debug("approveEvent called with eventId: " + eventId);
+        // Get the event
+        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.debug("Event not found");
+            return false;
+        }
+        Event event = maybeEvent.get();
+        // Check if already approved
+        if (event.getApproved()) {
+            LOGGER.debug("Event already approved");
+            return false;
+        }
+        // Approve or reject
+        if (approve) {
+            // Approve and save
+            event.setApproved(true);
+            eventRepository.save(event);
+        } else {
+            // Delete event
+            eventRepository.delete(event);
+        }
+        // Return success
+        return true;
+    }
+
 }

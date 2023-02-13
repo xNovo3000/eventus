@@ -17,7 +17,7 @@
   <body>
 
     <!-- Top navbar - sticky -->
-    <header th:insert="fragment_navbar.html :: header"></header>
+    <header th:insert="fragment_navbar :: nav"></header>
 
     <!-- Main content -->
     <div class="container-lg my-2">
@@ -25,6 +25,12 @@
       <!-- Alert when you cannot create a new event -->
       <div class="alert alert-danger" th:if="${param.approve_event_error}">
         Non è stato possibile approvare l'evento per un errore generico. Contatta l'amministratore.
+      </div>
+      <div class="alert alert-danger" th:if="${param.reject_event_error}">
+        Non è stato possibile rigettare l'evento per un errore generico. Contatta l'amministratore.
+      </div>
+      <div class="alert alert-info" th:if="${param.reject_event_success}">
+        Evento rigettato con successo.
       </div>
 
       <!-- Proposed events, paginated -->
