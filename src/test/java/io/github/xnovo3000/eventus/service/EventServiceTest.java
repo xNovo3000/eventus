@@ -1,11 +1,12 @@
 package io.github.xnovo3000.eventus.service;
 
-import io.github.xnovo3000.eventus.dto.EventBriefDto;
-import io.github.xnovo3000.eventus.dto.ProposeEventDtoZoned;
-import io.github.xnovo3000.eventus.entity.Event;
-import io.github.xnovo3000.eventus.entity.User;
-import io.github.xnovo3000.eventus.repository.EventRepository;
-import io.github.xnovo3000.eventus.repository.UserRepository;
+import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.bean.dto.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.bean.entity.Event;
+import io.github.xnovo3000.eventus.bean.entity.User;
+import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
+import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
+import io.github.xnovo3000.eventus.mvc.service.EventService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.*;

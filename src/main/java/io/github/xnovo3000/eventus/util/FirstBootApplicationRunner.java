@@ -1,8 +1,8 @@
 package io.github.xnovo3000.eventus.util;
 
-import io.github.xnovo3000.eventus.entity.Authority;
-import io.github.xnovo3000.eventus.entity.User;
-import io.github.xnovo3000.eventus.repository.UserRepository;
+import io.github.xnovo3000.eventus.bean.entity.Authority;
+import io.github.xnovo3000.eventus.bean.entity.User;
+import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -18,11 +18,8 @@ public class FirstBootApplicationRunner implements ApplicationRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FirstBootApplicationRunner.class);
 
-    private final List<String> defaultAuthorities = List.of("USER_MANAGER", "EVENT_MANAGER");
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final String adminPassword;
 
     @Override
     @Transactional
@@ -33,19 +30,15 @@ public class FirstBootApplicationRunner implements ApplicationRunner {
             // Create the user
             User admin = new User();
             admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode(adminPassword));
+            admin.setPassword(passwordEncoder.encode("admin"));
             admin.setEmail("admin@eventus");
             admin.setActive(true);
-            // Create the authorities
-            List<Authority> authorities = defaultAuthorities.stream()
-                    .map(string -> {
-                        Authority authority = new Authority();
-                        authority.setName(string);
-                        authority.setUser(admin);
-                        return authority;
-                    })
-                    .toList();
-            admin.setAuthorities(authorities);
+            // Create the user manager authority
+            Authority userManagerAuthority = new Authority();
+            userManagerAuthority.setName("USER_MANAGER");
+            userManagerAuthority.setUser(admin);
+            // Give it to the admin
+            admin.setAuthorities(List.of(userManagerAuthority));
             // Save the user
             try {
                 userRepository.save(admin);

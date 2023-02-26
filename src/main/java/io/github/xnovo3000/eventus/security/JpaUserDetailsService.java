@@ -1,6 +1,6 @@
 package io.github.xnovo3000.eventus.security;
 
-import io.github.xnovo3000.eventus.repository.UserRepository;
+import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

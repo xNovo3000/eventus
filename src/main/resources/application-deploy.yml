@@ -15,15 +15,8 @@ io:
   github:
     xnovo3000:
       eventus:
-        admin-password: 8627341495ce4ae9b771fd5b53740785
         page-size: 12
 
 logging:
   level:
-    root: warn
-    web: error
-    sql: error
-    io:
-      github:
-        xnovo3000:
-          eventus: warn
+    root: error

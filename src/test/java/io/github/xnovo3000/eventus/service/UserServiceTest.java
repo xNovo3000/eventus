@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.service;
 
-import io.github.xnovo3000.eventus.dto.RegisterFormDto;
+import io.github.xnovo3000.eventus.bean.dto.RegisterFormDto;
+import io.github.xnovo3000.eventus.mvc.service.UserService;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

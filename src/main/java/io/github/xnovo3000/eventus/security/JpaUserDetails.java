@@ -1,6 +1,6 @@
 package io.github.xnovo3000.eventus.security;
 
-import io.github.xnovo3000.eventus.entity.User;
+import io.github.xnovo3000.eventus.bean.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

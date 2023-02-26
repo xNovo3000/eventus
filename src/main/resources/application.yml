@@ -18,15 +18,4 @@ io:
   github:
     xnovo3000:
       eventus:
-        admin-password: admin
         page-size: 24
-
-logging:
-  level:
-    root: debug
-    web: debug
-    sql: debug
-    io:
-      github:
-        xnovo3000:
-          eventus: debug

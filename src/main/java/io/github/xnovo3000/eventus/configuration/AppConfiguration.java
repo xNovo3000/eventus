@@ -1,6 +1,6 @@
 package io.github.xnovo3000.eventus.configuration;
 
-import io.github.xnovo3000.eventus.repository.UserRepository;
+import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.util.FirstBootApplicationRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -14,8 +14,8 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 @Configuration
-@EntityScan(basePackages = "io.github.xnovo3000.eventus.entity")
-@EnableJpaRepositories(basePackages = "io.github.xnovo3000.eventus.repository")
+@EntityScan(basePackages = "io.github.xnovo3000.eventus.bean.entity")
+@EnableJpaRepositories(basePackages = "io.github.xnovo3000.eventus.mvc.repository")
 public class AppConfiguration {
 
     @Bean
@@ -24,12 +24,8 @@ public class AppConfiguration {
     }
 
     @Bean
-    public ApplicationRunner applicationRunner(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            @Value("${io.github.xnovo3000.eventus.admin-password}") String adminPassword
-    ) {
-        return new FirstBootApplicationRunner(userRepository, passwordEncoder, adminPassword);
+    public ApplicationRunner applicationRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return new FirstBootApplicationRunner(userRepository, passwordEncoder);
     }
 
 }
