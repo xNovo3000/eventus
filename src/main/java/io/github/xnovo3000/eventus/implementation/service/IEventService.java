@@ -10,11 +10,12 @@ import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
 import io.github.xnovo3000.eventus.mvc.repository.ParticipationRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
+import io.github.xnovo3000.eventus.util.AuthenticationFacade;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,29 +27,18 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class IEventService implements EventService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IEventService.class);
 
+    private final int PAGE_SIZE = 12;
+
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
-    private final Integer pageSize;
     private final ParticipationRepository participationRepository;
-
-    public IEventService(
-            EventRepository eventRepository,
-            DtoMapper dtoMapper,
-            UserRepository userRepository,
-            @Value("${io.github.xnovo3000.eventus.page-size}") Integer pageSize,
-            ParticipationRepository participationRepository
-    ) {
-        this.eventRepository = eventRepository;
-        this.dtoMapper = dtoMapper;
-        this.userRepository = userRepository;
-        this.pageSize = pageSize;
-        this.participationRepository = participationRepository;
-    }
+    private final AuthenticationFacade authenticationFacade;
 
     @Override
     public Optional<EventDto> getById(Long id) {
@@ -66,7 +56,7 @@ public class IEventService implements EventService {
     @Override
     public Page<EventBriefDto> getFutureEvents(int pageNumber) {
         OffsetDateTime now = OffsetDateTime.now();
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(dtoMapper::toEventBriefDto);
     }
@@ -74,7 +64,7 @@ public class IEventService implements EventService {
     @Override
     public Page<EventBriefDto> getProposed(int pageNumber) {
         OffsetDateTime now = OffsetDateTime.now();
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         return eventRepository.findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(dtoMapper::toEventBriefDto);
     }

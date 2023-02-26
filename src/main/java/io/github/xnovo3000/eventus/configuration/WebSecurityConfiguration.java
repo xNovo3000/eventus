@@ -45,10 +45,19 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/proposed_events").hasAuthority("EVENT_MANAGER")
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
+        // Set rememberMe cookie
+        http.rememberMe()
+                .key("session");
         // Enable login
-        http.formLogin().loginPage("/login").defaultSuccessUrl("/", true).permitAll();
+        http.formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/", true)
+                .permitAll();
         // Enable logout
-        http.logout().permitAll();
+        http.logout()
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/login")
+                .permitAll();
         // Build chain
         return http.build();
     }

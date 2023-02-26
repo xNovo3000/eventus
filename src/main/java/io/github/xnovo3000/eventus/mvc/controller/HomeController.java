@@ -24,18 +24,12 @@ public class HomeController {
 
     @GetMapping
     public String get(Model model, @RequestParam(defaultValue = "1") @Min(1) Integer page) {
-        // Get data
-        List<EventBriefDto> ongoingEvents = eventService.getOngoingEvents();
-        Page<EventBriefDto> futureEvents = eventService.getFutureEvents(page);
         // Set model
-        model.addAttribute("ongoing_events", ongoingEvents);
-        model.addAttribute("future_events", futureEvents.getContent());
         model.addAttribute("page", page);
-        model.addAttribute("total_pages", Math.max(1, futureEvents.getTotalPages()));
-        model.addAttribute("has_previous", page > 1);
-        model.addAttribute("has_next", page < futureEvents.getTotalPages());
+        model.addAttribute("ongoing_events", eventService.getOngoingEvents());
+        model.addAttribute("future_events", eventService.getFutureEvents(page));
         // Render HTML page
-        return "home";
+        return "page/home";
     }
 
 }
