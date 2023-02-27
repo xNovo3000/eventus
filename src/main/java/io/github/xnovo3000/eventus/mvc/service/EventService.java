@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.mvc.service;
 
 import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.bean.dto.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.EventDto;
 import io.github.xnovo3000.eventus.bean.dto.ProposeEventDtoZoned;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ public interface EventService {
      *
      * @return A list of ongoing events
      */
-    List<EventBriefDto> getOngoingEvents();
+    List<EventCardDto> getOngoingEvents();
 
     /**
      * Get a page of events that haven't started yet
@@ -31,7 +32,7 @@ public interface EventService {
      * @param pageNumber The page number of the paginated result
      * @return A page of future events
      */
-    Page<EventBriefDto> getFutureEvents(int pageNumber);
+    Page<EventCardDto> getFutureEvents(int pageNumber);
 
     /**
      * Get a page of events that are in the 'proposed' state

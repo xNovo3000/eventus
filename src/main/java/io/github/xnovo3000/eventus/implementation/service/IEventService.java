@@ -1,6 +1,7 @@
 package io.github.xnovo3000.eventus.implementation.service;
 
 import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
+import io.github.xnovo3000.eventus.bean.dto.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.EventDto;
 import io.github.xnovo3000.eventus.bean.dto.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.entity.Event;
@@ -10,10 +11,11 @@ import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
 import io.github.xnovo3000.eventus.mvc.repository.ParticipationRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
-import io.github.xnovo3000.eventus.util.AuthenticationFacade;
+import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -38,7 +40,7 @@ public class IEventService implements EventService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final ParticipationRepository participationRepository;
-    private final AuthenticationFacade authenticationFacade;
+    private final AuthenticationAdapter authenticationAdapter;
 
     @Override
     public Optional<EventDto> getById(Long id) {
@@ -46,19 +48,20 @@ public class IEventService implements EventService {
     }
 
     @Override
-    public List<EventBriefDto> getOngoingEvents() {
-        OffsetDateTime now = OffsetDateTime.now();
+    public List<EventCardDto> getOngoingEvents() {
+        val now = OffsetDateTime.now();
         return eventRepository.findAllByApprovedIsTrueAndStartIsBeforeAndEndIsAfter(now, now)
-                .stream().map(dtoMapper::toEventBriefDto)
+                .stream().map(dtoMapper::toEventCardDto)
                 .toList();
     }
 
     @Override
-    public Page<EventBriefDto> getFutureEvents(int pageNumber) {
-        OffsetDateTime now = OffsetDateTime.now();
+    public Page<EventCardDto> getFutureEvents(int pageNumber) {
+        val now = OffsetDateTime.now();
+        val username = authenticationAdapter.getUsername();
         Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
-                .map(dtoMapper::toEventBriefDto);
+                .map(event -> dtoMapper.toEventCardDto(event, username));
     }
 
     @Override

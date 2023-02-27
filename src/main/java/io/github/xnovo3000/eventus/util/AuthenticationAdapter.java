@@ -1,5 +1,5 @@
 package io.github.xnovo3000.eventus.util;
 
-public interface AuthenticationFacade {
+public interface AuthenticationAdapter {
     String getUsername();
 }

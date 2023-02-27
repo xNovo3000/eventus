@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      xmlns:th="http://www.thymeleaf.org">
 
-    <div th:fragment="modal" class="modal fade" id="proposeModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Proponi un nuovo evento</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form th:action="@{/action/propose_event}" method="post">
+    <form th:fragment="modal" th:action="@{/action/propose_event}" method="post">
+        <div class="modal fade" id="proposeModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Proponi un nuovo evento</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
                     <div class="modal-body">
-                        <label class="form-label" for="name">Nome evento</label>
-                        <input class="form-control mb-2" type="text" id="name" name="name" required>
-                        <label class="form-label" for="description">Descrizione</label>
-                        <textarea class="form-control mb-2" id="description" name="description" required></textarea>
-                        <label class="form-label" for="start">Inizio</label>
-                        <input class="form-control mb-2" type="datetime-local" id="start" name="start" placeholder="Inizio" required>
-                        <label class="form-label" for="end">Fine</label>
-                        <input class="form-control mb-2" type="datetime-local" id="end" name="end" placeholder="Fine" required>
-                        <label class="form-label" for="end">Numero di posti (minimo 1)</label>
-                        <input class="form-control mb-2" type="number" min="1" id="seats" name="seats" placeholder="Posti" required>
+                        <label class="form-label" for="pe-name">Nome evento</label>
+                        <input class="form-control mb-2" type="text" id="pe-name" name="name" required>
+                        <label class="form-label" for="pe-description">Descrizione</label>
+                        <textarea class="form-control mb-2" id="pe-description" name="description" required></textarea>
+                        <label class="form-label" for="pe-start">Inizio</label>
+                        <input class="form-control mb-2" type="datetime-local" id="pe-start" name="start" placeholder="Inizio" required>
+                        <label class="form-label" for="pe-end">Fine</label>
+                        <input class="form-control mb-2" type="datetime-local" id="pe-end" name="end" placeholder="Fine" required>
+                        <label class="form-label" for="pe-seats">Numero di posti (minimo 1)</label>
+                        <input class="form-control mb-2" type="number" min="1" id="pe-seats" name="seats" placeholder="Posti" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                         <input type="submit" class="btn btn-primary" value="Proponi">
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 
     <!-- Used only for testing -->
     <meta charset="UTF-8">

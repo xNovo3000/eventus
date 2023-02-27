@@ -32,8 +32,10 @@
                 <button class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#proposeModal">Proponi</button>
             </div>
             <h5 th:if="${ongoing_events.isEmpty()}" class="my-2">Non ci sono eventi in corso</h5>
-            <div class="row" th:each="event : ${ongoing_events}">
-                <div th:replace="~{fragment/event_card :: eventCard(${event})}"></div>
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4 p-2" th:each="event : ${ongoing_events}">
+                    <div th:replace="~{fragment/event_card :: eventCard(${event})}"></div>
+                </div>
             </div>
 
             <!-- Future events -->
@@ -44,14 +46,16 @@
                 <a class="btn btn-outline-secondary ms-2" th:if="${future_events.hasNext()}" th:href="@{/(page=${page} + 1)}"><i class="bi bi-arrow-right"></i></a>
             </div>
             <h5 th:if="${future_events.isEmpty()}" class="my-2">Non ci sono eventi futuri</h5>
-            <div class="row" th:each="event : ${future_events.getContent()}">
-                <div th:replace="~{fragment/event_card :: eventCard(${event})}"></div>
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4 p-2" th:each="event : ${future_events.getContent()}">
+                    <div th:replace="~{fragment/event_card :: eventCard(${event})}"></div>
+                </div>
             </div>
 
         </div>
 
         <!-- Propose event form -->
-        <div th:replace="fragment/home_propose_event :: modal"></div>
+        <div th:replace="~{fragment/home_propose_event :: modal}"></div>
 
         <!-- Boostrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha256-m81NDyncZVbr7v9E6qCWXwx/cwjuWDlHCMzi9pjMobA=" crossorigin="anonymous"></script>

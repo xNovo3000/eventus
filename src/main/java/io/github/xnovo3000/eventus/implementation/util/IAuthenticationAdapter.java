@@ -1,13 +1,13 @@
 package io.github.xnovo3000.eventus.implementation.util;
 
-import io.github.xnovo3000.eventus.util.AuthenticationFacade;
+import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
 import lombok.val;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IAuthenticationFacade implements AuthenticationFacade {
+public class IAuthenticationAdapter implements AuthenticationAdapter {
 
     @Override
     public String getUsername() {
