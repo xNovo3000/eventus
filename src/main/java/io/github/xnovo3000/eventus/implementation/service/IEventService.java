@@ -59,17 +59,17 @@ public class IEventService implements EventService {
     public Page<EventCardDto> getFutureEvents(int pageNumber) {
         val now = OffsetDateTime.now();
         val username = authenticationAdapter.getUsername();
-        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(event -> dtoMapper.toEventCardDto(event, username));
     }
 
     @Override
-    public Page<EventBriefDto> getProposed(int pageNumber) {
-        OffsetDateTime now = OffsetDateTime.now();
-        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+    public Page<EventCardDto> getProposed(int pageNumber) {
+        val now = OffsetDateTime.now();
+        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         return eventRepository.findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(now, pageable)
-                .map(dtoMapper::toEventBriefDto);
+                .map(dtoMapper::toEventCardDto);
     }
 
     @Override

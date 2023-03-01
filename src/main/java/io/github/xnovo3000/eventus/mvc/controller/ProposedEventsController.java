@@ -22,14 +22,9 @@ public class ProposedEventsController {
 
     @GetMapping
     public String get(Model model, @RequestParam(defaultValue = "1") @Min(1) Integer page) {
-        // Get data
-        Page<EventBriefDto> proposedEvents = eventService.getProposed(page);
         // Set model
-        model.addAttribute("proposed_event", proposedEvents);
+        model.addAttribute("proposed_event", eventService.getProposed(page));
         model.addAttribute("page", page);
-        model.addAttribute("total_pages", Math.max(1, proposedEvents.getTotalPages()));
-        model.addAttribute("has_previous", page > 1);
-        model.addAttribute("has_next", page < proposedEvents.getTotalPages());
         // Render HTML
         return "proposed_events";
     }

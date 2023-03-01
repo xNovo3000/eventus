@@ -13,6 +13,7 @@ public class EventCardDto {
     private OffsetDateTime creationDate;
     private OffsetDateTime start;
     private OffsetDateTime end;
+    private Boolean approved;
     private Integer seats;
     private Integer occupiedSeats;
     private Boolean canSubscribe;

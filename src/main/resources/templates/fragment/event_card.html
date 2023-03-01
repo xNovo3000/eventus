@@ -29,6 +29,14 @@
                         <input type="hidden" id="unsub-event-id" name="eventId" th:value="${eventDto.id}">
                         <input class="btn btn-danger me-2 mb-2" type="submit" value="Disiscriviti">
                     </form>
+                    <form th:if="${eventDto.canSubscribe}" th:action="@{/action/accept_event}" method="post">
+                        <input type="hidden" id="app-event-id" name="eventId" th:value="${eventDto.id}">
+                        <input class="btn btn-success me-2 mb-2" type="submit" value="Iscriviti">
+                    </form>
+                    <form th:if="${eventDto.canSubscribe}" th:action="@{/action/reject_event}" method="post">
+                        <input type="hidden" id="rej-event-id" name="eventId" th:value="${eventDto.id}">
+                        <input class="btn btn-success me-2 mb-2" type="submit" value="Iscriviti">
+                    </form>
                     <a class="btn btn-outline-secondary me-2 mb-2" th:href="@{/event/{id}(id=${eventDto.id})}">Visualizza evento</a>
                 </div>
             </div>

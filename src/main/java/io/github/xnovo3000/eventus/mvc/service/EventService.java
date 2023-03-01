@@ -40,7 +40,7 @@ public interface EventService {
      * @param pageNumber The page number of the paginated result
      * @return A page of proposed events
      */
-    Page<EventBriefDto> getProposed(int pageNumber);
+    Page<EventCardDto> getProposed(int pageNumber);
 
     /**
      * Create a new unapproved event
