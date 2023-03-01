@@ -52,6 +52,14 @@ public interface EventService {
     Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
 
     /**
+     * Create a new unapproved event
+     *
+     * @param proposeEventDto The event DTO
+     * @return The created event id
+     */
+    Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto);
+
+    /**
      * Set the participation to an event
      *
      * @param eventId The id of the event
