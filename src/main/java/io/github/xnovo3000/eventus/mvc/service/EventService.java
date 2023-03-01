@@ -77,4 +77,20 @@ public interface EventService {
      */
     boolean approveOrRejectEvent(Long eventId, boolean approve);
 
+    /**
+     * Approve an event by its id
+     *
+     * @param eventId The event id
+     * @return True if the event can be approved, false otherwise
+     */
+    boolean approveEvent(Long eventId);
+
+    /**
+     * Reject an event by its id
+     *
+     * @param eventId The event id
+     * @return True if the event can be rejected, false otherwise
+     */
+    boolean rejectEvent(Long eventId);
+
 }

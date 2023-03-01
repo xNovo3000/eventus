@@ -102,6 +102,32 @@ public class IEventService implements EventService {
     }
 
     @Override
+    public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto) {
+        LOGGER.debug("proposeEvent called with payload: " + proposeEventDto);
+        // Ensure start is before end
+        if (!proposeEventDto.getStart().isBefore(proposeEventDto.getEnd())) {
+            LOGGER.info("Start is after end. Start: " + proposeEventDto.getStart() + ", end: " + proposeEventDto.getEnd());
+            return Optional.empty();
+        }
+        // Create the event
+        Event event = new Event();
+        event.setName(proposeEventDto.getName());
+        event.setDescription(proposeEventDto.getDescription());
+        event.setStart(proposeEventDto.getStart());
+        event.setEnd(proposeEventDto.getEnd());
+        event.setSeats(proposeEventDto.getSeats());
+        event.setApproved(false);
+        // Try to insert into the database
+        try {
+            event = eventRepository.save(event);
+            return Optional.of(event.getId());
+        } catch (Exception e) {
+            LOGGER.error("Cannot save event", e);
+            return Optional.of(event.getId());
+        }
+    }
+
+    @Override
     public boolean setParticipationToEvent(Long eventId, String username, boolean value) {
         LOGGER.debug("setParticipationToEvent called with eventId: " + eventId + ", username: " + username + ", value: " + value);
         // Get the event
@@ -183,6 +209,38 @@ public class IEventService implements EventService {
         }
         // Return success
         return true;
+    }
+
+    @Override
+    public boolean approveEvent(Long eventId) {
+        LOGGER.debug("approveEvent called with eventId: " + eventId);
+        return eventRepository.findById(eventId)
+                .map(event -> {
+                    event.setApproved(true);
+                    try {
+                        eventRepository.save(event);
+                        return true;
+                    } catch (Exception e) {
+                        LOGGER.error("Cannot save event", e);
+                        return false;
+                    }
+                })
+                .orElseGet(() -> {
+                    LOGGER.warn("Event with id " + eventId + " does not exist");
+                    return false;
+                });
+    }
+
+    @Override
+    public boolean rejectEvent(Long eventId) {
+        LOGGER.debug("rejectEvent called with eventId: " + eventId);
+        try {
+            eventRepository.deleteById(eventId);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot delete event", e);
+            return false;
+        }
     }
 
 }
