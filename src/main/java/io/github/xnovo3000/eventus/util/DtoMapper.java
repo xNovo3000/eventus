@@ -4,7 +4,9 @@ import io.github.xnovo3000.eventus.bean.dto.input.ProposeEventDto;
 import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
+import io.github.xnovo3000.eventus.bean.dto.output.ParticipationDto;
 import io.github.xnovo3000.eventus.bean.entity.Event;
+import io.github.xnovo3000.eventus.bean.entity.Participation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,7 +18,14 @@ public interface DtoMapper {
     /* Event */
 
     @Mapping(source = "creator.username", target = "creatorUsername")
+    @Mapping(target = "canSubscribe", expression = "java(false)")
+    @Mapping(target = "canUnsubscribe", expression = "java(false)")
     EventDto toEventDto(Event event);
+
+    @Mapping(source = "event.creator.username", target = "creatorUsername")
+    @Mapping(target = "canSubscribe", expression = "java(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)))")
+    @Mapping(target = "canUnsubscribe", expression = "java(event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)))")
+    EventDto toEventDto(Event event, String username);
 
     @Mapping(target = "description", expression = "java(event.getDescription().substring(0, Math.min(event.getDescription().length(), 96)))")
     @Mapping(source = "creator.username", target = "creatorUsername")
@@ -31,6 +40,11 @@ public interface DtoMapper {
     @Mapping(target = "canSubscribe", expression = "java(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)))")
     @Mapping(target = "canUnsubscribe", expression = "java(event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)))")
     EventCardDto toEventCardDto(Event event, String username);
+
+    /* Participation */
+
+    @Mapping(source = "user.username", target = "username")
+    ParticipationDto toParticipationDto(Participation participation);
 
     /* ProposeEvent */
 

@@ -42,7 +42,9 @@ public class IEventService implements EventService {
 
     @Override
     public Optional<EventDto> getById(Long id) {
-        return eventRepository.findById(id).map(dtoMapper::toEventDto);
+        val username = authenticationAdapter.getUsername();
+        return eventRepository.findById(id)
+                .map(event -> dtoMapper.toEventDto(event, username));
     }
 
     @Override
