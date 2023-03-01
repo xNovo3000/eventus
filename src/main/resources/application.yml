@@ -10,11 +10,4 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: false
         dialect: org.hibernate.dialect.MySQLDialect
-
-io:
-  github:
-    xnovo3000:
-      eventus:
-        page-size: 24

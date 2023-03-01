@@ -1,25 +1,17 @@
 package io.github.xnovo3000.eventus.util;
 
-import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
-import io.github.xnovo3000.eventus.bean.dto.EventCardDto;
-import io.github.xnovo3000.eventus.bean.dto.EventDto;
-import io.github.xnovo3000.eventus.bean.dto.EventParticipationDto;
+import io.github.xnovo3000.eventus.bean.dto.*;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.Participation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.TimeZone;
+
 @Mapper(componentModel = "spring")
 public interface DtoMapper {
 
     /* Event */
-
-    @Mapping(source = "creator.username", target = "creatorUsername")
-    @Mapping(
-            target = "holdingsUsername",
-            expression = "java(event.getHoldings().stream().map(el -> el.getUser().getUsername()).toList())"
-    )
-    EventBriefDto toEventBriefDto(Event event);
 
     @Mapping(source = "creator.username", target = "creatorUsername")
     EventDto toEventDto(Event event);
@@ -38,9 +30,10 @@ public interface DtoMapper {
     @Mapping(target = "canUnsubscribe", expression = "java(event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)))")
     EventCardDto toEventCardDto(Event event, String username);
 
-    /* Participation */
+    /* ProposeEvent */
 
-    @Mapping(source = "user.username", target = "username")
-    EventParticipationDto toEventParticipationDto(Participation participation);
+    @Mapping(target = "start", expression = "java(proposeEventDto.getStart().atZone(timeZone.toZoneId()).toOffsetDateTime())")
+    @Mapping(target = "end", expression = "java(proposeEventDto.getEnd().atZone(timeZone.toZoneId()).toOffsetDateTime())")
+    ProposeEventDtoZoned toProposeEventDtoZoned(ProposeEventDto proposeEventDto, TimeZone timeZone);
 
 }

@@ -1,10 +1,8 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
-import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/proposed_events")
 @Validated
 @AllArgsConstructor
-public class ProposedEventsController {
+public class ProposedController {
 
     private final EventService eventService;
 
@@ -26,7 +24,7 @@ public class ProposedEventsController {
         model.addAttribute("proposed_event", eventService.getProposed(page));
         model.addAttribute("page", page);
         // Render HTML
-        return "proposed_events";
+        return "page/proposed";
     }
 
 }
