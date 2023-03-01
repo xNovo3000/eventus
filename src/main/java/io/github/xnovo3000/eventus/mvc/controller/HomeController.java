@@ -1,19 +1,16 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
-import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
-import io.github.xnovo3000.eventus.bean.dto.ProposeEventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.ProposeEventDto;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.TimeZone;
 
 @Controller

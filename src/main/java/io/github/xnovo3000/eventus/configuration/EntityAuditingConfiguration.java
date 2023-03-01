@@ -1,7 +1,6 @@
 package io.github.xnovo3000.eventus.configuration;
 
 import io.github.xnovo3000.eventus.bean.entity.User;
-import io.github.xnovo3000.eventus.implementation.util.IAuditorAware;
 import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ public class EntityAuditingConfiguration {
 
     @Bean
     public AuditorAware<User> auditorAware(AuthenticationAdapter authenticationAdapter) {
-        return new IAuditorAware(authenticationAdapter);
+        return authenticationAdapter::getAuthenticatedUser;
     }
 
     @Bean

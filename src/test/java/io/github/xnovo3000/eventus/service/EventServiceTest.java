@@ -1,7 +1,6 @@
 package io.github.xnovo3000.eventus.service;
 
-import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
-import io.github.xnovo3000.eventus.bean.dto.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.User;
 import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
@@ -9,6 +8,7 @@ import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,8 +60,8 @@ public class EventServiceTest {
 
     @Test
     public void getFutureEvents_ExpectNonApprovedAreNotPresent() {
-        List<EventBriefDto> events = eventService.getFutureEvents(1).getContent();
-        for (EventBriefDto event : events) {
+        val events = eventService.getFutureEvents(1).getContent();
+        for (val event : events) {
             Assertions.assertNotEquals(0, event.getId() % 15);
         }
     }

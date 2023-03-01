@@ -1,9 +1,8 @@
 package io.github.xnovo3000.eventus.implementation.service;
 
-import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
-import io.github.xnovo3000.eventus.bean.dto.EventCardDto;
-import io.github.xnovo3000.eventus.bean.dto.EventDto;
-import io.github.xnovo3000.eventus.bean.dto.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
+import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.Participation;
 import io.github.xnovo3000.eventus.bean.entity.User;
@@ -20,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;

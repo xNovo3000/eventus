@@ -1,6 +1,6 @@
 package io.github.xnovo3000.eventus.implementation.service;
 
-import io.github.xnovo3000.eventus.bean.dto.RegisterFormDto;
+import io.github.xnovo3000.eventus.bean.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.bean.entity.User;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EmailService;

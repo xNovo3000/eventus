@@ -1,9 +1,9 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
-import io.github.xnovo3000.eventus.bean.dto.ApproveRejectEventDto;
-import io.github.xnovo3000.eventus.bean.dto.ParticipateToEventDto;
-import io.github.xnovo3000.eventus.bean.dto.ProposeEventDto;
-import io.github.xnovo3000.eventus.bean.dto.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.bean.dto.input.ApproveRejectEventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.ParticipateToEventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.ProposeEventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import jakarta.validation.Valid;

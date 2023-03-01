@@ -46,6 +46,8 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/proposed/approve").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/proposed/reject").hasAuthority("EVENT_MANAGER")
+                // Error manager
+                .requestMatchers("/error").permitAll()
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
         // Set rememberMe cookie

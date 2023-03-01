@@ -1,6 +1,6 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
-import io.github.xnovo3000.eventus.bean.dto.RegisterFormDto;
+import io.github.xnovo3000.eventus.bean.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.mvc.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class RegisterController {
 
     @GetMapping
     public String get() {
-        return "register";
+        return "page/register";
     }
 
     @PostMapping

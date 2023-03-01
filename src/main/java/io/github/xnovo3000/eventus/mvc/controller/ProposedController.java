@@ -1,6 +1,6 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
-import io.github.xnovo3000.eventus.bean.dto.ApproveRejectEventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.ApproveRejectEventDto;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

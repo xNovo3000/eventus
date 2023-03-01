@@ -12,7 +12,7 @@ public class LoginController {
 
     @GetMapping
     public String get() {
-        return "login";
+        return "page/login";
     }
 
 }

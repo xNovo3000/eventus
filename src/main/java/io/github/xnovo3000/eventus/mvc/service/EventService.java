@@ -1,9 +1,8 @@
 package io.github.xnovo3000.eventus.mvc.service;
 
-import io.github.xnovo3000.eventus.bean.dto.EventBriefDto;
-import io.github.xnovo3000.eventus.bean.dto.EventCardDto;
-import io.github.xnovo3000.eventus.bean.dto.EventDto;
-import io.github.xnovo3000.eventus.bean.dto.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
+import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

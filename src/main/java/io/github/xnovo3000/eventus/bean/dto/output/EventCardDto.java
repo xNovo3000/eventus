@@ -1,4 +1,4 @@
-package io.github.xnovo3000.eventus.bean.dto;
+package io.github.xnovo3000.eventus.bean.dto.output;
 
 import lombok.Data;
 

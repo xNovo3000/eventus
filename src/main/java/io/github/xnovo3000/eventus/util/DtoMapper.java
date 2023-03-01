@@ -1,8 +1,10 @@
 package io.github.xnovo3000.eventus.util;
 
-import io.github.xnovo3000.eventus.bean.dto.*;
+import io.github.xnovo3000.eventus.bean.dto.input.ProposeEventDto;
+import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
+import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
 import io.github.xnovo3000.eventus.bean.entity.Event;
-import io.github.xnovo3000.eventus.bean.entity.Participation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
