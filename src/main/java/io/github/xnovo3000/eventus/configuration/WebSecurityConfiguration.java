@@ -35,14 +35,17 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/action/approve_event").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/action/reject_event").hasAuthority("EVENT_MANAGER")
                 // EventController
-                .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
+                .requestMatchers(HttpMethod.GET, "/event/**").authenticated()
                 // HomeController
                 .requestMatchers(HttpMethod.GET, "/").authenticated()
+                .requestMatchers(HttpMethod.POST, "/propose").authenticated()
                 // RegisterController
                 .requestMatchers(HttpMethod.GET, "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                // ProposedEventsController
-                .requestMatchers(HttpMethod.GET, "/proposed_events").hasAuthority("EVENT_MANAGER")
+                // ProposedController
+                .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/proposed/approve").hasAuthority("EVENT_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/proposed/reject").hasAuthority("EVENT_MANAGER")
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
         // Set rememberMe cookie
