@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Home | Eventus</title>
+        <title>Eventi proposti | Eventus</title>
         <!-- Mobile compatibility -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,13 +22,13 @@
         <div class="container-lg my-2">
 
             <!-- Alert when you cannot create a new event -->
-            <div class="alert alert-danger" th:if="${param.propose_event_error}">
-                Non è stato possibile proporre l'evento per un errore. Contatta l'amministratore.
+            <div class="alert alert-danger" th:if="${param.approve_reject_error}">
+                Non è stato possibile approvare o rigettare l'evento. Contatta l'amministratore.
             </div>
 
             <!-- Proposed events, paginated -->
             <div class="my-2 d-flex align-items-center">
-                <span class="h1 m-0 flex-fill">Prossimi eventi</span>
+                <span class="h1 m-0 flex-fill">Eventi proposti</span>
                 <span class="h4 m-0 ms-2" th:text="${page} + '/' + ${proposed_event.getTotalPages()}"></span>
                 <a class="btn btn-outline-secondary ms-2" th:if="${proposed_event.hasPrevious()}" th:href="@{/(page=${page} - 1)}"><i class="bi bi-arrow-left"></i></a>
                 <a class="btn btn-outline-secondary ms-2" th:if="${proposed_event.hasNext()}" th:href="@{/(page=${page} + 1)}"><i class="bi bi-arrow-right"></i></a>
