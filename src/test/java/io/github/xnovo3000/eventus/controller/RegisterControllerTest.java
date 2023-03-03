@@ -80,7 +80,7 @@ public class RegisterControllerTest {
                         .part(email, username)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/register?invalid_email"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andDo(MockMvcResultHandlers.log());
     }
 
