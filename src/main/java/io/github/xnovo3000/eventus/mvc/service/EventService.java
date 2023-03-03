@@ -45,36 +45,9 @@ public interface EventService {
      * Create a new unapproved event
      *
      * @param proposeEventDto The event DTO
-     * @param username The username that generated the event
-     * @return The created event id
-     */
-    Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto, String username);
-
-    /**
-     * Create a new unapproved event
-     *
-     * @param proposeEventDto The event DTO
      * @return The created event id
      */
     Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto);
-
-    /**
-     * Set the participation to an event
-     *
-     * @param eventId The id of the event
-     * @param username The username of the user generating the request
-     * @param value true if user wants to participate, false otherwise
-     * @return True if it can set participation, false otherwise
-     */
-    boolean setParticipationToEvent(Long eventId, String username, boolean value);
-
-    /**
-     * Approve or reject an event
-     *
-     * @param eventId The event id
-     * @return True if approved/rejected, false if error
-     */
-    boolean approveOrRejectEvent(Long eventId, boolean approve);
 
     /**
      * Approve an event by its id

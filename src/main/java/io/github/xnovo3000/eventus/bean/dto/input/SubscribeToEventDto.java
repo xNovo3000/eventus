@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class ParticipateToEventDto {
+public class SubscribeToEventDto {
 
     @NotNull
     private Long eventId;

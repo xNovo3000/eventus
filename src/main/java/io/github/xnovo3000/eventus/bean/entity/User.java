@@ -36,6 +36,6 @@ public class User {
     private List<Event> events = List.of();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Participation> holdings = List.of();
+    private List<Subscription> holdings = List.of();
 
 }

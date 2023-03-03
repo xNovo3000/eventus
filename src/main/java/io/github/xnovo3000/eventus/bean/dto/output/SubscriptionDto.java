@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
-public class ParticipationDto {
+public class SubscriptionDto {
     private String username;
     private OffsetDateTime creationDate;
 }

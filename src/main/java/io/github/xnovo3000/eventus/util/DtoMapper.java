@@ -4,9 +4,9 @@ import io.github.xnovo3000.eventus.bean.dto.input.ProposeEventDto;
 import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
-import io.github.xnovo3000.eventus.bean.dto.output.ParticipationDto;
+import io.github.xnovo3000.eventus.bean.dto.output.SubscriptionDto;
 import io.github.xnovo3000.eventus.bean.entity.Event;
-import io.github.xnovo3000.eventus.bean.entity.Participation;
+import io.github.xnovo3000.eventus.bean.entity.Subscription;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -44,7 +44,7 @@ public interface DtoMapper {
     /* Participation */
 
     @Mapping(source = "user.username", target = "username")
-    ParticipationDto toParticipationDto(Participation participation);
+    SubscriptionDto toSubscriptionDto(Subscription subscription);
 
     /* ProposeEvent */
 

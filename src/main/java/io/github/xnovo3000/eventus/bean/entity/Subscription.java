@@ -15,7 +15,7 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "event_id"}))
 @EntityListeners(AuditingEntityListener.class)
-public class Participation {
+public class Subscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

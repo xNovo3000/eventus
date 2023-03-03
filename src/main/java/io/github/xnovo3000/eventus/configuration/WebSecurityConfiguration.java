@@ -28,12 +28,6 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set authorization for endpoints
         http.authorizeHttpRequests()
-                // ActionController
-                .requestMatchers(HttpMethod.POST, "/action/propose_event").authenticated()
-                .requestMatchers(HttpMethod.POST, "/action/participate").authenticated()
-                .requestMatchers(HttpMethod.POST, "/action/dont_participate").authenticated()
-                .requestMatchers(HttpMethod.POST, "/action/approve_event").hasAuthority("EVENT_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/action/reject_event").hasAuthority("EVENT_MANAGER")
                 // EventController
                 .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
                 .requestMatchers(HttpMethod.POST, "/event/*/subscribe").authenticated()

@@ -16,7 +16,7 @@ public class EventDto {
     private OffsetDateTime end;
     private Boolean approved;
     private Integer seats;
-    private List<ParticipationDto> holdings;
+    private List<SubscriptionDto> holdings;
     private Boolean canSubscribe;
     private Boolean canUnsubscribe;
 }

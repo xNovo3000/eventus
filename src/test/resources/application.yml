@@ -9,23 +9,4 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
         dialect: org.hibernate.dialect.HSQLDialect
-
-io:
-  github:
-    xnovo3000:
-      eventus:
-        admin-password: admin
-        page-size: 24
-
-logging:
-  level:
-    root: info
-    web: info
-    sql: info
-    io:
-      github:
-        xnovo3000:
-          eventus: debug

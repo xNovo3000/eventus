@@ -50,6 +50,6 @@ public class Event {
     private Boolean approved;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<Participation> holdings = List.of();
+    private List<Subscription> holdings = List.of();
 
 }
