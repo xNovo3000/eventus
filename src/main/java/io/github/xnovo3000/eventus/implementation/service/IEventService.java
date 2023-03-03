@@ -243,4 +243,101 @@ public class IEventService implements EventService {
         }
     }
 
+    @Override
+    public boolean subscribeUserToEvent(Long eventId, String username) {
+        LOGGER.debug("subscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
+        // Get the event
+        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.info("Event not found");
+            return false;
+        }
+        Event event = maybeEvent.get();
+        // Check if there is at least one seat available
+        if (event.getSeats() <= event.getHoldings().size()) {
+            LOGGER.info("Event is full");
+            return false;
+        }
+        // Check if the event is approved
+        if (!event.getApproved()) {
+            LOGGER.info("Event is not approved");
+            return false;
+        }
+        // Check for valid date
+        val now = OffsetDateTime.now();
+        if (!event.getStart().isAfter(now)) {
+            LOGGER.info("Event start is before now, cannot modify subscriptions");
+            return false;
+        }
+        // Check if already subscribed
+        if (event.getHoldings().stream().anyMatch(s -> s.getUser().getUsername().equals(username))) {
+            LOGGER.info("User already subscribed");
+            return false;
+        }
+        // Get the user
+        Optional<User> maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            LOGGER.info("User not found");
+            return false;
+        }
+        User user = maybeUser.get();
+        // Create the subscription bean
+        Participation participation = new Participation();
+        participation.setUser(user);
+        participation.setEvent(event);
+        // Try to insert into the datasource
+        try {
+            participationRepository.save(participation);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot save subscription", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean unsubscribeUserToEvent(Long eventId, String username) {
+        LOGGER.debug("unsubscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
+        // Get the event
+        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.info("Event not found");
+            return false;
+        }
+        Event event = maybeEvent.get();
+        // Check if the event is approved
+        if (!event.getApproved()) {
+            LOGGER.info("Event is not approved");
+            return false;
+        }
+        // Check for valid date
+        val now = OffsetDateTime.now();
+        if (!event.getStart().isAfter(now)) {
+            LOGGER.info("Event start is before now, cannot modify subscriptions");
+            return false;
+        }
+        // Get the user
+        Optional<User> maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            LOGGER.info("User not found");
+            return false;
+        }
+        User user = maybeUser.get();
+        // Get the subscription bean
+        Optional<Participation> maybeSubscription = participationRepository.findByUserAndEvent(user, event);
+        if (maybeSubscription.isEmpty()) {
+            LOGGER.info("User is not subscribed to the event");
+            return false;
+        }
+        Participation subscription = maybeSubscription.get();
+        // Try to delete
+        try {
+            participationRepository.delete(subscription);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot delete participation", e);
+            return false;
+        }
+    }
+
 }

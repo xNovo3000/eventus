@@ -92,4 +92,22 @@ public interface EventService {
      */
     boolean rejectEvent(Long eventId);
 
+    /**
+     * Subscribe a user to an event
+     *
+     * @param eventId The event id
+     * @param username The user's username
+     * @return True if has been subscribed, false otherwise
+     */
+    boolean subscribeUserToEvent(Long eventId, String username);
+
+    /**
+     * Unsubscribe a user to an event
+     *
+     * @param eventId The event id
+     * @param username The user's username
+     * @return True if has been unsubscribed, false otherwise
+     */
+    boolean unsubscribeUserToEvent(Long eventId, String username);
+
 }

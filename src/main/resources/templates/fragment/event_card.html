@@ -22,11 +22,11 @@
                 </ul>
                 <!-- Actions -->
                 <div class="card-body d-flex flex-wrap">
-                    <form th:if="${eventDto.canSubscribe}" th:action="@{/action/subscribe_to_event}" method="post">
+                    <form th:if="${eventDto.canSubscribe}" th:action="@{/event/{id}/subscribe(id=${eventDto.id})}" method="post">
                         <input type="hidden" id="sub-event-id" name="eventId" th:value="${eventDto.id}">
                         <input class="btn btn-success me-2 mb-2" type="submit" value="Iscriviti">
                     </form>
-                    <form th:if="${eventDto.canUnsubscribe}" th:action="@{/action/unsubscribe_to_event}" method="post">
+                    <form th:if="${eventDto.canUnsubscribe}" th:action="@{/event/{id}/unsubscribe(id=${eventDto.id})}" method="post">
                         <input type="hidden" id="unsub-event-id" name="eventId" th:value="${eventDto.id}">
                         <input class="btn btn-danger me-2 mb-2" type="submit" value="Disiscriviti">
                     </form>

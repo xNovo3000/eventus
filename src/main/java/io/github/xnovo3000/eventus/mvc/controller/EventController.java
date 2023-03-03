@@ -1,14 +1,12 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
-import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
+import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
@@ -20,30 +18,42 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping("/{id}")
-    public String get(
-            Model model,
-            @AuthenticationPrincipal JpaUserDetails userDetails,
-            @PathVariable Long id
-    ) {
-        // Get event
+    public String get(Model model, @PathVariable Long id) {
         return eventService.getById(id)
                 .map(eventDto -> {
-                    // Check if user can participate
-                    boolean canParticipate = eventDto.getHoldings().stream()
-                            .noneMatch(it -> it.getUsername().equals(userDetails.getUsername())) &&
-                            eventDto.getSeats() > eventDto.getHoldings().size() &&
-                            eventDto.getApproved();
-                    // Check if user participates and can remove its participation
-                    boolean canRemoveParticipation = eventDto.getHoldings()
-                            .stream().anyMatch(it -> it.getUsername().equals(userDetails.getUsername()));
                     // Set values
                     model.addAttribute("event", eventDto);
-                    model.addAttribute("can_participate", canParticipate);
-                    model.addAttribute("can_remove_participation", canRemoveParticipation);
                     // Render HTML
-                    return "event";
+                    return "page/event";
                 })
                 .orElseThrow(NoSuchElementException::new);
+        // TODO: Bind NoSuchElementException to 400 Not Found
+    }
+
+    @PostMapping("/{id}/subscribe")
+    public String postSubscribe(
+            @PathVariable Long id,
+            @RequestHeader String referer,
+            @AuthenticationPrincipal JpaUserDetails userDetails
+    ) {
+        if (eventService.subscribeUserToEvent(id, userDetails.getUsername())) {
+            return String.format("redirect:%s", referer);
+        } else {
+            return String.format("redirect:%s?subscribe_event_fail", referer);
+        }
+    }
+
+    @PostMapping("/{id}/unsubscribe")
+    public String postUnsubscribe(
+            @PathVariable Long id,
+            @RequestHeader String referer,
+            @AuthenticationPrincipal JpaUserDetails userDetails
+    ) {
+        if (eventService.unsubscribeUserToEvent(id, userDetails.getUsername())) {
+            return String.format("redirect:%s", referer);
+        } else {
+            return String.format("redirect:%s?unsubscribe_event_fail", referer);
+        }
     }
 
 }

@@ -35,7 +35,9 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/action/approve_event").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/action/reject_event").hasAuthority("EVENT_MANAGER")
                 // EventController
-                .requestMatchers(HttpMethod.GET, "/event/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
+                .requestMatchers(HttpMethod.POST, "/event/*/subscribe").authenticated()
+                .requestMatchers(HttpMethod.POST, "/event/*/unsubscribe").authenticated()
                 // HomeController
                 .requestMatchers(HttpMethod.GET, "/").authenticated()
                 .requestMatchers(HttpMethod.POST, "/propose").authenticated()

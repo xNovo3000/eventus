@@ -23,7 +23,7 @@ public interface DtoMapper {
     EventDto toEventDto(Event event);
 
     @Mapping(source = "event.creator.username", target = "creatorUsername")
-    @Mapping(target = "canSubscribe", expression = "java(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)))")
+    @Mapping(target = "canSubscribe", expression = "java(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)) && event.getSeats() > event.getHoldings().size() && event.getApproved())")
     @Mapping(target = "canUnsubscribe", expression = "java(event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)))")
     EventDto toEventDto(Event event, String username);
 
