@@ -79,7 +79,7 @@ public class IEventService implements EventService {
 
     @Override
     public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto) {
-        LOGGER.debug("proposeEvent called with payload: " + proposeEventDto);
+        LOGGER.info("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end
         if (!proposeEventDto.getStart().isBefore(proposeEventDto.getEnd())) {
             LOGGER.info("Start is after end. Start: " + proposeEventDto.getStart() + ", end: " + proposeEventDto.getEnd());
@@ -99,45 +99,71 @@ public class IEventService implements EventService {
             return Optional.of(event.getId());
         } catch (Exception e) {
             LOGGER.error("Cannot save event", e);
-            return Optional.of(event.getId());
+            return Optional.empty();
         }
     }
 
     @Override
     public boolean approveEvent(Long eventId) {
-        LOGGER.debug("approveEvent called with eventId: " + eventId);
-        return eventRepository.findById(eventId)
-                .map(event -> {
-                    event.setApproved(true);
-                    try {
-                        eventRepository.save(event);
-                        return true;
-                    } catch (Exception e) {
-                        LOGGER.error("Cannot save event", e);
-                        return false;
-                    }
-                })
-                .orElseGet(() -> {
-                    LOGGER.warn("Event with id " + eventId + " does not exist");
-                    return false;
-                });
+        LOGGER.info("approveEvent called with eventId: " + eventId);
+        // Get the event
+        val maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.info("The event does not exist");
+            return false;
+        }
+        val event = maybeEvent.get();
+        // Check if it's already approved
+        if (event.getApproved()) {
+            LOGGER.info("Event already approved");
+            return false;
+        }
+        // Check if start is before now
+        val now = OffsetDateTime.now();
+        if (event.getStart().isBefore(now)) {
+            LOGGER.info("Event start before now");
+            return false;
+        }
+        // Set approved and try to save
+        event.setApproved(true);
+        try {
+            eventRepository.save(event);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot save event", e);
+            return false;
+        }
     }
 
     @Override
     public boolean rejectEvent(Long eventId) {
-        LOGGER.debug("rejectEvent called with eventId: " + eventId);
+        LOGGER.info("rejectEvent called with eventId: " + eventId);
+        // Get the event
+        val maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.info("The event does not exist");
+            return false;
+        }
+        val event = maybeEvent.get();
+        // Check if it's already approved
+        if (event.getApproved()) {
+            LOGGER.info("Event already approved");
+            return false;
+        }
+        // Set approved and try to save
+        event.setApproved(false);
         try {
-            eventRepository.deleteById(eventId);
+            eventRepository.save(event);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot delete event", e);
+            LOGGER.error("Cannot save event", e);
             return false;
         }
     }
 
     @Override
     public boolean subscribeUserToEvent(Long eventId, String username) {
-        LOGGER.debug("subscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
+        LOGGER.info("subscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
         // Get the event
         Optional<Event> maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
@@ -189,7 +215,7 @@ public class IEventService implements EventService {
 
     @Override
     public boolean unsubscribeUserToEvent(Long eventId, String username) {
-        LOGGER.debug("unsubscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
+        LOGGER.info("unsubscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
         // Get the event
         Optional<Event> maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {

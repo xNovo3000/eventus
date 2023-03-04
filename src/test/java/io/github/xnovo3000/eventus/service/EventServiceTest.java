@@ -1,5 +1,6 @@
 package io.github.xnovo3000.eventus.service;
 
+import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.User;
 import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
@@ -8,15 +9,14 @@ import io.github.xnovo3000.eventus.mvc.service.EventService;
 import io.github.xnovo3000.eventus.util.EventusTest;
 import lombok.AllArgsConstructor;
 import lombok.val;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @EventusTest
@@ -47,13 +47,14 @@ public class EventServiceTest {
         val events = IntStream.range(0, 50)
                 .mapToObj(id -> {
                     val event = new Event();
+                    event.setId(id + 1L);
                     event.setName("Event " + id);
                     event.setDescription("Description " + id);
                     event.setCreator(adminUser);
                     event.setStart(now.minusDays(1).plusHours(id));
                     event.setEnd(now.minusDays(1).plusHours(id + 1));
                     event.setSeats(8);
-                    event.setApproved(id < 30);
+                    event.setApproved(id < 30 && id > 2);
                     return event;
                 })
                 .toList();
@@ -61,18 +62,74 @@ public class EventServiceTest {
     }
 
     @Test
+    @Order(1)
     public void getOngoingEvents_ExactSize() {
         Assertions.assertEquals(1, eventService.getOngoingEvents().size());
     }
 
     @Test
+    @Order(1)
     public void getFutureEvents_ExactSize() {
         Assertions.assertEquals(5, eventService.getFutureEvents(1).getContent().size());
     }
 
     @Test
+    @Order(1)
     public void getProposed_ExactPageSize() {
         Assertions.assertEquals(2, eventService.getProposed(1).getTotalPages());
+    }
+
+    @Test
+    @Order(2)
+    @WithUserDetails("admin")
+    public void proposeEvent_StartAfterEnd() {
+        val tomorrow = OffsetDateTime.now().plusDays(1);
+        val proposal = new ProposeEventDtoZoned();
+        proposal.setName("Proposal 1");
+        proposal.setDescription("Desc 1");
+        proposal.setSeats(8);
+        proposal.setStart(tomorrow);
+        proposal.setEnd(tomorrow.minusHours(1));
+        Assertions.assertEquals(Optional.empty(), eventService.proposeEvent(proposal));
+    }
+
+    @Test
+    @Order(2)
+    @WithUserDetails("admin")
+    public void proposeEvent_Success() {
+        val tomorrow = OffsetDateTime.now().plusDays(1);
+        val proposal = new ProposeEventDtoZoned();
+        proposal.setName("Proposal 1");
+        proposal.setDescription("Desc 1");
+        proposal.setSeats(8);
+        proposal.setStart(tomorrow);
+        proposal.setEnd(tomorrow.plusHours(1));
+        Assertions.assertNotEquals(Optional.empty(), eventService.proposeEvent(proposal));
+    }
+
+    @Test
+    @Order(3)
+    public void approveEvent_AlreadyApproved() {
+        // Get the first approved event and try to re-approve it
+        val approvedEvent = eventService.getFutureEvents(1).getContent().get(0);
+        Assertions.assertFalse(eventService.approveEvent(approvedEvent.getId()));
+    }
+
+    @Test
+    @Order(3)
+    public void approveEvent_StartAfterNow() {
+        // Get the first proposed event with start before now and try to approve him
+        val approvedEvent = eventService.getById(0L).orElseThrow();
+        Assertions.assertTrue(eventService.approveEvent(approvedEvent.getId()));
+    }
+
+    @Test
+    @Order(3)
+    public void approveEvent_Success() {
+        // Get the first proposed event with start after now and try to approve him
+        val now = OffsetDateTime.now();
+        val approvedEvent = eventService.getProposed(1).getContent().get(0);
+        Assertions.assertTrue(eventService.approveEvent(approvedEvent.getId()));
     }
 
     @AfterAll

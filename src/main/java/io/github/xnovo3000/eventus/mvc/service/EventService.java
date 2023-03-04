@@ -42,7 +42,8 @@ public interface EventService {
     Page<EventCardDto> getProposed(int pageNumber);
 
     /**
-     * Create a new unapproved event
+     * Create a new unapproved event. The event start must
+     * be before end and after now
      *
      * @param proposeEventDto The event DTO
      * @return The created event id
@@ -50,7 +51,8 @@ public interface EventService {
     Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto);
 
     /**
-     * Approve an event by its id
+     * Approve an event by its id, the event must be non-approved
+     * and start must be after now
      *
      * @param eventId The event id
      * @return True if the event can be approved, false otherwise
@@ -58,7 +60,7 @@ public interface EventService {
     boolean approveEvent(Long eventId);
 
     /**
-     * Reject an event by its id
+     * Reject an event by its id, the event must be non-approved
      *
      * @param eventId The event id
      * @return True if the event can be rejected, false otherwise

@@ -15,7 +15,7 @@ public class IEmailServiceDefault implements EmailService {
     @Override
     public void sendPasswordViaEmail(String email, String password) {
         // Log password
-        LOGGER.debug("Password for '" + email + "': '" + password + "'");
+        LOGGER.info("Password for '" + email + "': '" + password + "'");
     }
 
 }

@@ -27,14 +27,14 @@ public class IUserService implements UserService {
 
     @Override
     public boolean registerNewUser(RegisterFormDto registerFormDto) {
-        LOGGER.debug("registerNewUser called with payload: " + registerFormDto);
+        LOGGER.info("registerNewUser called with payload: " + registerFormDto);
         // Check if username and/or password already exist in the database
         if (userRepository.findByEmail(registerFormDto.getEmail()).isPresent()) {
-            LOGGER.debug("Email " + registerFormDto.getEmail() + " already exist");
+            LOGGER.info("Email " + registerFormDto.getEmail() + " already exist");
             return false;
         }
         if (userRepository.findByUsername(registerFormDto.getUsername()).isPresent()) {
-            LOGGER.debug("Username " + registerFormDto.getUsername() + " already exist");
+            LOGGER.info("Username " + registerFormDto.getUsername() + " already exist");
             return false;
         }
         // Generate a new password
