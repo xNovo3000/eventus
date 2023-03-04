@@ -10,6 +10,7 @@ import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
 import io.github.xnovo3000.eventus.mvc.repository.SubscriptionRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
+import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import jakarta.transaction.Transactional;
@@ -42,7 +43,9 @@ public class IEventService implements EventService {
 
     @Override
     public Optional<EventDto> getById(Long id) {
-        val username = authenticationAdapter.getUsername();
+        val username = authenticationAdapter.getUserDetails()
+                .map(JpaUserDetails::getUsername)
+                .orElse(null);
         return eventRepository.findById(id)
                 .map(event -> dtoMapper.toEventDto(event, username));
     }
@@ -58,7 +61,9 @@ public class IEventService implements EventService {
     @Override
     public Page<EventCardDto> getFutureEvents(int pageNumber) {
         val now = OffsetDateTime.now();
-        val username = authenticationAdapter.getUsername();
+        val username = authenticationAdapter.getUserDetails()
+                .map(JpaUserDetails::getUsername)
+                .orElse(null);
         val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(event -> dtoMapper.toEventCardDto(event, username));
