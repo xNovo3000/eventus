@@ -35,11 +35,36 @@
                     <!-- Creator -->
                     <h5 class="mb-1 text-muted">Creato da: <span th:text="${event.creatorUsername}"></span></h5>
                     <!-- Description -->
-                    <p class="fs-5 mb-2"><span th:text="${event.description}"></span></p>
+                    <p class="fs-5 my-2"><span th:text="${event.description}"></span></p>
                     <!-- Start date -->
                     <h6 class="mb-1 text-muted">Inizio: <span th:text="${#temporals.format(event.start, 'd/M/yyyy H:mm')}"></span></h6>
                     <!-- End date -->
                     <h6 class="text-muted">Fine: <span th:text="${#temporals.format(event.end, 'd/M/yyyy H:mm')}"></span></h6>
+                    <!-- Actions -->
+                    <div class="d-flex flex-wrap my-2">
+                        <!-- Participate button -->
+                        <form th:action="@{/event/{id}/subscribe(id=${event.id})}" method="post" th:if="${event.canSubscribe}">
+                            <input type="hidden" id="event-id-p" name="eventId" th:value="${event.id}">
+                            <input class="btn btn-success me-2 mb-2" type="submit" value="Iscriviti">
+                        </form>
+                        <!-- Do not participate button -->
+                        <form th:action="@{/event/{id}/unsubscribe(id=${event.id})}" method="post" th:if="${event.canUnsubscribe}">
+                            <input type="hidden" id="event-id-dp" name="eventId" th:value="${event.id}">
+                            <input class="btn btn-danger me-2 mb-2" type="submit" value="Disiscriviti">
+                        </form>
+                        <!-- TODO: Give rating button -->
+                    </div>
+                </div>
+
+                <!-- Right side: Subscriptions and ratings -->
+                <div class="col-12 col-lg-6">
+                    <!-- Participant list -->
+                    <h5>Partecipanti</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="subscription : ${event.holdings}">
+                            <div th:replace="~{fragment/event_subscription :: eventSubscription(${subscription})}"></div>
+                        </li>
+                    </ul>
                 </div>
 
             </div>

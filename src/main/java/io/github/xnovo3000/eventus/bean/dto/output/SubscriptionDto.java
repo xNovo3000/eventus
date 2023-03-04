@@ -8,4 +8,6 @@ import java.time.OffsetDateTime;
 public class SubscriptionDto {
     private String username;
     private OffsetDateTime creationDate;
+    private Integer rating;
+    private String comment;
 }
