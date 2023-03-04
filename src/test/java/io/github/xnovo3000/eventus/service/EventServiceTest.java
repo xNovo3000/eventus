@@ -119,17 +119,44 @@ public class EventServiceTest {
     @Order(3)
     public void approveEvent_StartAfterNow() {
         // Get the first proposed event with start before now and try to approve him
-        val approvedEvent = eventService.getById(0L).orElseThrow();
-        Assertions.assertTrue(eventService.approveEvent(approvedEvent.getId()));
+        val pastEvent = eventService.getById(1L).orElseThrow();
+        Assertions.assertFalse(eventService.approveEvent(pastEvent.getId()));
     }
 
     @Test
     @Order(3)
     public void approveEvent_Success() {
         // Get the first proposed event with start after now and try to approve him
-        val now = OffsetDateTime.now();
-        val approvedEvent = eventService.getProposed(1).getContent().get(0);
-        Assertions.assertTrue(eventService.approveEvent(approvedEvent.getId()));
+        val proposedEvent = eventService.getProposed(1).getContent().get(0);
+        Assertions.assertTrue(eventService.approveEvent(proposedEvent.getId()));
+    }
+
+    @Test
+    @Order(4)
+    public void rejectEvent_AlreadyApproved() {
+        // Get the first future event and try to reject him
+        val approvedEvent = eventService.getFutureEvents(1).getContent().get(0);
+        Assertions.assertFalse(eventService.rejectEvent(approvedEvent.getId()));
+    }
+
+    @Test
+    @Order(4)
+    public void rejectEvent_Success() {
+        // Get the first proposed event and try to reject him
+        val proposedEvent = eventService.getProposed(1).getContent().get(0);
+        Assertions.assertTrue(eventService.rejectEvent(proposedEvent.getId()));
+    }
+
+    @Test
+    @Order(5)
+    public void subscribeUserToEvent_InvalidUser() {
+
+    }
+
+    @Test
+    @Order(5)
+    public void subscribeUserToEvent_InvalidEvent() {
+
     }
 
     @AfterAll

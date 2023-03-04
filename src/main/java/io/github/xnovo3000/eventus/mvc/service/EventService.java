@@ -68,7 +68,13 @@ public interface EventService {
     boolean rejectEvent(Long eventId);
 
     /**
-     * Subscribe a user to an event
+     * Subscribe a user to an event, fail if:
+     * the username does not exist,
+     * the event does not exist,
+     * the event is full,
+     * the event is not approved,
+     * the user is already subscribed
+     * the event start is before now
      *
      * @param eventId The event id
      * @param username The user's username
@@ -77,7 +83,12 @@ public interface EventService {
     boolean subscribeUserToEvent(Long eventId, String username);
 
     /**
-     * Unsubscribe a user to an event
+     * Unsubscribe a user to an event, fails if:
+     * the username does not exist,
+     * the event does not exist,
+     * the event is not approved,
+     * the user is already unsubscribed
+     * the event start is before now
      *
      * @param eventId The event id
      * @param username The user's username

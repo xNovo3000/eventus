@@ -45,12 +45,17 @@ public class IUserService implements UserService {
         user.setUsername(registerFormDto.getUsername());
         user.setPassword(passwordEncoder.encode(password));
         user.setActive(true);
-        // Save user in the database
-        user = userRepository.save(user);
-        // Send email with the password
-        emailService.sendPasswordViaEmail(user.getEmail(), password);
-        // Return success
-        return true;
+        try {
+            // Save user in the database
+            user = userRepository.save(user);
+            // Send email with the password
+            emailService.sendPasswordViaEmail(user.getEmail(), password);
+            // Return success
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot save user or send password via email", e);
+            return false;
+        }
     }
 
 }
