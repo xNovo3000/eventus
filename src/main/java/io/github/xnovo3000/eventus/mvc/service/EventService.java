@@ -36,7 +36,7 @@ public interface EventService {
     /**
      * Get a page of events that are in the 'proposed' state
      *
-     * @param pageNumber The page number of the paginated result
+     * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of proposed events
      */
     Page<EventCardDto> getProposed(int pageNumber);
