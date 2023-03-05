@@ -21,10 +21,8 @@
         <!-- Content -->
         <div class="container-lg my-2">
 
-            <!-- Alert when you cannot create a new event -->
-            <div class="alert alert-danger" th:if="${param.propose_event_error}">
-                Non è stato possibile proporre l'evento per un errore. Contatta l'amministratore.
-            </div>
+            <!-- Alert when you cannot participate or not participate -->
+            <div th:replace="~{fragment/error_display :: error}"></div>
 
             <!-- Ongoing events -->
             <div class="my-2 d-flex align-items-center">

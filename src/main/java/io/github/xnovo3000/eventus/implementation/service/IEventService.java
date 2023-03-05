@@ -1,5 +1,6 @@
 package io.github.xnovo3000.eventus.implementation.service;
 
+import io.github.xnovo3000.eventus.bean.dto.input.RateFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
 import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
@@ -199,6 +200,15 @@ public class IEventService implements EventService {
             return false;
         }
         User user = maybeUser.get();
+        // Check if user is already subscribed to and event that collides with
+        val overlappingEvents = user.getHoldings().stream()
+                .map(Subscription::getEvent)
+                .filter(it -> it.getStart().isBefore(event.getEnd()) && it.getEnd().isAfter(event.getStart()))
+                .toList();
+        if (overlappingEvents.size() > 0) {
+            LOGGER.info("Event overlaps with: " + overlappingEvents);
+            return false;
+        }
         // Create the subscription bean
         Subscription subscription = new Subscription();
         subscription.setUser(user);
@@ -254,6 +264,54 @@ public class IEventService implements EventService {
             return true;
         } catch (Exception e) {
             LOGGER.error("Cannot delete participation", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rateEvent(Long eventId, RateFormDto dto, String username) {
+        LOGGER.info("rateEvent called with eventId: " + eventId + ", payload: " + dto + " and username: " + username);
+        // Get the event
+        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        if (maybeEvent.isEmpty()) {
+            LOGGER.info("Event not found");
+            return false;
+        }
+        Event event = maybeEvent.get();
+        // Check if the event is terminated. End must be before now
+        val now = OffsetDateTime.now();
+        if (!(event.getEnd().isBefore(now))) {
+            LOGGER.info("Event is not finished");
+            return false;
+        }
+        // Get the user
+        Optional<User> maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            LOGGER.info("User not found");
+            return false;
+        }
+        User user = maybeUser.get();
+        // Get subscription
+        Optional<Subscription> maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);
+        if (maybeSubscription.isEmpty()) {
+            LOGGER.info("Subscription not found");
+            return false;
+        }
+        Subscription subscription = maybeSubscription.get();
+        // Check if the event has already been rated
+        if (subscription.getRating() != null || subscription.getComment() != null) {
+            LOGGER.info("The event has already been rated");
+            return false;
+        }
+        // Rate the comment
+        subscription.setRating(dto.getStars());
+        subscription.setComment(dto.getComment());
+        // Save in the database
+        try {
+            subscriptionRepository.save(subscription);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot save subscription", e);
             return false;
         }
     }

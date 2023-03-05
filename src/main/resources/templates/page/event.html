@@ -22,9 +22,7 @@
         <div class="container-lg my-2">
 
             <!-- Alert when you cannot participate or not participate -->
-            <div class="alert alert-danger" th:if="${param.participate_error}">
-                Non è stato possibile modificare lo stato di partecipazione all'evento.
-            </div>
+            <div th:replace="~{fragment/error_display :: error}"></div>
 
             <div class="row">
 

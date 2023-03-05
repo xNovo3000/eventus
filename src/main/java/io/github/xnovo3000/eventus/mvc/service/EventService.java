@@ -1,5 +1,6 @@
 package io.github.xnovo3000.eventus.mvc.service;
 
+import io.github.xnovo3000.eventus.bean.dto.input.RateFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
 import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
@@ -73,8 +74,9 @@ public interface EventService {
      * the event does not exist,
      * the event is full,
      * the event is not approved,
-     * the user is already subscribed
-     * the event start is before now
+     * the user is already subscribed,
+     * the event start is before now,
+     * TODO: user is subscribed to another event with same time
      *
      * @param eventId The event id
      * @param username The user's username
@@ -95,5 +97,7 @@ public interface EventService {
      * @return True if has been unsubscribed, false otherwise
      */
     boolean unsubscribeUserToEvent(Long eventId, String username);
+
+    boolean rateEvent(Long eventId, RateFormDto dto, String username);
 
 }
