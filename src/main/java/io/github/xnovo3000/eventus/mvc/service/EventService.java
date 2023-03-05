@@ -98,6 +98,14 @@ public interface EventService {
      */
     boolean unsubscribeUserToEvent(Long eventId, String username);
 
+    /**
+     * Rate a finished event
+     *
+     * @param eventId The id of the event
+     * @param dto The dto
+     * @param username The user that wants to rate the event
+     * @return True if the event has been rated, false otherwise
+     */
     boolean rateEvent(Long eventId, RateFormDto dto, String username);
 
 }

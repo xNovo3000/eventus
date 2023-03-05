@@ -32,6 +32,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
                 .requestMatchers(HttpMethod.POST, "/event/*/subscribe").authenticated()
                 .requestMatchers(HttpMethod.POST, "/event/*/unsubscribe").authenticated()
+                .requestMatchers(HttpMethod.POST, "/event/*/rate").authenticated()
                 // HomeController
                 .requestMatchers(HttpMethod.GET, "/").authenticated()
                 .requestMatchers(HttpMethod.POST, "/propose").authenticated()
@@ -42,6 +43,8 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/proposed/approve").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/proposed/reject").hasAuthority("EVENT_MANAGER")
+                // TODO: UserController
+                .requestMatchers(HttpMethod.GET, "/user").hasAuthority("USER_MANAGER")
                 // Error manager
                 .requestMatchers("/error").permitAll()
                 // Less privileges by default
