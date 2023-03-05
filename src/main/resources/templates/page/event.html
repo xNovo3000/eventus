@@ -42,17 +42,18 @@
                     <h6 class="text-muted">Fine: <span th:text="${#temporals.format(event.end, 'd/M/yyyy H:mm')}"></span></h6>
                     <!-- Actions -->
                     <div class="d-flex flex-wrap my-2">
-                        <!-- Participate button -->
+                        <!-- Subscribe button -->
                         <form th:action="@{/event/{id}/subscribe(id=${event.id})}" method="post" th:if="${event.canSubscribe}">
-                            <input type="hidden" id="event-id-p" name="eventId" th:value="${event.id}">
+                            <input type="hidden" id="event-id-sub" name="eventId" th:value="${event.id}">
                             <input class="btn btn-success me-2 mb-2" type="submit" value="Iscriviti">
                         </form>
-                        <!-- Do not participate button -->
+                        <!-- Do not subscribe button -->
                         <form th:action="@{/event/{id}/unsubscribe(id=${event.id})}" method="post" th:if="${event.canUnsubscribe}">
-                            <input type="hidden" id="event-id-dp" name="eventId" th:value="${event.id}">
+                            <input type="hidden" id="event-id-unsub" name="eventId" th:value="${event.id}">
                             <input class="btn btn-danger me-2 mb-2" type="submit" value="Disiscriviti">
                         </form>
-                        <!-- TODO: Give rating button -->
+                        <!-- Rate button -->
+                        <button class="btn btn-primary me-2 mb-2" data-bs-toggle="modal" data-bs-target="#rateModal" th:if="${event.canRate}">Valuta evento</button>
                     </div>
                 </div>
 
@@ -71,6 +72,11 @@
 
         </div>
 
+        <!-- Rating modal fragment -->
+        <div th:replace="~{fragment/event_rate :: rate(${event.id})}"></div>
+
+        <!-- Boostrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha256-m81NDyncZVbr7v9E6qCWXwx/cwjuWDlHCMzi9pjMobA=" crossorigin="anonymous"></script>
     </body>
 
 </html>

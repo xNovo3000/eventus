@@ -19,4 +19,5 @@ public class EventDto {
     private List<SubscriptionDto> holdings;
     private Boolean canSubscribe;
     private Boolean canUnsubscribe;
+    private Boolean canRate;
 }
