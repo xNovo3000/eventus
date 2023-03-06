@@ -3,6 +3,7 @@ package io.github.xnovo3000.eventus.mvc.controller;
 import io.github.xnovo3000.eventus.bean.dto.input.ProposeEventDto;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import io.github.xnovo3000.eventus.util.DtoMapper;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,13 @@ public class HomeController {
     private final DtoMapper dtoMapper;
 
     @GetMapping
-    public String get(Model model, @RequestParam(defaultValue = "1") @Min(1) Integer page) {
+    public String get(
+            Model model,
+            @RequestAttribute(required = false) String error,
+            @RequestParam(defaultValue = "1") @Min(1) Integer page
+    ) {
+        // Inject error
+        model.addAttribute("error", error);
         // Set model
         model.addAttribute("page", page);
         model.addAttribute("ongoing_events", eventService.getOngoingEvents());
@@ -36,11 +43,15 @@ public class HomeController {
     public String postPropose(
             @ModelAttribute @Valid ProposeEventDto dto,
             @RequestHeader String referer,
+            HttpSession session,
             TimeZone timeZone
     ) {
         return eventService.proposeEvent(dtoMapper.toProposeEventDtoZoned(dto, timeZone))
                 .map(eventId -> String.format("redirect:/event/%d", eventId))
-                .orElse(String.format("redirect:%s?propose_event_error", referer));
+                .orElseGet(() -> {
+                    session.setAttribute("error", "propose_event_error");
+                    return String.format("redirect:%s", referer);
+                });
     }
 
 }

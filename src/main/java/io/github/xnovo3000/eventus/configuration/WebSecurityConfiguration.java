@@ -2,6 +2,7 @@ package io.github.xnovo3000.eventus.configuration;
 
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.security.JpaUserDetailsService;
+import io.github.xnovo3000.eventus.util.ErrorInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 @Configuration
@@ -49,6 +51,8 @@ public class WebSecurityConfiguration {
                 .requestMatchers("/error").permitAll()
                 // Less privileges by default
                 .anyRequest().hasAuthority("unreachable");
+        // Set error interceptor
+        http.addFilterAfter(new ErrorInterceptor(), SwitchUserFilter.class);
         // Set rememberMe cookie
         http.rememberMe()
                 .key("session");

@@ -3,22 +3,23 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-    <div th:fragment="error">
+    <!--/*@thymesVar id="error" type="java.lang.String"*/-->
+    <div th:fragment="error_fragment">
 
-        <div class="alert alert-danger" th:if="${param.propose_event_error}">
+        <div class="alert alert-danger" th:if="${error == 'propose_event_error'}">
             Non è stato possibile proporre l'evento per un errore. Contatta l'amministratore.
         </div>
-        <div class="alert alert-danger" th:if="${param.subscribe_event_fail}">
+        <div class="alert alert-info" th:if="${error == 'subscribe_event_fail'}">
             Non è stato possibile iscriversi all'evento.
             Forse sei già iscritto a un evento programmato in contemporanea a questo?
         </div>
-        <div class="alert alert-danger" th:if="${param.unsubscribe_event_fail}">
+        <div class="alert alert-danger" th:if="${error == 'unsubscribe_event_fail'}">
             Non è stato possibile disiscriversi dall'evento.
         </div>
-        <div class="alert alert-danger" th:if="${param.error_rate_event}">
+        <div class="alert alert-danger" th:if="${error == 'error_rate_event'}">
             Non è stato possibile giudicare l'evento. Contatta l'amministratore
         </div>
-        <div class="alert alert-danger" th:if="${param.approve_reject_error}">
+        <div class="alert alert-danger" th:if="${error == 'approve_reject_error'}">
             Non è stato possibile approvare o rigettare l'evento per un errore. Contatta l'amministratore.
         </div>
 

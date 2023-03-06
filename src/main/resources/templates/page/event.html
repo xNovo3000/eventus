@@ -22,9 +22,9 @@
         <div class="container-lg my-2">
 
             <!-- Alert when you cannot participate or not participate -->
-            <div th:replace="~{fragment/error_display :: error}"></div>
+            <div th:replace="~{fragment/error_visualizer :: error_fragment}"></div>
 
-            <div class="row">
+            <div class="row" th:if="${event != null}">
 
                 <!-- Left side: info about the event -->
                 <div class="col-12 col-lg-6 mb-2">

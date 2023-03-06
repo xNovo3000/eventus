@@ -2,6 +2,7 @@ package io.github.xnovo3000.eventus.mvc.controller;
 
 import io.github.xnovo3000.eventus.bean.dto.input.ApproveRejectEventDto;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,13 @@ public class ProposedController {
     private final EventService eventService;
 
     @GetMapping
-    public String get(Model model, @RequestParam(defaultValue = "1") @Min(1) Integer page) {
+    public String get(
+            Model model,
+            @RequestAttribute(required = false) String error,
+            @RequestParam(defaultValue = "1") @Min(1) Integer page
+    ) {
+        // Inject error
+        model.addAttribute("error", error);
         // Set model
         model.addAttribute("proposed_event", eventService.getProposed(page));
         model.addAttribute("page", page);
@@ -28,21 +35,27 @@ public class ProposedController {
     }
 
     @PostMapping("/approve")
-    public String postApprove(@ModelAttribute @Valid ApproveRejectEventDto dto, @RequestHeader String referer) {
-        if (eventService.approveEvent(dto.getEventId())) {
-            return String.format("redirect:%s", referer);
-        } else {
-            return String.format("redirect:%s?approve_reject_error", referer);
+    public String postApprove(
+            @ModelAttribute @Valid ApproveRejectEventDto dto,
+            @RequestHeader String referer,
+            HttpSession session
+    ) {
+        if (!eventService.approveEvent(dto.getEventId())) {
+            session.setAttribute("error", "approve_reject_error");
         }
+        return String.format("redirect:%s", referer);
     }
 
     @PostMapping("/reject")
-    public String postReject(@ModelAttribute @Valid ApproveRejectEventDto dto, @RequestHeader String referer) {
-        if (eventService.rejectEvent(dto.getEventId())) {
-            return String.format("redirect:%s", referer);
-        } else {
-            return String.format("redirect:%s?approve_reject_error", referer);
+    public String postReject(
+            @ModelAttribute @Valid ApproveRejectEventDto dto,
+            @RequestHeader String referer,
+            HttpSession session
+    ) {
+        if (!eventService.rejectEvent(dto.getEventId())) {
+            session.setAttribute("error", "approve_reject_error");
         }
+        return String.format("redirect:%s", referer);
     }
 
 }
