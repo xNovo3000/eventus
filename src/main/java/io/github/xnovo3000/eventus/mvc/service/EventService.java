@@ -76,7 +76,7 @@ public interface EventService {
      * the event is not approved,
      * the user is already subscribed,
      * the event start is before now,
-     * TODO: user is subscribed to another event with same time
+     * user is subscribed to another event with same time
      *
      * @param eventId The event id
      * @param username The user's username

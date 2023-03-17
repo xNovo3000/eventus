@@ -263,7 +263,7 @@ public class IEventService implements EventService {
             subscriptionRepository.delete(subscription);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot delete participation", e);
+            LOGGER.error("Cannot delete subscription", e);
             return false;
         }
     }

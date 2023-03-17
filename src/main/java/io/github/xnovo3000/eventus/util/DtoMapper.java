@@ -5,8 +5,10 @@ import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
 import io.github.xnovo3000.eventus.bean.dto.output.SubscriptionDto;
+import io.github.xnovo3000.eventus.bean.dto.output.UserDto;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.Subscription;
+import io.github.xnovo3000.eventus.bean.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -17,12 +19,6 @@ import java.util.TimeZone;
 public interface DtoMapper {
 
     /* Event */
-
-    @Mapping(source = "creator.username", target = "creatorUsername")
-    @Mapping(target = "canSubscribe", expression = "java(false)")
-    @Mapping(target = "canUnsubscribe", expression = "java(false)")
-    @Mapping(target = "canRate", expression = "java(false)")
-    EventDto toEventDto(Event event);
 
     @Mapping(source = "event.creator.username", target = "creatorUsername")
     @Mapping(target = "canSubscribe", expression = "java(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)) && event.getSeats() > event.getHoldings().size() && event.getApproved())")
@@ -44,7 +40,7 @@ public interface DtoMapper {
     @Mapping(target = "canUnsubscribe", expression = "java(event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)))")
     EventCardDto toEventCardDto(Event event, String username);
 
-    /* Participation */
+    /* Subscription */
 
     @Mapping(source = "user.username", target = "username")
     SubscriptionDto toSubscriptionDto(Subscription subscription);
@@ -54,5 +50,10 @@ public interface DtoMapper {
     @Mapping(target = "start", expression = "java(proposeEventDto.getStart().atZone(timeZone.toZoneId()).toOffsetDateTime())")
     @Mapping(target = "end", expression = "java(proposeEventDto.getEnd().atZone(timeZone.toZoneId()).toOffsetDateTime())")
     ProposeEventDtoZoned toProposeEventDtoZoned(ProposeEventDto proposeEventDto, TimeZone timeZone);
+
+    /* User */
+
+    @Mapping(target = "authorities", expression = "java(user.getAuthorities().stream().map(Authority::getName).toList())")
+    UserDto toUserDto(User user);
 
 }
