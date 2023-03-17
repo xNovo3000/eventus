@@ -68,7 +68,6 @@ public class IUserService implements UserService {
 
     @Override
     public Page<UserDto> getByFilter(int pageNumber, String username) {
-        LOGGER.info("getByFilter called with pageNumber: " + pageNumber + " and username: " + username);
         // Create the page request
         val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
         // Return if username is null or not

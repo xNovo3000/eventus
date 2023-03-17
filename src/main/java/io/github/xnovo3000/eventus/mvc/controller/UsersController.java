@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/user")
 @Validated
 @AllArgsConstructor
 public class UsersController {
@@ -33,7 +33,7 @@ public class UsersController {
         model.addAttribute("username", username);
         model.addAttribute("users", userService.getByFilter(page, username));
         // Render HTML
-        return "page/users";
+        return "page/user";
     }
 
 }

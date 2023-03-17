@@ -19,7 +19,7 @@
                         <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/proposed' ? 'active' : ''" th:href="@{/proposed}">Eventi proposti</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAuthority('USER_MANAGER')">
-                        <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/users' ? 'active' : ''" th:href="@{/users}">Gestione utenti</a>
+                        <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/user' ? 'active' : ''" th:href="@{/user}">Gestione utenti</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center justify-content-between">

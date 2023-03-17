@@ -6,6 +6,7 @@ import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
 import io.github.xnovo3000.eventus.bean.dto.output.SubscriptionDto;
 import io.github.xnovo3000.eventus.bean.dto.output.UserDto;
+import io.github.xnovo3000.eventus.bean.entity.Authority;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.Subscription;
 import io.github.xnovo3000.eventus.bean.entity.User;
@@ -15,7 +16,7 @@ import org.mapstruct.Mapping;
 import java.time.OffsetDateTime;
 import java.util.TimeZone;
 
-@Mapper(componentModel = "spring", imports = OffsetDateTime.class)
+@Mapper(componentModel = "spring", imports = {OffsetDateTime.class, Authority.class})
 public interface DtoMapper {
 
     /* Event */

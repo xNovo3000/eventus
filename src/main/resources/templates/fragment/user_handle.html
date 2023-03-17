@@ -3,23 +3,35 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-    <table class="table">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Username</th>
                 <th scope="col">Permessi</th>
-                <th scope="col"></th>
+                <th scope="col">Azioni</th>
             </tr>
         </thead>
         <tbody>
             <!--/*@thymesVar id="userDto" type="io.github.xnovo3000.eventus.bean.dto.output.UserDto"*/-->
-            <tr th:fragment="user(userDto)">
-                <th scope="row"><span th:value="${userDto.id}"></span></th>
-                <td><span th:value="${userDto.username}"></span></td>
-                <td><span th:value="${#strings.listJoin(userDto.authorities, ', ')}"></span></td>
+            <tr th:fragment="user">
+                <th scope="row"><span th:text="${userDto.id}"></span></th>
+                <td><span th:text="${userDto.username}"></span></td>
+                <td><span th:text="${#strings.listJoin(userDto.authorities, ', ')}"></span></td>
                 <td class="d-flex">
-
+                    <form th:action="@{/user/{id}/disable(id=${userDto.id})}" th:if="${userDto.active}" method="post">
+                        <input type="hidden" th:id="'id-' + ${userDto.id}" name="id">
+                        <input class="btn btn-danger me-2" type="submit" value="Disabilita">
+                    </form>
+                    <form th:action="@{/user/{id}/enable(id=${userDto.id})}" th:if="${!userDto.active}" method="post">
+                        <input type="hidden" th:id="'id-' + ${userDto.id}" name="id">
+                        <input class="btn btn-success me-2" type="submit" value="Riabilita">
+                    </form>
+                    <form th:action="@{/user/{id}/reset_password(id=${userDto.id})}" method="post">
+                        <input type="hidden" th:id="'id-' + ${userDto.id}" name="id">
+                        <input class="btn btn-primary me-2" type="submit" value="Reimposta password">
+                    </form>
+                    <!-- TODO: Add edit permissions form -->
                 </td>
             </tr>
         </tbody>
