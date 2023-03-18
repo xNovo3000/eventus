@@ -2,7 +2,9 @@ package io.github.xnovo3000.eventus.implementation.service;
 
 import io.github.xnovo3000.eventus.bean.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.UserDto;
+import io.github.xnovo3000.eventus.bean.entity.Authority;
 import io.github.xnovo3000.eventus.bean.entity.User;
+import io.github.xnovo3000.eventus.mvc.repository.AuthorityRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EmailService;
 import io.github.xnovo3000.eventus.mvc.service.UserService;
@@ -18,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 @AllArgsConstructor
@@ -30,6 +34,7 @@ public class IUserService implements UserService {
     private final DtoMapper dtoMapper;
     private final EmailService emailService;
     private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
     private final RandomStringGenerator randomStringGenerator;
 
@@ -77,6 +82,127 @@ public class IUserService implements UserService {
         } else {
             return userRepository.findAllByOrderByUsernameAsc(pageable)
                     .map(dtoMapper::toUserDto);
+        }
+    }
+
+    @Override
+    public boolean disable(Long userId) {
+        LOGGER.info("disable called with userId: " + userId);
+        // Check if user exists
+        val maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            LOGGER.info("User does not exist");
+            return false;
+        }
+        // Get user (must not be admin)
+        val user = maybeUser.get();
+        if (user.getUsername().equals("admin")) {
+            LOGGER.info("Trying to disable admin user. No no: come direbbe Palmieri. E poi lo meno");
+            return false;
+        }
+        // Disable the user and try to save
+        user.setActive(false);
+        try {
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot update user", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean enable(Long userId) {
+        LOGGER.info("enable called with userId: " + userId);
+        // Check if user exists
+        val maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            LOGGER.info("User does not exist");
+            return false;
+        }
+        // Get user (must not be admin)
+        val user = maybeUser.get();
+        if (user.getUsername().equals("admin")) {
+            LOGGER.info("Trying to enable admin user. No no: come direbbe Palmieri. E poi lo meno");
+            return false;
+        }
+        // Enable the user and try to save
+        user.setActive(true);
+        try {
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot update user", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean resetPassword(Long userId) {
+        LOGGER.info("resetPassword called with userId: " + userId);
+        // Check if user exists
+        val maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            LOGGER.info("User does not exist");
+            return false;
+        }
+        // Get user (must not be admin)
+        val user = maybeUser.get();
+        if (user.getUsername().equals("admin")) {
+            LOGGER.info("Trying to reset password to admin user. No no: come direbbe Palmieri. E poi lo meno");
+            return false;
+        }
+        // Get a new password, send it via email and save
+        val newPassword = randomStringGenerator.generateSafeAlphanumericString(8);
+        emailService.sendPasswordViaEmail(user.getEmail(), newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        try {
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot update user", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateAuthorities(Long userId, List<String> authorities) {
+        LOGGER.info("updatePermissions called with userId: " + userId + " and authorities: " + authorities);
+        // Check if user exists
+        val maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            LOGGER.info("User does not exist");
+            return false;
+        }
+        // Get user (must not be admin)
+        val user = maybeUser.get();
+        if (user.getUsername().equals("admin")) {
+            LOGGER.info("Trying to change authorities to admin user. No no: come direbbe Palmieri. E poi lo meno");
+            return false;
+        }
+        // Remove all authorities for the specific user
+        try {
+            authorityRepository.deleteAllByUser(user);
+        } catch (Exception e) {
+            LOGGER.error("Cannot delete authorities", e);
+            return false;
+        }
+        // Create new authorities
+        val newAuthorities = authorities.stream()
+                .map(authorityName -> {
+                    val newAuthority = new Authority();
+                    newAuthority.setName(authorityName);
+                    newAuthority.setUser(user);
+                    return newAuthority;
+                })
+                .toList();
+        // Update authorities
+        try {
+            authorityRepository.saveAll(newAuthorities);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot create new authorities", e);
+            return false;
         }
     }
 

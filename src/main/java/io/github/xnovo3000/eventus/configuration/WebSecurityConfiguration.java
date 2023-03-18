@@ -45,8 +45,12 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/proposed/approve").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/proposed/reject").hasAuthority("EVENT_MANAGER")
-                // TODO: UserController
+                // UserController
                 .requestMatchers(HttpMethod.GET, "/user").hasAuthority("USER_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/user/*/enable").hasAuthority("USER_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/user/*/disable").hasAuthority("USER_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/user/*/reset_password").hasAuthority("USER_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/user/*/update_permissions").hasAuthority("USER_MANAGER")
                 // Error manager
                 .requestMatchers("/error").permitAll()
                 // Less privileges by default

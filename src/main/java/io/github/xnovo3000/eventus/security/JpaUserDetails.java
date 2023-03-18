@@ -44,7 +44,7 @@ public class JpaUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.getActive();
+        return true;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class JpaUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getActive();
     }
 
 }
