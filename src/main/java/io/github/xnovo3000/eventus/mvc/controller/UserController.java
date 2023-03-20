@@ -1,7 +1,9 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
+import io.github.xnovo3000.eventus.bean.dto.input.UpdateAuthoritiesDto;
 import io.github.xnovo3000.eventus.mvc.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,14 +24,14 @@ public class UserController {
             Model model,
             @RequestAttribute(required = false) String error,
             @RequestParam(defaultValue = "1") @Min(1) Integer page,
-            @RequestParam(required = false) String username
+            @RequestParam(required = false) String usernameToFind
     ) {
         // Inject error
         model.addAttribute("error", error);
         // Set model
         model.addAttribute("page", page);
-        model.addAttribute("username", username);
-        model.addAttribute("users", userService.getByFilter(page, username));
+        model.addAttribute("username", usernameToFind);
+        model.addAttribute("users", userService.getByFilter(page, usernameToFind));
         // Render HTML
         return "page/user";
     }
@@ -46,7 +48,7 @@ public class UserController {
         return String.format("redirect:%s", referer);
     }
 
-    @PostMapping("/{id}/disable")
+    @PostMapping("/{id}/enable")
     public String postEnable(
             @PathVariable Long id,
             @RequestHeader String referer,
@@ -70,6 +72,17 @@ public class UserController {
         return String.format("redirect:%s", referer);
     }
 
-    // TODO: Authority update method
+    @PostMapping("/{id}/update_authorities")
+    public String postUpdateAuthorities(
+            @PathVariable Long id,
+            @RequestHeader String referer,
+            @ModelAttribute @Valid UpdateAuthoritiesDto dto,
+            HttpSession session
+    ) {
+        if (!userService.updateAuthorities(id, dto.getAuthorities())) {
+            session.setAttribute("error", "user_update_authorities_error");
+        }
+        return String.format("redirect:%s", referer);
+    }
 
 }

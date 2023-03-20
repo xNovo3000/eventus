@@ -24,6 +24,27 @@
             <!-- Alert when you cannot participate or not participate -->
             <div th:replace="~{fragment/error_visualizer :: error_fragment}"></div>
 
+            <!-- Heading -->
+            <div class="my-3">
+                <span class="h1">Gestione utenti</span>
+            </div>
+
+            <!-- Filter -->
+            <div class="row my-md-1">
+                <form class="col-12 col-md-8 d-flex" th:action="@{/user}" method="get">
+                    <input class="form-control me-2" type="text" id="s-id" name="usernameToFind" placeholder="Username" autocomplete="off">
+                    <input class="btn btn-primary" type="submit" value="Cerca">
+                </form>
+                <div class="col-12 col-md-4 my-2 my-md-0 d-flex align-items-center">
+                    <span class="h4 m-0">Pagina: </span>
+                    <span class="h4 m-0 flex-fill ms-2" th:text="${page} + '/' + ${users.getTotalPages()}"></span>
+                    <a class="btn btn-outline-secondary ms-2" th:if="${users.hasPrevious() && username != null}" th:href="@{/user(page=${page} - 1, usernameToFind=${username})}"><i class="bi bi-arrow-left"></i></a>
+                    <a class="btn btn-outline-secondary ms-2" th:if="${users.hasPrevious() && username == null}" th:href="@{/user(page=${page} - 1)}"><i class="bi bi-arrow-left"></i></a>
+                    <a class="btn btn-outline-secondary ms-2" th:if="${users.hasNext() && username != null}" th:href="@{/user(page=${page} + 1, usernameToFind=${username})}"><i class="bi bi-arrow-right"></i></a>
+                    <a class="btn btn-outline-secondary ms-2" th:if="${users.hasNext() && username == null}" th:href="@{/user(page=${page} + 1)}"><i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
             <!-- Table -->
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover">
@@ -36,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="userDto : ${users.getContent()}" th:include="~{fragment/user_handle :: user}"></tr>
+                        <tr th:each="userDto : ${users.getContent()}" th:insert="~{fragment/user_handle :: user}"></tr>
                     </tbody>
                 </table>
             </div>
