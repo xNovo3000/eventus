@@ -6,10 +6,13 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/user")
@@ -79,7 +82,16 @@ public class UserController {
             @ModelAttribute @Valid UpdateAuthoritiesDto dto,
             HttpSession session
     ) {
-        if (!userService.updateAuthorities(id, dto.getAuthorities())) {
+        // Create authorities list
+        val authorities = new ArrayList<String>();
+        if (dto.getUserManager() != null) {
+            authorities.add("USER_MANAGER");
+        }
+        if (dto.getEventManager() != null) {
+            authorities.add("EVENT_MANAGER");
+        }
+        // Update
+        if (!userService.updateAuthorities(id, authorities)) {
             session.setAttribute("error", "user_update_authorities_error");
         }
         return String.format("redirect:%s", referer);

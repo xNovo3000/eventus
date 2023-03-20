@@ -6,5 +6,6 @@ import java.util.List;
 
 @Data
 public class UpdateAuthoritiesDto {
-    private List<String> authorities;
+    private String eventManager;
+    private String userManager;
 }

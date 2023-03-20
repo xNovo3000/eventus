@@ -31,7 +31,7 @@
                         <input type="hidden" th:id="'id-' + ${userDto.id}" name="id">
                         <input class="btn btn-primary me-2" type="submit" value="Reimposta password">
                     </form>
-                    <!-- TODO: Add edit permissions form -->
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" th:data-bs-target="'#editAuthoritiesModal' + ${userDto.id}">Modifica permessi</button>
                 </td>
             </tr>
         </tbody>

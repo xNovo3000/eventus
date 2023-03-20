@@ -1,4 +1,4 @@
-FROM maven:3.8.7-amazoncorretto-17 AS base
+FROM maven:3.9.0-amazoncorretto-17 AS base
 WORKDIR /workspace
 COPY pom.xml /workspace
 COPY /src /workspace/src
