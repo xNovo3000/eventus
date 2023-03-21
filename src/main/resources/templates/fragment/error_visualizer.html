@@ -22,6 +22,18 @@
         <div class="alert alert-danger" th:if="${error == 'approve_reject_error'}">
             Non &#232; stato possibile approvare o rigettare l'evento per un errore. Contatta l'amministratore.
         </div>
+        <div class="alert alert-danger" th:if="${error == 'user_disable_error'}">
+            Non &#232; stato possibile disabilitare l'utente. Ricorda: l'account "admin" non può essere modificato.
+        </div>
+        <div class="alert alert-danger" th:if="${error == 'user_enable_error'}">
+            Non &#232; stato possibile riabilitare l'utente. Ricorda: l'account "admin" non può essere modificato.
+        </div>
+        <div class="alert alert-danger" th:if="${error == 'user_reset_password_error'}">
+            Non &#232; stato possibile reimpostare la password per l'utente. Ricorda: l'account "admin" non può essere modificato.
+        </div>
+        <div class="alert alert-danger" th:if="${error == 'user_update_authorities_error'}">
+            Non &#232; stato possibile sovrascrivere i permessi dell'utente. Ricorda: l'account "admin" non può essere modificato.
+        </div>
 
     </div>
 

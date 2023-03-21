@@ -14,9 +14,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <input class="form-check-input" type="checkbox" id="event-manager" name="eventManager" th:selected="${user.authorities.contains('EVENT_MANAGER')}">
+                        <input class="form-check-input" type="checkbox" id="event-manager" name="eventManager" th:checked="${user.authorities.contains('EVENT_MANAGER')}">
                         <label for="event-manager">Gestione eventi</label><br>
-                        <input class="form-check-input" type="checkbox" id="user-manager" name="userManager" th:selected="${user.authorities.contains('USER_MANAGER')}">
+                        <input class="form-check-input" type="checkbox" id="user-manager" name="userManager" th:checked="${user.authorities.contains('USER_MANAGER')}">
                         <label for="user-manager">Gestione utenti (fai attenzione a fornire questo permesso)</label>
                     </div>
                     <div class="modal-footer">
