@@ -24,10 +24,10 @@ public class ProfileController {
             @RequestParam(defaultValue = "1") @Min(1) Integer page
     ) {
         // Get event history
-        model.addAttribute("events", eventService.getHistory(page));
+        model.addAttribute("events", eventService.getEventsThatUserParticipated(page));
         model.addAttribute("page", page);
         // Render HTML
-        return "page/history";
+        return "page/profile";
     }
 
 }

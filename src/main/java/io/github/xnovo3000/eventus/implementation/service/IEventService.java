@@ -86,6 +86,14 @@ public class IEventService implements EventService {
     }
 
     @Override
+    public Page<EventCardDto> getEventsThatUserParticipated(int pageNumber) {
+        val username = authenticationAdapter.getUserDetails().map(JpaUserDetails::getUsername).orElse(null);
+        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        return eventRepository.findAllByHoldings_User_UsernameOrderByStartDesc(username, pageable)
+                .map(dtoMapper::toEventCardDto);
+    }
+
+    @Override
     public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto) {
         LOGGER.info("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end
