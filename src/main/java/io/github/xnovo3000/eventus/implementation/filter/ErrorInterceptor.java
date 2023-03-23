@@ -1,4 +1,4 @@
-package io.github.xnovo3000.eventus.util;
+package io.github.xnovo3000.eventus.implementation.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

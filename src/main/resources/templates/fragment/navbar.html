@@ -12,7 +12,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasAuthority('EVENT_MANAGER')">
                         <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/history' ? 'active' : ''" th:href="@{/history}">Storico</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAuthority('EVENT_MANAGER')">

@@ -43,6 +43,14 @@ public interface EventService {
     Page<EventCardDto> getProposed(int pageNumber);
 
     /**
+     * Get all events in date descending
+     *
+     * @param pageNumber The page number of the paginated result - starts from 1
+     * @return A page of events
+     */
+    Page<EventCardDto> getHistory(int pageNumber);
+
+    /**
      * Create a new unapproved event. The event start must
      * be before end and after now
      *

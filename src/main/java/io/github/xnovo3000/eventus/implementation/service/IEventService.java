@@ -79,6 +79,13 @@ public class IEventService implements EventService {
     }
 
     @Override
+    public Page<EventCardDto> getHistory(int pageNumber) {
+        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        return eventRepository.findAllByOrderByStartDesc(pageable)
+                .map(dtoMapper::toEventCardDto);
+    }
+
+    @Override
     public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto) {
         LOGGER.info("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end

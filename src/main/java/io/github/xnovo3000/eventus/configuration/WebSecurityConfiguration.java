@@ -2,7 +2,7 @@ package io.github.xnovo3000.eventus.configuration;
 
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.security.JpaUserDetailsService;
-import io.github.xnovo3000.eventus.util.ErrorInterceptor;
+import io.github.xnovo3000.eventus.implementation.filter.ErrorInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,6 +38,8 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/event/*/approve").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/event/*/reject").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/event/propose").authenticated()
+                // HistoryController
+                .requestMatchers(HttpMethod.GET, "/history").hasAuthority("EVENT_MANAGER")
                 // HomeController
                 .requestMatchers(HttpMethod.GET, "/").authenticated()
                 // RegisterController
