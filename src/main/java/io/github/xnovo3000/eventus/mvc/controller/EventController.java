@@ -1,8 +1,10 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
+import io.github.xnovo3000.eventus.bean.dto.input.ProposeEventDto;
 import io.github.xnovo3000.eventus.bean.dto.input.RateFormDto;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
+import io.github.xnovo3000.eventus.util.DtoMapper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.TimeZone;
+
 @Controller
 @RequestMapping("/event")
 @Validated
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class EventController {
 
     private final EventService eventService;
+    private final DtoMapper dtoMapper;
 
     @GetMapping("/{id}")
     public String get(
@@ -73,6 +78,45 @@ public class EventController {
             session.setAttribute("error", "error_rate_event");
         }
         return String.format("redirect:%s", referer);
+    }
+
+    @PostMapping("/{id}/approve")
+    public String postApprove(
+            @PathVariable Long id,
+            @RequestHeader String referer,
+            HttpSession session
+    ) {
+        if (!eventService.approveEvent(id)) {
+            session.setAttribute("error", "approve_reject_error");
+        }
+        return String.format("redirect:%s", referer);
+    }
+
+    @PostMapping("/{id}/reject")
+    public String postReject(
+            @PathVariable Long id,
+            @RequestHeader String referer,
+            HttpSession session
+    ) {
+        if (!eventService.rejectEvent(id)) {
+            session.setAttribute("error", "approve_reject_error");
+        }
+        return String.format("redirect:%s", referer);
+    }
+
+    @PostMapping("/propose")
+    public String postPropose(
+            @ModelAttribute @Valid ProposeEventDto dto,
+            @RequestHeader String referer,
+            HttpSession session,
+            TimeZone timeZone
+    ) {
+        return eventService.proposeEvent(dtoMapper.toProposeEventDtoZoned(dto, timeZone))
+                .map(eventId -> String.format("redirect:/event/%d", eventId))
+                .orElseGet(() -> {
+                    session.setAttribute("error", "propose_event_error");
+                    return String.format("redirect:%s", referer);
+                });
     }
 
 }

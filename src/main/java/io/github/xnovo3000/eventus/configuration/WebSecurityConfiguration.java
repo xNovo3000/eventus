@@ -35,16 +35,16 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/event/*/subscribe").authenticated()
                 .requestMatchers(HttpMethod.POST, "/event/*/unsubscribe").authenticated()
                 .requestMatchers(HttpMethod.POST, "/event/*/rate").authenticated()
+                .requestMatchers(HttpMethod.POST, "/event/*/approve").hasAuthority("EVENT_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/event/*/reject").hasAuthority("EVENT_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/event/propose").authenticated()
                 // HomeController
                 .requestMatchers(HttpMethod.GET, "/").authenticated()
-                .requestMatchers(HttpMethod.POST, "/propose").authenticated()
                 // RegisterController
                 .requestMatchers(HttpMethod.GET, "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 // ProposedController
                 .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/proposed/approve").hasAuthority("EVENT_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/proposed/reject").hasAuthority("EVENT_MANAGER")
                 // UserController
                 .requestMatchers(HttpMethod.GET, "/user").hasAuthority("USER_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/user/*/enable").hasAuthority("USER_MANAGER")

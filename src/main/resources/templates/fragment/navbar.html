@@ -13,13 +13,16 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                     <li class="nav-item">
-                        <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/search' ? 'active' : ''" th:href="@{/search}">Cerca</a>
+                        <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/history' ? 'active' : ''" th:href="@{/history}">Storico</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAuthority('EVENT_MANAGER')">
                         <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/proposed' ? 'active' : ''" th:href="@{/proposed}">Eventi proposti</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAuthority('USER_MANAGER')">
                         <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/user' ? 'active' : ''" th:href="@{/user}">Gestione utenti</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${#ctx.springRequestContext.requestUri} == '/profile' ? 'active' : ''" th:href="@{/profile}">Profilo personale</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center justify-content-between">
