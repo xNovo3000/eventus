@@ -45,6 +45,9 @@ public class WebSecurityConfiguration {
                 // RegisterController
                 .requestMatchers(HttpMethod.GET, "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
+                // ProfileController
+                .requestMatchers(HttpMethod.GET, "/profile").authenticated()
+                .requestMatchers(HttpMethod.POST, "/profile/change_password").authenticated()
                 // ProposedController
                 .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
                 // UserController
