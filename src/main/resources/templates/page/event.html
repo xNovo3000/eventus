@@ -59,10 +59,8 @@
                 <div class="col-12 col-lg-6">
                     <!-- Participant list -->
                     <h5>Partecipanti</h5>
-                    <ul class="list-group">
-                        <li class="list-group-item" th:each="subscription : ${event.holdings}">
-                            <div th:replace="~{fragment/event_subscription :: eventSubscription(${subscription})}"></div>
-                        </li>
+                    <ul class="list-group" th:each="subscriptionDto : ${event.holdings}"
+                        th:insert="~{fragment/event_subscription :: eventSubscription}">
                     </ul>
                 </div>
 
@@ -70,8 +68,30 @@
 
         </div>
 
-        <!-- Rating modal fragment -->
-        <div th:replace="~{fragment/event_rate :: rate(${event.id})}"></div>
+        <!-- Rating modal -->
+        <form th:action="@{/event/{id}/rate(id=${event.id})}" method="post">
+            <div class="modal fade" id="rateModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Valuta l'evento</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6 class="mx-0 ms-0 mb-2 p-0">Una volta valutato l'evento, la valutazione non potr&#224; essere modificata</h6>
+                            <label class="form-label" for="rate-stars">Stelle</label>
+                            <input class="form-control mb-2" type="number" min="1" max="5" id="rate-stars" name="stars" placeholder="Stelle" required>
+                            <label class="form-label" for="rate-comment">Commento (massimo 2048 caratteri)</label>
+                            <textarea class="form-control mb-2" id="rate-comment" name="comment" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                            <input type="submit" class="btn btn-primary" value="Valuta">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 
         <!-- Boostrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha256-m81NDyncZVbr7v9E6qCWXwx/cwjuWDlHCMzi9pjMobA=" crossorigin="anonymous"></script>
