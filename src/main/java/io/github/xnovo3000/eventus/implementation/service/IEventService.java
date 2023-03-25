@@ -7,6 +7,7 @@ import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.Subscription;
 import io.github.xnovo3000.eventus.bean.entity.User;
+import io.github.xnovo3000.eventus.bean.validation.BeanValidator;
 import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
 import io.github.xnovo3000.eventus.mvc.repository.SubscriptionRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
@@ -14,8 +15,9 @@ import io.github.xnovo3000.eventus.mvc.service.EventService;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
 import io.github.xnovo3000.eventus.util.DtoMapper;
+import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class IEventService implements EventService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IEventService.class);
@@ -41,6 +43,12 @@ public class IEventService implements EventService {
     private final DtoMapper dtoMapper;
     private final SubscriptionRepository subscriptionRepository;
     private final AuthenticationAdapter authenticationAdapter;
+
+    @Resource private BeanValidator<ProposeEventDtoZoned> proposeEventBeanValidator;
+    @Resource private BeanValidator<Event> approveEventBeanValidator;
+    @Resource private BeanValidator<Event> rejectEventBeanValidator;
+    @Resource private BeanValidator<Event> subscribeUserToEventValidator;
+    @Resource private BeanValidator<Event> unsubscribeUserToEventValidator;
 
     @Override
     public Optional<EventDto> getById(Long id) {
@@ -97,8 +105,8 @@ public class IEventService implements EventService {
     public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto) {
         LOGGER.info("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end
-        if (!proposeEventDto.getStart().isBefore(proposeEventDto.getEnd())) {
-            LOGGER.info("Start is after end. Start: " + proposeEventDto.getStart() + ", end: " + proposeEventDto.getEnd());
+        if (!proposeEventBeanValidator.validate(proposeEventDto)) {
+            LOGGER.info("ProposeEventDtoZoned not valid");
             return Optional.empty();
         }
         // Create the event
@@ -129,15 +137,9 @@ public class IEventService implements EventService {
             return false;
         }
         val event = maybeEvent.get();
-        // Check if it's already approved
-        if (event.getApproved()) {
-            LOGGER.info("Event already approved");
-            return false;
-        }
-        // Check if start is before now
-        val now = OffsetDateTime.now();
-        if (event.getStart().isBefore(now)) {
-            LOGGER.info("Event start before now");
+        // Validate
+        if (!approveEventBeanValidator.validate(event)) {
+            LOGGER.info("Event not valid");
             return false;
         }
         // Set approved and try to save
@@ -162,8 +164,8 @@ public class IEventService implements EventService {
         }
         val event = maybeEvent.get();
         // Check if it's already approved
-        if (event.getApproved()) {
-            LOGGER.info("Event already approved");
+        if (!rejectEventBeanValidator.validate(event)) {
+            LOGGER.info("Event not valid");
             return false;
         }
         // Set approved and try to save
@@ -187,20 +189,9 @@ public class IEventService implements EventService {
             return false;
         }
         Event event = maybeEvent.get();
-        // Check if there is at least one seat available
-        if (event.getSeats() <= event.getHoldings().size()) {
-            LOGGER.info("Event is full");
-            return false;
-        }
-        // Check if the event is approved
-        if (!event.getApproved()) {
-            LOGGER.info("Event is not approved");
-            return false;
-        }
-        // Check for valid date
-        val now = OffsetDateTime.now();
-        if (!event.getStart().isAfter(now)) {
-            LOGGER.info("Event start is before now, cannot modify subscriptions");
+        // Check if valid
+        if (!subscribeUserToEventValidator.validate(event)) {
+            LOGGER.info("Event not valid");
             return false;
         }
         // Check if already subscribed
@@ -215,7 +206,7 @@ public class IEventService implements EventService {
             return false;
         }
         User user = maybeUser.get();
-        // Check if user is already subscribed to and event that collides with
+        // Check if user is already subscribed to an event that collides with
         val overlappingEvents = user.getHoldings().stream()
                 .map(Subscription::getEvent)
                 .filter(it -> it.getStart().isBefore(event.getEnd()) && it.getEnd().isAfter(event.getStart()))
@@ -248,15 +239,9 @@ public class IEventService implements EventService {
             return false;
         }
         Event event = maybeEvent.get();
-        // Check if the event is approved
-        if (!event.getApproved()) {
-            LOGGER.info("Event is not approved");
-            return false;
-        }
-        // Check for valid date
-        val now = OffsetDateTime.now();
-        if (!event.getStart().isAfter(now)) {
-            LOGGER.info("Event start is before now, cannot modify subscriptions");
+        // Check if valid
+        if (!unsubscribeUserToEventValidator.validate(event)) {
+            LOGGER.info("Event is not valid");
             return false;
         }
         // Get the user
