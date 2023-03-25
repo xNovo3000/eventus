@@ -1,17 +1,22 @@
 package io.github.xnovo3000.eventus.implementation.service;
 
+import io.github.xnovo3000.eventus.bean.dto.input.ChangePasswordDto;
 import io.github.xnovo3000.eventus.bean.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.UserDto;
 import io.github.xnovo3000.eventus.bean.entity.Authority;
 import io.github.xnovo3000.eventus.bean.entity.User;
+import io.github.xnovo3000.eventus.bean.validation.BeanValidator;
 import io.github.xnovo3000.eventus.mvc.repository.AuthorityRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EmailService;
 import io.github.xnovo3000.eventus.mvc.service.UserService;
+import io.github.xnovo3000.eventus.security.JpaUserDetails;
+import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import io.github.xnovo3000.eventus.util.RandomStringGenerator;
+import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +29,7 @@ import java.util.List;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class IUserService implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IUserService.class);
@@ -37,6 +42,9 @@ public class IUserService implements UserService {
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
     private final RandomStringGenerator randomStringGenerator;
+    private final AuthenticationAdapter authenticationAdapter;
+
+    @Resource private BeanValidator<User> userServiceValidator;
 
     @Override
     public boolean registerNewUser(RegisterFormDto registerFormDto) {
@@ -94,10 +102,10 @@ public class IUserService implements UserService {
             LOGGER.info("User does not exist");
             return false;
         }
-        // Get user (must not be admin)
         val user = maybeUser.get();
-        if (user.getUsername().equals("admin")) {
-            LOGGER.info("Trying to disable admin user. No no: come direbbe Palmieri. E poi lo meno");
+        // Validate
+        if (!userServiceValidator.validate(user)) {
+            LOGGER.info("Cannot validate user");
             return false;
         }
         // Disable the user and try to save
@@ -120,10 +128,10 @@ public class IUserService implements UserService {
             LOGGER.info("User does not exist");
             return false;
         }
-        // Get user (must not be admin)
         val user = maybeUser.get();
-        if (user.getUsername().equals("admin")) {
-            LOGGER.info("Trying to enable admin user. No no: come direbbe Palmieri. E poi lo meno");
+        // Validate
+        if (!userServiceValidator.validate(user)) {
+            LOGGER.info("Cannot validate user");
             return false;
         }
         // Enable the user and try to save
@@ -146,10 +154,10 @@ public class IUserService implements UserService {
             LOGGER.info("User does not exist");
             return false;
         }
-        // Get user (must not be admin)
         val user = maybeUser.get();
-        if (user.getUsername().equals("admin")) {
-            LOGGER.info("Trying to reset password to admin user. No no: come direbbe Palmieri. E poi lo meno");
+        // Validate
+        if (!userServiceValidator.validate(user)) {
+            LOGGER.info("Cannot validate user");
             return false;
         }
         // Get a new password, send it via email and save
@@ -174,10 +182,10 @@ public class IUserService implements UserService {
             LOGGER.info("User does not exist");
             return false;
         }
-        // Get user (must not be admin)
         val user = maybeUser.get();
-        if (user.getUsername().equals("admin")) {
-            LOGGER.info("Trying to change authorities to admin user. No no: come direbbe Palmieri. E poi lo meno");
+        // Validate
+        if (!userServiceValidator.validate(user)) {
+            LOGGER.info("Cannot validate user");
             return false;
         }
         // Remove all authorities for the specific user
@@ -202,6 +210,31 @@ public class IUserService implements UserService {
             return true;
         } catch (Exception e) {
             LOGGER.error("Cannot create new authorities", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean changePassword(ChangePasswordDto dto) {
+        LOGGER.info("changePassword called with payload: " + dto);
+        // Get current username
+        val username = authenticationAdapter.getUserDetails()
+                .map(JpaUserDetails::getUsername).orElse(null);
+        // Get current user
+        val maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            LOGGER.error("Logged user not found: " + username);
+            return false;
+        }
+        val user = maybeUser.get();
+        // Update the password
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        // Try to save
+        try {
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("Cannot save user", e);
             return false;
         }
     }

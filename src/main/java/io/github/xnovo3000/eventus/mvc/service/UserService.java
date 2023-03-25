@@ -1,5 +1,6 @@
 package io.github.xnovo3000.eventus.mvc.service;
 
+import io.github.xnovo3000.eventus.bean.dto.input.ChangePasswordDto;
 import io.github.xnovo3000.eventus.bean.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.UserDto;
 import org.springframework.data.domain.Page;
@@ -58,5 +59,13 @@ public interface UserService {
      * @return True if authorities override success, false otherwise
      */
     boolean updateAuthorities(Long userId, List<String> authorities);
+
+    /**
+     * Change password for the current user
+     *
+     * @param dto The old and new password
+     * @return True if changed, false otherwise
+     */
+    boolean changePassword(ChangePasswordDto dto);
 
 }

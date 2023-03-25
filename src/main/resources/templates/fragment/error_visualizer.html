@@ -34,6 +34,9 @@
         <div class="alert alert-danger" th:if="${error == 'user_update_authorities_error'}">
             Non &#232; stato possibile sovrascrivere i permessi dell'utente. Ricorda: l'account "admin" non può essere modificato.
         </div>
+        <div class="alert alert-danger" th:if="${error == 'profile_change_password_error'}">
+            Non &#232; stato possibile cambiare la password dell'utente. Contatta l'amministratore
+        </div>
 
     </div>
 

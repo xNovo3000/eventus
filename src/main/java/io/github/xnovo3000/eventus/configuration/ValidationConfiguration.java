@@ -2,6 +2,7 @@ package io.github.xnovo3000.eventus.configuration;
 
 import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.entity.Event;
+import io.github.xnovo3000.eventus.bean.entity.User;
 import io.github.xnovo3000.eventus.bean.validation.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +51,14 @@ public class ValidationConfiguration {
                 new NotNullValidator<>(),
                 new EventApprovedValidator(true),
                 new EventNotStartedValidator()
+        );
+    }
+
+    @Bean
+    public BeanValidator<User> userServiceValidator() {
+        return BeanValidator.create(
+                new NotNullValidator<>(),
+                new UserNotAdminValidator()
         );
     }
 

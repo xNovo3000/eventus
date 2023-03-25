@@ -50,6 +50,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/profile/change_password").authenticated()
                 // ProposedController
                 .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/proposed/change_password").hasAuthority("EVENT_MANAGER")
                 // UserController
                 .requestMatchers(HttpMethod.GET, "/user").hasAuthority("USER_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/user/*/enable").hasAuthority("USER_MANAGER")

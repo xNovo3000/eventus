@@ -1,14 +1,16 @@
 package io.github.xnovo3000.eventus.mvc.controller;
 
+import io.github.xnovo3000.eventus.bean.dto.input.ChangePasswordDto;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
+import io.github.xnovo3000.eventus.mvc.service.UserService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/profile")
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProfileController {
 
     private final EventService eventService;
+    private final UserService userService;
 
     @GetMapping
     public String get(
@@ -28,6 +31,18 @@ public class ProfileController {
         model.addAttribute("page", page);
         // Render HTML
         return "page/profile";
+    }
+
+    @PostMapping("/change_password")
+    public String postChangePassword(
+            @ModelAttribute @Valid ChangePasswordDto dto,
+            @RequestHeader String referer,
+            HttpSession session
+    ) {
+        if (!userService.changePassword(dto)) {
+            session.setAttribute("error", "profile_change_password_error");
+        }
+        return String.format("redirect:%s", referer);
     }
 
 }
