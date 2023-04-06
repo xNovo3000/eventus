@@ -1,7 +1,7 @@
 package io.github.xnovo3000.eventus.implementation.util;
 
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
-import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
+import io.github.xnovo3000.eventus.util.AuthenticationFacade;
 import lombok.val;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class IAuthenticationAdapter implements AuthenticationAdapter {
+public class IAuthenticationFacade implements AuthenticationFacade {
 
     @Override
     public Optional<JpaUserDetails> getUserDetails() {

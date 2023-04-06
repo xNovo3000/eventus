@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+/**
+ * Service class that handles all the operations regarding users
+ */
 public interface UserService {
 
     /**
@@ -18,8 +21,8 @@ public interface UserService {
     boolean registerNewUser(RegisterFormDto registerFormDto);
 
     /**
-     * Get a page of users by page number and maybe the username. If the
-     * username is null, no filter regarding username is done.
+     * Get a page of users by page. If the username is null, no filter regarding username is done.
+     * Otherwise, the query will be filtered using 'LIKE %${username}%'
      *
      * @param pageNumber The page number
      * @param username The username to filter, if not null
@@ -44,10 +47,11 @@ public interface UserService {
     boolean enable(Long userId);
 
     /**
-     * Reset user's password by its ID
+     * Reset user's password by its ID. The password is generated from
+     * the system and sent via email or displayed in some ways
      *
      * @param userId The user ID
-     * @return True if resetted, false otherwise
+     * @return True if success, false otherwise
      */
     boolean resetPassword(Long userId);
 
@@ -61,7 +65,7 @@ public interface UserService {
     boolean updateAuthorities(Long userId, List<String> authorities);
 
     /**
-     * Change password for the current user
+     * Change password for the current logged user
      *
      * @param dto The old and new password
      * @return True if changed, false otherwise

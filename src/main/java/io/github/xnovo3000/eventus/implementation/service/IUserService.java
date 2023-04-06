@@ -11,7 +11,7 @@ import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EmailService;
 import io.github.xnovo3000.eventus.mvc.service.UserService;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
-import io.github.xnovo3000.eventus.util.AuthenticationAdapter;
+import io.github.xnovo3000.eventus.util.AuthenticationFacade;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import io.github.xnovo3000.eventus.util.RandomStringGenerator;
 import jakarta.annotation.Resource;
@@ -42,7 +42,7 @@ public class IUserService implements UserService {
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
     private final RandomStringGenerator randomStringGenerator;
-    private final AuthenticationAdapter authenticationAdapter;
+    private final AuthenticationFacade authenticationFacade;
 
     @Resource private BeanValidator<User> userServiceValidator;
 
@@ -218,7 +218,7 @@ public class IUserService implements UserService {
     public boolean changePassword(ChangePasswordDto dto) {
         LOGGER.info("changePassword called with payload: " + dto);
         // Get current username
-        val username = authenticationAdapter.getUserDetails()
+        val username = authenticationFacade.getUserDetails()
                 .map(JpaUserDetails::getUsername).orElse(null);
         // Get current user
         val maybeUser = userRepository.findByUsername(username);

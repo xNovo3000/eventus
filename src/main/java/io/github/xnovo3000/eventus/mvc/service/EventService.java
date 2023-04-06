@@ -9,33 +9,38 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class that handles all the operations regarding events
+ */
 public interface EventService {
 
     /**
-     * Return an event by its id
+     * Return an event by its ID
      *
-     * @param id The id of the event
+     * @param id The ID of the event
      * @return The event if it exists, empty otherwise
      */
     Optional<EventDto> getById(Long id);
 
     /**
-     * Get all events that have started but not finished yet
+     * Get all events that started but not finished yet, ordered by start date descending
      *
      * @return A list of ongoing events
      */
     List<EventCardDto> getOngoingEvents();
 
     /**
-     * Get a page of events that haven't started yet
+     * Get a page of events that haven't started yet, ordered by start date descending
      *
-     * @param pageNumber The page number of the paginated result
+     * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of future events
      */
     Page<EventCardDto> getFutureEvents(int pageNumber);
 
     /**
      * Get a page of events that are in the 'proposed' state
+     * (not started but not accepted from an EVENT_MASTER),
+     * ordered by start date descending
      *
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of proposed events
@@ -43,7 +48,7 @@ public interface EventService {
     Page<EventCardDto> getProposed(int pageNumber);
 
     /**
-     * Get all events in date descending
+     * Get all events ordered by start date descending
      *
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of events
@@ -51,7 +56,7 @@ public interface EventService {
     Page<EventCardDto> getHistory(int pageNumber);
 
     /**
-     * Get all events that user has participated in date descending
+     * Get all events that user has participated ordered by start date descending
      *
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of events
@@ -63,15 +68,15 @@ public interface EventService {
      * be before end and after now
      *
      * @param proposeEventDto The event DTO
-     * @return The created event id
+     * @return The created event ID
      */
     Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto);
 
     /**
-     * Approve an event by its id, the event must be non-approved
+     * Approve an event by its ID, the event must be non-approved
      * and start must be after now
      *
-     * @param eventId The event id
+     * @param eventId The event ID
      * @return True if the event can be approved, false otherwise
      */
     boolean approveEvent(Long eventId);
@@ -94,7 +99,7 @@ public interface EventService {
      * the event start is before now,
      * user is subscribed to another event with same time
      *
-     * @param eventId The event id
+     * @param eventId The event ID
      * @param username The user's username
      * @return True if has been subscribed, false otherwise
      */
@@ -108,7 +113,7 @@ public interface EventService {
      * the user is already unsubscribed
      * the event start is before now
      *
-     * @param eventId The event id
+     * @param eventId The event ID
      * @param username The user's username
      * @return True if has been unsubscribed, false otherwise
      */
@@ -117,7 +122,7 @@ public interface EventService {
     /**
      * Rate a finished event
      *
-     * @param eventId The id of the event
+     * @param eventId The ID of the event
      * @param dto The dto
      * @param username The user that wants to rate the event
      * @return True if the event has been rated, false otherwise

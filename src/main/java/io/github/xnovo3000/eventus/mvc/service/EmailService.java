@@ -1,5 +1,8 @@
 package io.github.xnovo3000.eventus.mvc.service;
 
+/**
+ * Service class that handles all the operations regarding events
+ */
 public interface EmailService {
 
     /**
