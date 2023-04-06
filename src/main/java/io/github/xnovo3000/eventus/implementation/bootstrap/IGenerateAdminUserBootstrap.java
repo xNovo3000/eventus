@@ -4,8 +4,7 @@ import io.github.xnovo3000.eventus.bean.entity.Authority;
 import io.github.xnovo3000.eventus.bean.entity.User;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,9 +15,8 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class IGenerateAdminUserBootstrap implements ApplicationRunner {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IGenerateAdminUserBootstrap.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -26,10 +24,10 @@ public class IGenerateAdminUserBootstrap implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        LOGGER.info("IGenerateAdminUserBootstrap: running");
+        log.info("IGenerateAdminUserBootstrap: running");
         // Check if admin user is present
         if (userRepository.findByUsername("admin").isEmpty()) {
-            LOGGER.info("Admin user not present, creating one");
+            log.info("Admin user not present, creating one");
             // Create the user
             User admin = new User();
             admin.setUsername("admin");
@@ -45,9 +43,9 @@ public class IGenerateAdminUserBootstrap implements ApplicationRunner {
             // Save the user
             try {
                 userRepository.save(admin);
-                LOGGER.info("Successfully created admin user");
+                log.info("Successfully created admin user");
             } catch (Exception e) {
-                LOGGER.error("Cannot create admin user", e);
+                log.error("Cannot create admin user", e);
                 throw e;
             }
         }
