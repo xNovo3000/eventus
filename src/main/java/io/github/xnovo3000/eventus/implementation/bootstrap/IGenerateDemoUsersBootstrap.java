@@ -14,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
 
+/**
+ * Bootstrap runner that implements the command pattern. This function runs only
+ * if the current profile of the application is 'default' (e.g.: launched from
+ * an IDE) and generates 100 demo users for testing
+ */
 @Component
 @Profile("default")
 @AllArgsConstructor

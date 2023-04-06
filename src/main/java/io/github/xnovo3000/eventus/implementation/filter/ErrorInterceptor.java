@@ -10,6 +10,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Interceptor that runs for each HTTP request, removes the error attribute
+ * from the session and injects it in the request attribute. This way
+ * the error can be intercepted from Thymeleaf
+ */
 public class ErrorInterceptor extends OncePerRequestFilter {
 
     @Override

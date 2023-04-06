@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Bootstrap runner that implements the command pattern. This function
+ * runs always and generates the admin user if it does not exist
+ */
 @Component
 @AllArgsConstructor
 @Slf4j

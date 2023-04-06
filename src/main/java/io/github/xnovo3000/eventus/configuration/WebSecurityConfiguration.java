@@ -16,16 +16,31 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
+/**
+ * Configuration for anything related to web security
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration {
 
+    /**
+     * Edits the current WebSecurityCustomizer ignoring static files that are public
+     *
+     * @return The built customizer
+     */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         // Ignore HTTP authentication chain for these static files
         return web -> web.ignoring().requestMatchers("/favicon.ico");
     }
 
+    /**
+     * Create the security configuration
+     *
+     * @param http The base chain
+     * @return The built chain
+     * @throws Exception in case of misconfiguration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set authorization for endpoints
@@ -80,16 +95,32 @@ public class WebSecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Override the UserDetailsService of Spring Security with a custom implementation
+     *
+     * @param userRepository The user repository
+     * @return The UserDetailsService implementation
+     */
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new JpaUserDetailsService(userRepository);
     }
 
+    /**
+     * Override the PasswordEncoder of Spring Security with a custom implementation
+     *
+     * @return The PasswordEncoder implementation
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Create the Hibernate validation system
+     *
+     * @return The MethodValidationPostProcessor
+     */
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();

@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+/**
+ * Custom UserDetailsService implementation to load JpaUserDetails from user repository
+ */
 @AllArgsConstructor
 public class JpaUserDetailsService implements UserDetailsService {
 

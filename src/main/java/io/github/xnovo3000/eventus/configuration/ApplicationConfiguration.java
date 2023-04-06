@@ -8,11 +8,19 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.security.SecureRandom;
 import java.util.Random;
 
+/**
+ * Configuration class for anything related to the application
+ */
 @Configuration
 @EntityScan(basePackages = "io.github.xnovo3000.eventus.bean.entity")
 @EnableJpaRepositories(basePackages = "io.github.xnovo3000.eventus.mvc.repository")
 public class ApplicationConfiguration {
 
+    /**
+     * Create a new Random bean
+     *
+     * @return the Random implementation
+     */
     @Bean
     public Random random() {
         return new SecureRandom();
