@@ -2,6 +2,7 @@ package io.github.xnovo3000.eventus.implementation.util;
 
 import io.github.xnovo3000.eventus.util.RandomStringGenerator;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -17,7 +18,7 @@ public class IRandomStringGenerator implements RandomStringGenerator {
     private final Random random;
 
     @Override
-    public String generateAlphanumericString(int characters) {
+    public @NotNull String generateAlphanumericString(int characters) {
         StringBuilder stringBuilder = new StringBuilder(characters);
         for (int i = 0; i < characters; i++) {
             stringBuilder.append(RND_ALPHABET.charAt(random.nextInt(RND_ALPHABET.length())));
@@ -26,7 +27,7 @@ public class IRandomStringGenerator implements RandomStringGenerator {
     }
 
     @Override
-    public String generateLowercaseAlphanumericString(int characters) {
+    public @NotNull String generateLowercaseAlphanumericString(int characters) {
         StringBuilder stringBuilder = new StringBuilder(characters);
         for (int i = 0; i < characters; i++) {
             stringBuilder.append(LOWERCASE_RND_ALPHABET.charAt(random.nextInt(LOWERCASE_RND_ALPHABET.length())));
@@ -35,7 +36,7 @@ public class IRandomStringGenerator implements RandomStringGenerator {
     }
 
     @Override
-    public String generateSafeAlphanumericString(int characters) {
+    public @NotNull String generateSafeAlphanumericString(int characters) {
         StringBuilder stringBuilder = new StringBuilder(characters);
         for (int i = 0; i < characters; i++) {
             stringBuilder.append(SAFE_RND_ALPHABET.charAt(random.nextInt(SAFE_RND_ALPHABET.length())));

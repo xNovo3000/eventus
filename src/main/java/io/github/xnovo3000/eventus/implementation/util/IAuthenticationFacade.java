@@ -3,6 +3,7 @@ package io.github.xnovo3000.eventus.implementation.util;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import io.github.xnovo3000.eventus.util.AuthenticationFacade;
 import lombok.val;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 public class IAuthenticationFacade implements AuthenticationFacade {
 
     @Override
-    public Optional<JpaUserDetails> getUserDetails() {
+    public @NotNull Optional<JpaUserDetails> getUserDetails() {
         val authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return Optional.empty();
