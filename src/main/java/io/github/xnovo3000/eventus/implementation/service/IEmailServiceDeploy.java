@@ -2,6 +2,7 @@ package io.github.xnovo3000.eventus.implementation.service;
 
 import io.github.xnovo3000.eventus.mvc.service.EmailService;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,7 +16,7 @@ public class IEmailServiceDeploy implements EmailService {
     private final JavaMailSender javaMailSender;
 
     @Override
-    public void sendPasswordViaEmail(String email, String password) {
+    public void sendPasswordViaEmail(@NotNull String email, @NotNull String password) {
         // Create message
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("noreply@eventus.com");  // TODO: Check if working on test deploy

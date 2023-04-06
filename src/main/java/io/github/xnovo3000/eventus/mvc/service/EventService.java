@@ -4,6 +4,7 @@ import io.github.xnovo3000.eventus.bean.dto.input.RateFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventCardDto;
 import io.github.xnovo3000.eventus.bean.dto.output.EventDto;
 import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -20,14 +21,14 @@ public interface EventService {
      * @param id The ID of the event
      * @return The event if it exists, empty otherwise
      */
-    Optional<EventDto> getById(Long id);
+    @NotNull Optional<EventDto> getById(long id);
 
     /**
      * Get all events that started but not finished yet, ordered by start date descending
      *
      * @return A list of ongoing events
      */
-    List<EventCardDto> getOngoingEvents();
+    @NotNull List<EventCardDto> getOngoingEvents();
 
     /**
      * Get a page of events that haven't started yet, ordered by start date descending
@@ -35,7 +36,7 @@ public interface EventService {
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of future events
      */
-    Page<EventCardDto> getFutureEvents(int pageNumber);
+    @NotNull Page<EventCardDto> getFutureEvents(int pageNumber);
 
     /**
      * Get a page of events that are in the 'proposed' state
@@ -45,7 +46,7 @@ public interface EventService {
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of proposed events
      */
-    Page<EventCardDto> getProposed(int pageNumber);
+    @NotNull Page<EventCardDto> getProposed(int pageNumber);
 
     /**
      * Get all events ordered by start date descending
@@ -53,7 +54,7 @@ public interface EventService {
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of events
      */
-    Page<EventCardDto> getHistory(int pageNumber);
+    @NotNull Page<EventCardDto> getHistory(int pageNumber);
 
     /**
      * Get all events that user has participated ordered by start date descending
@@ -61,7 +62,7 @@ public interface EventService {
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of events
      */
-    Page<EventCardDto> getEventsThatUserParticipated(int pageNumber);
+    @NotNull Page<EventCardDto> getEventsThatUserParticipated(int pageNumber);
 
     /**
      * Create a new unapproved event. The event start must
@@ -70,7 +71,7 @@ public interface EventService {
      * @param proposeEventDto The event DTO
      * @return The created event ID
      */
-    Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto);
+    @NotNull Optional<Long> proposeEvent(@NotNull ProposeEventDtoZoned proposeEventDto);
 
     /**
      * Approve an event by its ID, the event must be non-approved
@@ -79,7 +80,7 @@ public interface EventService {
      * @param eventId The event ID
      * @return True if the event can be approved, false otherwise
      */
-    boolean approveEvent(Long eventId);
+    boolean approveEvent(long eventId);
 
     /**
      * Reject an event by its id, the event must be non-approved
@@ -87,7 +88,7 @@ public interface EventService {
      * @param eventId The event id
      * @return True if the event can be rejected, false otherwise
      */
-    boolean rejectEvent(Long eventId);
+    boolean rejectEvent(long eventId);
 
     /**
      * Subscribe a user to an event, fail if:
@@ -103,7 +104,7 @@ public interface EventService {
      * @param username The user's username
      * @return True if has been subscribed, false otherwise
      */
-    boolean subscribeUserToEvent(Long eventId, String username);
+    boolean subscribeUserToEvent(long eventId, @NotNull String username);
 
     /**
      * Unsubscribe a user to an event, fails if:
@@ -117,7 +118,7 @@ public interface EventService {
      * @param username The user's username
      * @return True if has been unsubscribed, false otherwise
      */
-    boolean unsubscribeUserToEvent(Long eventId, String username);
+    boolean unsubscribeUserToEvent(long eventId, @NotNull String username);
 
     /**
      * Rate a finished event
@@ -127,6 +128,6 @@ public interface EventService {
      * @param username The user that wants to rate the event
      * @return True if the event has been rated, false otherwise
      */
-    boolean rateEvent(Long eventId, RateFormDto dto, String username);
+    boolean rateEvent(long eventId, @NotNull RateFormDto dto, @NotNull String username);
 
 }

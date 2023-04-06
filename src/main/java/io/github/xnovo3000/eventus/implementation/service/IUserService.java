@@ -5,7 +5,6 @@ import io.github.xnovo3000.eventus.bean.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.UserDto;
 import io.github.xnovo3000.eventus.bean.entity.Authority;
 import io.github.xnovo3000.eventus.bean.entity.User;
-import io.github.xnovo3000.eventus.bean.validation.BeanValidator;
 import io.github.xnovo3000.eventus.mvc.repository.AuthorityRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EmailService;
@@ -14,12 +13,13 @@ import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import io.github.xnovo3000.eventus.util.AuthenticationFacade;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import io.github.xnovo3000.eventus.util.RandomStringGenerator;
-import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,11 +30,8 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class IUserService implements UserService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IUserService.class);
-
-    private final int PAGE_SIZE = 24;
 
     private final DtoMapper dtoMapper;
     private final EmailService emailService;
@@ -43,19 +40,19 @@ public class IUserService implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RandomStringGenerator randomStringGenerator;
     private final AuthenticationFacade authenticationFacade;
-
-    @Resource private BeanValidator<User> userServiceValidator;
+    
+    @Value("${io.github.xnovo3000.eventus.user_page_size}") private Integer pageSize;
 
     @Override
-    public boolean registerNewUser(RegisterFormDto registerFormDto) {
-        LOGGER.info("registerNewUser called with payload: " + registerFormDto);
+    public boolean registerNewUser(@NotNull RegisterFormDto registerFormDto) {
+        log.info("registerNewUser called with payload: " + registerFormDto);
         // Check if username and/or password already exist in the database
         if (userRepository.findByEmail(registerFormDto.getEmail()).isPresent()) {
-            LOGGER.info("Email " + registerFormDto.getEmail() + " already exist");
+            log.info("Email " + registerFormDto.getEmail() + " already exist");
             return false;
         }
         if (userRepository.findByUsername(registerFormDto.getUsername()).isPresent()) {
-            LOGGER.info("Username " + registerFormDto.getUsername() + " already exist");
+            log.info("Username " + registerFormDto.getUsername() + " already exist");
             return false;
         }
         // Generate a new password
@@ -74,15 +71,15 @@ public class IUserService implements UserService {
             // Return success
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot save user or send password via email", e);
+            log.error("Cannot save user or send password via email", e);
             return false;
         }
     }
 
     @Override
-    public Page<UserDto> getByFilter(int pageNumber, String username) {
+    public @NotNull Page<UserDto> getByFilter(int pageNumber, @Nullable String username) {
         // Create the page request
-        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        val pageable = PageRequest.of(pageNumber - 1, pageSize);
         // Return if username is null or not
         if (username != null) {
             return userRepository.findAllByUsernameContainingIgnoreCaseOrderByUsernameAsc(username, pageable)
@@ -94,18 +91,18 @@ public class IUserService implements UserService {
     }
 
     @Override
-    public boolean disable(Long userId) {
-        LOGGER.info("disable called with userId: " + userId);
+    public boolean disable(long userId) {
+        log.info("disable called with userId: " + userId);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
-            LOGGER.info("User does not exist");
+            log.info("User does not exist");
             return false;
         }
         val user = maybeUser.get();
         // Validate
-        if (!userServiceValidator.validate(user)) {
-            LOGGER.info("Cannot validate user");
+        if (user.getUsername().equals("admin")) {
+            log.info("Admin user cannot be disabled");
             return false;
         }
         // Disable the user and try to save
@@ -114,24 +111,24 @@ public class IUserService implements UserService {
             userRepository.save(user);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot update user", e);
+            log.error("Cannot update user", e);
             return false;
         }
     }
 
     @Override
-    public boolean enable(Long userId) {
-        LOGGER.info("enable called with userId: " + userId);
+    public boolean enable(long userId) {
+        log.info("enable called with userId: " + userId);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
-            LOGGER.info("User does not exist");
+            log.info("User does not exist");
             return false;
         }
         val user = maybeUser.get();
         // Validate
-        if (!userServiceValidator.validate(user)) {
-            LOGGER.info("Cannot validate user");
+        if (user.getUsername().equals("admin")) {
+            log.info("Admin user cannot be enabled");
             return false;
         }
         // Enable the user and try to save
@@ -140,24 +137,24 @@ public class IUserService implements UserService {
             userRepository.save(user);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot update user", e);
+            log.error("Cannot update user", e);
             return false;
         }
     }
 
     @Override
-    public boolean resetPassword(Long userId) {
-        LOGGER.info("resetPassword called with userId: " + userId);
+    public boolean resetPassword(long userId) {
+        log.info("resetPassword called with userId: " + userId);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
-            LOGGER.info("User does not exist");
+            log.info("User does not exist");
             return false;
         }
         val user = maybeUser.get();
         // Validate
-        if (!userServiceValidator.validate(user)) {
-            LOGGER.info("Cannot validate user");
+        if (user.getUsername().equals("admin")) {
+            log.info("Admin user's password cannot be reset");
             return false;
         }
         // Get a new password, send it via email and save
@@ -168,31 +165,31 @@ public class IUserService implements UserService {
             userRepository.save(user);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot update user", e);
+            log.error("Cannot update user", e);
             return false;
         }
     }
 
     @Override
-    public boolean updateAuthorities(Long userId, List<String> authorities) {
-        LOGGER.info("updatePermissions called with userId: " + userId + " and authorities: " + authorities);
+    public boolean updateAuthorities(long userId, @NotNull List<String> authorities) {
+        log.info("updatePermissions called with userId: " + userId + " and authorities: " + authorities);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
-            LOGGER.info("User does not exist");
+            log.info("User does not exist");
             return false;
         }
         val user = maybeUser.get();
         // Validate
-        if (!userServiceValidator.validate(user)) {
-            LOGGER.info("Cannot validate user");
+        if (user.getUsername().equals("admin")) {
+            log.info("Admin user's authorities cannot be changed");
             return false;
         }
         // Remove all authorities for the specific user
         try {
             authorityRepository.deleteAllByUser(user);
         } catch (Exception e) {
-            LOGGER.error("Cannot delete authorities", e);
+            log.error("Cannot delete authorities", e);
             return false;
         }
         // Create new authorities
@@ -209,21 +206,21 @@ public class IUserService implements UserService {
             authorityRepository.saveAll(newAuthorities);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot create new authorities", e);
+            log.error("Cannot create new authorities", e);
             return false;
         }
     }
 
     @Override
-    public boolean changePassword(ChangePasswordDto dto) {
-        LOGGER.info("changePassword called with payload: " + dto);
+    public boolean changePassword(@NotNull ChangePasswordDto dto) {
+        log.info("changePassword called with payload: " + dto);
         // Get current username
         val username = authenticationFacade.getUserDetails()
                 .map(JpaUserDetails::getUsername).orElse(null);
         // Get current user
         val maybeUser = userRepository.findByUsername(username);
         if (maybeUser.isEmpty()) {
-            LOGGER.error("Logged user not found: " + username);
+            log.error("Logged user not found: " + username);
             return false;
         }
         val user = maybeUser.get();
@@ -234,7 +231,7 @@ public class IUserService implements UserService {
             userRepository.save(user);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot save user", e);
+            log.error("Cannot save user", e);
             return false;
         }
     }

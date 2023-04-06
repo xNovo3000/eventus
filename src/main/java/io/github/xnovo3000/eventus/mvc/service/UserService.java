@@ -3,6 +3,8 @@ package io.github.xnovo3000.eventus.mvc.service;
 import io.github.xnovo3000.eventus.bean.dto.input.ChangePasswordDto;
 import io.github.xnovo3000.eventus.bean.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.bean.dto.output.UserDto;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface UserService {
      * @param registerFormDto The payload
      * @return True if the user has been created, false if email and/or username is already taken
      */
-    boolean registerNewUser(RegisterFormDto registerFormDto);
+    boolean registerNewUser(@NotNull RegisterFormDto registerFormDto);
 
     /**
      * Get a page of users by page. If the username is null, no filter regarding username is done.
@@ -28,7 +30,7 @@ public interface UserService {
      * @param username The username to filter, if not null
      * @return A page of filtered users
      */
-    Page<UserDto> getByFilter(int pageNumber, String username);
+    @NotNull Page<UserDto> getByFilter(int pageNumber, @Nullable String username);
 
     /**
      * Disable a user by its ID
@@ -36,7 +38,7 @@ public interface UserService {
      * @param userId The user ID
      * @return True if disabled, false otherwise
      */
-    boolean disable(Long userId);
+    boolean disable(long userId);
 
     /**
      * Enable a user by its ID
@@ -44,7 +46,7 @@ public interface UserService {
      * @param userId The user ID
      * @return True if enabled, false otherwise
      */
-    boolean enable(Long userId);
+    boolean enable(long userId);
 
     /**
      * Reset user's password by its ID. The password is generated from
@@ -53,7 +55,7 @@ public interface UserService {
      * @param userId The user ID
      * @return True if success, false otherwise
      */
-    boolean resetPassword(Long userId);
+    boolean resetPassword(long userId);
 
     /**
      * Override user's authorities by its id and new authorities
@@ -62,7 +64,7 @@ public interface UserService {
      * @param authorities The new authorities
      * @return True if authorities override success, false otherwise
      */
-    boolean updateAuthorities(Long userId, List<String> authorities);
+    boolean updateAuthorities(long userId, @NotNull List<String> authorities);
 
     /**
      * Change password for the current logged user
@@ -70,6 +72,6 @@ public interface UserService {
      * @param dto The old and new password
      * @return True if changed, false otherwise
      */
-    boolean changePassword(ChangePasswordDto dto);
+    boolean changePassword(@NotNull ChangePasswordDto dto);
 
 }

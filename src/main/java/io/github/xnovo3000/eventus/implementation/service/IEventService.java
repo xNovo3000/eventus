@@ -7,7 +7,6 @@ import io.github.xnovo3000.eventus.bean.dto.input.zoned.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.bean.entity.Event;
 import io.github.xnovo3000.eventus.bean.entity.Subscription;
 import io.github.xnovo3000.eventus.bean.entity.User;
-import io.github.xnovo3000.eventus.bean.validation.BeanValidator;
 import io.github.xnovo3000.eventus.mvc.repository.EventRepository;
 import io.github.xnovo3000.eventus.mvc.repository.SubscriptionRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
@@ -15,12 +14,12 @@ import io.github.xnovo3000.eventus.mvc.service.EventService;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import io.github.xnovo3000.eventus.util.AuthenticationFacade;
 import io.github.xnovo3000.eventus.util.DtoMapper;
-import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,11 +31,8 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class IEventService implements EventService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IEventService.class);
-
-    private final int PAGE_SIZE = 12;
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
@@ -44,14 +40,10 @@ public class IEventService implements EventService {
     private final SubscriptionRepository subscriptionRepository;
     private final AuthenticationFacade authenticationFacade;
 
-    @Resource private BeanValidator<ProposeEventDtoZoned> proposeEventBeanValidator;
-    @Resource private BeanValidator<Event> approveEventBeanValidator;
-    @Resource private BeanValidator<Event> rejectEventBeanValidator;
-    @Resource private BeanValidator<Event> subscribeUserToEventValidator;
-    @Resource private BeanValidator<Event> unsubscribeUserToEventValidator;
-
+    @Value("${io.github.xnovo3000.eventus.event_page_size}") private Integer pageSize;
+    
     @Override
-    public Optional<EventDto> getById(Long id) {
+    public @NotNull Optional<EventDto> getById(long id) {
         val username = authenticationFacade.getUserDetails()
                 .map(JpaUserDetails::getUsername)
                 .orElse(null);
@@ -60,7 +52,7 @@ public class IEventService implements EventService {
     }
 
     @Override
-    public List<EventCardDto> getOngoingEvents() {
+    public @NotNull List<EventCardDto> getOngoingEvents() {
         val now = OffsetDateTime.now();
         return eventRepository.findAllByApprovedIsTrueAndStartIsBeforeAndEndIsAfter(now, now)
                 .stream().map(dtoMapper::toEventCardDto)
@@ -68,45 +60,45 @@ public class IEventService implements EventService {
     }
 
     @Override
-    public Page<EventCardDto> getFutureEvents(int pageNumber) {
+    public @NotNull Page<EventCardDto> getFutureEvents(int pageNumber) {
         val now = OffsetDateTime.now();
         val username = authenticationFacade.getUserDetails()
                 .map(JpaUserDetails::getUsername)
                 .orElse(null);
-        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(event -> dtoMapper.toEventCardDto(event, username));
     }
 
     @Override
-    public Page<EventCardDto> getProposed(int pageNumber) {
+    public @NotNull Page<EventCardDto> getProposed(int pageNumber) {
         val now = OffsetDateTime.now();
-        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(now, pageable)
                 .map(dtoMapper::toEventCardDto);
     }
 
     @Override
-    public Page<EventCardDto> getHistory(int pageNumber) {
-        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+    public @NotNull Page<EventCardDto> getHistory(int pageNumber) {
+        val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByOrderByStartDesc(pageable)
                 .map(dtoMapper::toEventCardDto);
     }
 
     @Override
-    public Page<EventCardDto> getEventsThatUserParticipated(int pageNumber) {
+    public @NotNull Page<EventCardDto> getEventsThatUserParticipated(int pageNumber) {
         val username = authenticationFacade.getUserDetails().map(JpaUserDetails::getUsername).orElse(null);
-        val pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE);
+        val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByHoldings_User_UsernameOrderByStartDesc(username, pageable)
                 .map(dtoMapper::toEventCardDto);
     }
 
     @Override
-    public Optional<Long> proposeEvent(ProposeEventDtoZoned proposeEventDto) {
-        LOGGER.info("proposeEvent called with payload: " + proposeEventDto);
+    public @NotNull Optional<Long> proposeEvent(@NotNull ProposeEventDtoZoned proposeEventDto) {
+        log.info("proposeEvent called with payload: " + proposeEventDto);
         // Ensure start is before end
-        if (!proposeEventBeanValidator.validate(proposeEventDto)) {
-            LOGGER.info("ProposeEventDtoZoned not valid");
+        if (!proposeEventDto.getStart().isBefore(proposeEventDto.getEnd())) {
+            log.info("Event start must be always before end");
             return Optional.empty();
         }
         // Create the event
@@ -122,24 +114,29 @@ public class IEventService implements EventService {
             event = eventRepository.save(event);
             return Optional.of(event.getId());
         } catch (Exception e) {
-            LOGGER.error("Cannot save event", e);
+            log.error("Cannot save event", e);
             return Optional.empty();
         }
     }
 
     @Override
-    public boolean approveEvent(Long eventId) {
-        LOGGER.info("approveEvent called with eventId: " + eventId);
+    public boolean approveEvent(long eventId) {
+        log.info("approveEvent called with eventId: " + eventId);
         // Get the event
         val maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
-            LOGGER.info("The event does not exist");
+            log.info("The event does not exist");
             return false;
         }
         val event = maybeEvent.get();
-        // Validate
-        if (!approveEventBeanValidator.validate(event)) {
-            LOGGER.info("Event not valid");
+        // Check if it is already started
+        if (event.getStart().isBefore(OffsetDateTime.now())) {
+            log.info("This event is already started");
+            return false;
+        }
+        // Check if it is already approved
+        if (event.getApproved()) {
+            log.info("This event is already approved");
             return false;
         }
         // Set approved and try to save
@@ -148,71 +145,82 @@ public class IEventService implements EventService {
             eventRepository.save(event);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot save event", e);
+            log.error("Cannot save event", e);
             return false;
         }
     }
 
     @Override
-    public boolean rejectEvent(Long eventId) {
-        LOGGER.info("rejectEvent called with eventId: " + eventId);
+    public boolean rejectEvent(long eventId) {
+        log.info("rejectEvent called with eventId: " + eventId);
         // Get the event
         val maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
-            LOGGER.info("The event does not exist");
+            log.info("The event does not exist");
             return false;
         }
         val event = maybeEvent.get();
-        // Check if it's already approved
-        if (!rejectEventBeanValidator.validate(event)) {
-            LOGGER.info("Event not valid");
+        // Check if it is already approved
+        if (event.getApproved()) {
+            log.info("This event is already approved");
             return false;
         }
-        // Set approved and try to save
+        // Set approved
         event.setApproved(false);
+        // Try to save
         try {
             eventRepository.save(event);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot save event", e);
+            log.error("Cannot save event", e);
             return false;
         }
     }
 
     @Override
-    public boolean subscribeUserToEvent(Long eventId, String username) {
-        LOGGER.info("subscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
+    public boolean subscribeUserToEvent(long eventId, @NotNull String username) {
+        log.info("subscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
         // Get the event
         Optional<Event> maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
-            LOGGER.info("Event not found");
+            log.info("Event not found");
             return false;
         }
         Event event = maybeEvent.get();
-        // Check if valid
-        if (!subscribeUserToEventValidator.validate(event)) {
-            LOGGER.info("Event not valid");
+        // Get the user
+        Optional<User> maybeUser = userRepository.findByUsername(username);
+        if (maybeUser.isEmpty()) {
+            log.info("User not found");
+            return false;
+        }
+        User user = maybeUser.get();
+        // The event must be approved
+        if (!event.getApproved()) {
+            log.info("This event is not approved");
+            return false;
+        }
+        // Check if it is already started
+        if (event.getStart().isBefore(OffsetDateTime.now())) {
+            log.info("This event is already started");
+            return false;
+        }
+        // The event must not be full
+        if (event.getHoldings().size() >= event.getSeats()) {
+            log.info("This event is full");
             return false;
         }
         // Check if already subscribed
         if (event.getHoldings().stream().anyMatch(s -> s.getUser().getUsername().equals(username))) {
-            LOGGER.info("User already subscribed");
+            log.info("User already subscribed");
             return false;
         }
-        // Get the user
-        Optional<User> maybeUser = userRepository.findByUsername(username);
-        if (maybeUser.isEmpty()) {
-            LOGGER.info("User not found");
-            return false;
-        }
-        User user = maybeUser.get();
         // Check if user is already subscribed to an event that collides with
         val overlappingEvents = user.getHoldings().stream()
                 .map(Subscription::getEvent)
                 .filter(it -> it.getStart().isBefore(event.getEnd()) && it.getEnd().isAfter(event.getStart()))
                 .toList();
         if (overlappingEvents.size() > 0) {
-            LOGGER.info("Event overlaps with: " + overlappingEvents);
+            log.info("Event overlaps with: " + overlappingEvents);
             return false;
         }
         // Create the subscription bean
@@ -224,37 +232,42 @@ public class IEventService implements EventService {
             subscriptionRepository.save(subscription);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot save subscription", e);
+            log.error("Cannot save subscription", e);
             return false;
         }
     }
 
     @Override
-    public boolean unsubscribeUserToEvent(Long eventId, String username) {
-        LOGGER.info("unsubscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
+    public boolean unsubscribeUserToEvent(long eventId, @NotNull String username) {
+        log.info("unsubscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
         // Get the event
         Optional<Event> maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
-            LOGGER.info("Event not found");
+            log.info("Event not found");
             return false;
         }
         Event event = maybeEvent.get();
-        // Check if valid
-        if (!unsubscribeUserToEventValidator.validate(event)) {
-            LOGGER.info("Event is not valid");
-            return false;
-        }
         // Get the user
         Optional<User> maybeUser = userRepository.findByUsername(username);
         if (maybeUser.isEmpty()) {
-            LOGGER.info("User not found");
+            log.info("User not found");
             return false;
         }
         User user = maybeUser.get();
+        // The event must be approved
+        if (!event.getApproved()) {
+            log.info("This event is not approved");
+            return false;
+        }
+        // Check if it is already started
+        if (event.getStart().isBefore(OffsetDateTime.now())) {
+            log.info("This event is already started");
+            return false;
+        }
         // Get the subscription bean
         Optional<Subscription> maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);
         if (maybeSubscription.isEmpty()) {
-            LOGGER.info("User is not subscribed to the event");
+            log.info("User is not subscribed to the event");
             return false;
         }
         Subscription subscription = maybeSubscription.get();
@@ -263,44 +276,44 @@ public class IEventService implements EventService {
             subscriptionRepository.delete(subscription);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot delete subscription", e);
+            log.error("Cannot delete subscription", e);
             return false;
         }
     }
 
     @Override
-    public boolean rateEvent(Long eventId, RateFormDto dto, String username) {
-        LOGGER.info("rateEvent called with eventId: " + eventId + ", payload: " + dto + " and username: " + username);
+    public boolean rateEvent(long eventId, @NotNull RateFormDto dto, @NotNull String username) {
+        log.info("rateEvent called with eventId: " + eventId + ", payload: " + dto + " and username: " + username);
         // Get the event
         Optional<Event> maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
-            LOGGER.info("Event not found");
+            log.info("Event not found");
             return false;
         }
         Event event = maybeEvent.get();
         // Check if the event is terminated. End must be before now
         val now = OffsetDateTime.now();
         if (!(event.getEnd().isBefore(now))) {
-            LOGGER.info("Event is not finished");
+            log.info("Event is not finished");
             return false;
         }
         // Get the user
         Optional<User> maybeUser = userRepository.findByUsername(username);
         if (maybeUser.isEmpty()) {
-            LOGGER.info("User not found");
+            log.info("User not found");
             return false;
         }
         User user = maybeUser.get();
         // Get subscription
         Optional<Subscription> maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);
         if (maybeSubscription.isEmpty()) {
-            LOGGER.info("Subscription not found");
+            log.info("Subscription not found");
             return false;
         }
         Subscription subscription = maybeSubscription.get();
         // Check if the event has already been rated
         if (subscription.getRating() != null || subscription.getComment() != null) {
-            LOGGER.info("The event has already been rated");
+            log.info("The event has already been rated");
             return false;
         }
         // Rate the comment
@@ -311,7 +324,7 @@ public class IEventService implements EventService {
             subscriptionRepository.save(subscription);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Cannot save subscription", e);
+            log.error("Cannot save subscription", e);
             return false;
         }
     }
