@@ -35,7 +35,7 @@ public interface DtoMapper {
     @Mapping(source = "event.creator.username", target = "creatorUsername")
     @Mapping(target = "canSubscribe", expression = "java(event.getStart().isAfter(OffsetDateTime.now()) && event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)) && event.getSeats() > event.getHoldings().size() && event.getApproved())")
     @Mapping(target = "canUnsubscribe", expression = "java(event.getStart().isAfter(OffsetDateTime.now()) && event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)))")
-    @Mapping(target = "canRate", expression = "java(event.getEnd().isBefore(OffsetDateTime.now()) && event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username) && it.getRating() != null && it.getComment() != null))")
+    @Mapping(target = "canRate", expression = "java(event.getEnd().isBefore(OffsetDateTime.now()) && event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username) && it.getRating() == null && it.getComment() == null))")
     EventDto toEventDto(Event event, String username);
 
     /**

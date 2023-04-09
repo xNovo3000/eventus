@@ -35,7 +35,7 @@
             <h5 th:if="${proposed_event.isEmpty()}" class="my-2">Non ci sono eventi proposti</h5>
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-4 p-2"
-                     th:each="event : ${proposed_event.getContent()}"
+                     th:each="eventDto : ${proposed_event.getContent()}"
                      th:insert="~{fragment/event_card :: eventCard}">
                 </div>
             </div>
