@@ -13,7 +13,7 @@
 
     <groupId>io.github.xnovo3000.eventus</groupId>
     <artifactId>service</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <name>eventus-service</name>
     <description>Event manager service</description>
     <packaging>jar</packaging>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>io.github.xnovo3000.eventus</groupId>
             <artifactId>api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>

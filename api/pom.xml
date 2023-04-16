@@ -13,7 +13,7 @@
 
     <groupId>io.github.xnovo3000.eventus</groupId>
     <artifactId>api</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <name>eventus-api</name>
     <description>Event manager API</description>
 
