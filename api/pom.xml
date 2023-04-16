@@ -16,6 +16,7 @@
     <version>${revision}</version>
     <name>eventus-api</name>
     <description>Event manager API</description>
+    <packaging>jar</packaging>
 
     <build>
         <finalName>${project.name}-${revision}</finalName>
@@ -42,10 +43,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

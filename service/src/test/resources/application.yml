@@ -10,3 +10,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.HSQLDialect
+
+io:
+  github:
+    xnovo3000:
+      eventus:
+        user_page_size: 24
+        event_page_size: 12

@@ -40,7 +40,7 @@ public class IEventService implements EventService {
     private final SubscriptionRepository subscriptionRepository;
     private final JpaAuthenticationProxy authenticationProxy;
 
-    @Value("${io.github.xnovo3000.eventus.event_page_size}") private Integer pageSize;
+    @Value("${io.github.xnovo3000.eventus.event_page_size}") private Integer pageSize = 12;
     
     @Override
     public @NotNull Optional<EventDto> getById(long id) {

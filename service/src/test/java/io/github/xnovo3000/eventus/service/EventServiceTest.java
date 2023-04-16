@@ -35,9 +35,9 @@ public class EventServiceTest {
     public void setup() {
         // Create the user
         val user = new User();
-        user.setUsername("user0");
-        user.setEmail("user0@test.com");
-        user.setPassword(passwordEncoder.encode("user0"));
+        user.setUsername("user101");
+        user.setEmail("user101@test.com");
+        user.setPassword(passwordEncoder.encode("user101"));
         user.setActive(true);
         userRepository.save(user);
         // Create env
@@ -163,7 +163,7 @@ public class EventServiceTest {
     @Transactional
     public void destroy() {
         // Delete user
-        userRepository.findByUsername("user0").ifPresent(userRepository::delete);
+        userRepository.findByUsername("user101").ifPresent(userRepository::delete);
         // Delete events
         eventRepository.deleteAll();
     }

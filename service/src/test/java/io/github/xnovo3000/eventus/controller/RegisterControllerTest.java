@@ -29,8 +29,8 @@ public class RegisterControllerTest {
     @Order(1)
     public void registerNewUser_Success() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user0@test.com".getBytes());
-        Part username = new MockPart("username", "user0".getBytes());
+        Part email = new MockPart("email", "user101@test.com".getBytes());
+        Part username = new MockPart("username", "user101".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
                         .part(email, username)
@@ -44,7 +44,7 @@ public class RegisterControllerTest {
     @Order(2)
     public void registerNewUser_FailEmailAlreadyExist() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user0@test.com".getBytes());
+        Part email = new MockPart("email", "user101@test.com".getBytes());
         Part username = new MockPart("username", "user1".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
@@ -60,7 +60,7 @@ public class RegisterControllerTest {
     public void registerNewUser_FailUsernameAlreadyExist() throws Exception {
         // Generate form fields
         Part email = new MockPart("email", "user1@test.com".getBytes());
-        Part username = new MockPart("username", "user0".getBytes());
+        Part username = new MockPart("username", "user101".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
                         .part(email, username)
@@ -74,8 +74,8 @@ public class RegisterControllerTest {
     @Order(4)
     public void registerNewUser_InvalidEmail() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user0test.com".getBytes());
-        Part username = new MockPart("username", "user0".getBytes());
+        Part email = new MockPart("email", "user101test.com".getBytes());
+        Part username = new MockPart("username", "user101".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
                         .part(email, username)
@@ -89,7 +89,7 @@ public class RegisterControllerTest {
     @Transactional
     public void destroy() {
         // Find created user in step 1 and destroy him
-        userRepository.findByUsername("user0").ifPresent(userRepository::delete);
+        userRepository.findByUsername("user101").ifPresent(userRepository::delete);
     }
 
 }
