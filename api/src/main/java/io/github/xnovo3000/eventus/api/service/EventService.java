@@ -46,7 +46,7 @@ public interface EventService {
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of proposed events
      */
-    @NotNull Page<EventCardDto> getProposed(int pageNumber);
+    @NotNull Page<EventCardDto> getProposedEvents(int pageNumber);
 
     /**
      * Get all events ordered by start date descending
@@ -57,7 +57,7 @@ public interface EventService {
     @NotNull Page<EventCardDto> getHistory(int pageNumber);
 
     /**
-     * Get all events that user has participated ordered by start date descending
+     * Get all events that current user participated ordered by start date descending
      *
      * @param pageNumber The page number of the paginated result - starts from 1
      * @return A page of events
@@ -121,7 +121,13 @@ public interface EventService {
     boolean unsubscribeUserToEvent(long eventId, @NotNull String username);
 
     /**
-     * Rate a finished event
+     * Rate a finished event, fails if:
+     * the username does not exist,
+     * the event does not exist,
+     * the event is not approved,
+     * the event is not finished,
+     * the user is not subscribed to the event,
+     * the event has not been rated
      *
      * @param eventId The ID of the event
      * @param dto The dto

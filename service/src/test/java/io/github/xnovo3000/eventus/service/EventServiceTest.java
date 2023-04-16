@@ -2,16 +2,17 @@ package io.github.xnovo3000.eventus.service;
 
 import io.github.xnovo3000.eventus.annotation.EventusTest;
 import io.github.xnovo3000.eventus.api.dto.input.ProposeEventDtoZoned;
+import io.github.xnovo3000.eventus.api.dto.input.RateFormDto;
 import io.github.xnovo3000.eventus.api.entity.Event;
-import io.github.xnovo3000.eventus.api.entity.User;
+import io.github.xnovo3000.eventus.api.entity.Subscription;
 import io.github.xnovo3000.eventus.api.repository.EventRepository;
+import io.github.xnovo3000.eventus.api.repository.SubscriptionRepository;
 import io.github.xnovo3000.eventus.api.repository.UserRepository;
 import io.github.xnovo3000.eventus.api.service.EventService;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +28,13 @@ public class EventServiceTest {
 
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final RateFormDto rateFormDto = new RateFormDto();
 
     @BeforeAll
     @Transactional
     public void setup() {
-        // Create the user
-        val user = new User();
-        user.setUsername("user101");
-        user.setEmail("user101@test.com");
-        user.setPassword(passwordEncoder.encode("user101"));
-        user.setActive(true);
-        userRepository.save(user);
         // Create env
         val now = OffsetDateTime.now();
         val adminUser = userRepository.findByUsername("admin").orElseThrow();
@@ -53,12 +48,19 @@ public class EventServiceTest {
                     event.setCreator(adminUser);
                     event.setStart(now.minusDays(1).plusHours(id));
                     event.setEnd(now.minusDays(1).plusHours(id + 1));
-                    event.setSeats(8);
-                    event.setApproved(id < 30 && id > 2);
+                    event.setSeats(1);
+                    event.setApproved(id < 38);
                     return event;
                 })
                 .toList();
         eventRepository.saveAll(events);
+        // Set user0 as participant for event ID 30 (not started already)
+        val event30_user0_Subscription = new Subscription();
+        event30_user0_Subscription.setCreationDate(OffsetDateTime.now());
+        event30_user0_Subscription.setEvent(eventRepository.findById(30L).orElseThrow());
+        event30_user0_Subscription.setUser(userRepository.findByUsername("user0").orElseThrow());
+        subscriptionRepository.save(event30_user0_Subscription);
+        // Create rate form DTO
     }
 
     @Test
@@ -69,14 +71,27 @@ public class EventServiceTest {
 
     @Test
     @Order(1)
-    public void getFutureEvents_ExactSize() {
-        Assertions.assertEquals(5, eventService.getFutureEvents(1).getContent().size());
+    public void getFutureEvents_ExactPageSize() {
+        Assertions.assertEquals(2, eventService.getFutureEvents(1).getTotalPages());
     }
 
     @Test
     @Order(1)
-    public void getProposed_ExactPageSize() {
-        Assertions.assertEquals(2, eventService.getProposed(1).getTotalPages());
+    public void getProposedEvents_ExactPageSize() {
+        Assertions.assertEquals(12, eventService.getProposedEvents(1).getContent().size());
+    }
+
+    @Test
+    @Order(1)
+    public void getHistory_ExactPageSize() {
+        Assertions.assertEquals(5, eventService.getHistory(1).getTotalPages());
+    }
+
+    @Test
+    @Order(1)
+    @WithUserDetails("user0")
+    public void getEventsThatUserParticipated_ExactSize() {
+        Assertions.assertEquals(1, eventService.getEventsThatUserParticipated(1).getContent().size());
     }
 
     @Test
@@ -117,18 +132,17 @@ public class EventServiceTest {
 
     @Test
     @Order(3)
-    public void approveEvent_StartAfterNow() {
-        // Get the first proposed event with start before now and try to approve him
-        val pastEvent = eventService.getById(1L).orElseThrow();
-        Assertions.assertFalse(eventService.approveEvent(pastEvent.getId()));
+    public void approveEvent_StartBeforeNow() {
+        // Get an event with start before now and try to approve him
+        Assertions.assertFalse(eventService.approveEvent(1));
     }
 
     @Test
     @Order(3)
     public void approveEvent_Success() {
-        // Get the first proposed event with start after now and try to approve him
-        val proposedEvent = eventService.getProposed(1).getContent().get(0);
-        Assertions.assertTrue(eventService.approveEvent(proposedEvent.getId()));
+        // Get the event with ID 48 and 49 and approve
+        Assertions.assertTrue(eventService.approveEvent(48));
+        Assertions.assertTrue(eventService.approveEvent(49));
     }
 
     @Test
@@ -143,28 +157,99 @@ public class EventServiceTest {
     @Order(4)
     public void rejectEvent_Success() {
         // Get the first proposed event and try to reject him
-        val proposedEvent = eventService.getProposed(1).getContent().get(0);
+        val proposedEvent = eventService.getProposedEvents(1).getContent().get(0);
         Assertions.assertTrue(eventService.rejectEvent(proposedEvent.getId()));
     }
 
     @Test
-    @Order(5)
+    @Order(10)
     public void subscribeUserToEvent_InvalidUser() {
-
+        Assertions.assertFalse(eventService.subscribeUserToEvent(30, "user101"));
     }
 
     @Test
-    @Order(5)
+    @Order(10)
     public void subscribeUserToEvent_InvalidEvent() {
+        Assertions.assertFalse(eventService.subscribeUserToEvent(301, "user1"));
+    }
+
+    @Test
+    @Order(10)
+    public void subscribeUserToEvent_EventFull() {
+        Assertions.assertFalse(eventService.subscribeUserToEvent(30, "user1"));
+    }
+
+    @Test
+    @Order(10)
+    public void subscribeUserToEvent_EventNotApproved() {
+        Assertions.assertFalse(eventService.subscribeUserToEvent(40, "user1"));
+    }
+
+    @Test
+    @Order(10)
+    public void subscribeUserToEvent_EventStartBeforeNow() {
+        Assertions.assertFalse(eventService.subscribeUserToEvent(4, "user1"));
+    }
+
+    @Test
+    @Order(11)
+    public void subscribeUserToEvent_Success() {
+        Assertions.assertTrue(eventService.subscribeUserToEvent(31, "user1"));
+    }
+
+    @Test
+    @Order(12)
+    public void subscribeUserToEvent_UserAlreadySubscribed() {
+        Assertions.assertFalse(eventService.subscribeUserToEvent(31, "user1"));
+    }
+
+    @Test
+    @Order(20)
+    public void unsubscribeUserToEvent_InvalidUser() {
+        Assertions.assertFalse(eventService.unsubscribeUserToEvent(31, "user101"));
+    }
+
+    @Test
+    @Order(20)
+    public void unsubscribeUserToEvent_InvalidEvent() {
+        Assertions.assertFalse(eventService.unsubscribeUserToEvent(310, "user1"));
+    }
+
+    @Test
+    @Order(20)
+    public void unsubscribeUserToEvent_EventNotApproved() {
+        Assertions.assertFalse(eventService.unsubscribeUserToEvent(44, "user1"));
+    }
+
+    @Test
+    @Order(20)
+    public void unsubscribeUserToEvent_StartBeforeNow() {
+        Assertions.assertFalse(eventService.unsubscribeUserToEvent(10, "user1"));
+    }
+
+    @Test
+    @Order(21)
+    public void unsubscribeUserToEvent_Success() {
+        Assertions.assertTrue(eventService.unsubscribeUserToEvent(31, "user1"));
+    }
+
+    @Test
+    @Order(22)
+    public void unsubscribeUserToEvent_UserAlreadyUnsubscribed() {
+        Assertions.assertFalse(eventService.unsubscribeUserToEvent(31, "user1"));
+    }
+
+    @Test
+    @Order(30)
+    public void rateEvent() {
 
     }
 
     @AfterAll
     @Transactional
     public void destroy() {
-        // Delete user
-        userRepository.findByUsername("user101").ifPresent(userRepository::delete);
-        // Delete events
+        // Delete subscriptions and events
+        subscriptionRepository.deleteAll();
         eventRepository.deleteAll();
     }
 

@@ -71,7 +71,7 @@ public class IEventService implements EventService {
     }
 
     @Override
-    public @NotNull Page<EventCardDto> getProposed(int pageNumber) {
+    public @NotNull Page<EventCardDto> getProposedEvents(int pageNumber) {
         val now = OffsetDateTime.now();
         val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(now, pageable)

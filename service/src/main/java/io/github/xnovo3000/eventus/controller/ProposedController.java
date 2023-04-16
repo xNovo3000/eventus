@@ -23,7 +23,7 @@ public class ProposedController {
         // Inject error
         model.addAttribute("error", error);
         // Set model
-        model.addAttribute("proposed_event", eventService.getProposed(page));
+        model.addAttribute("proposed_event", eventService.getProposedEvents(page));
         model.addAttribute("page", page);
         // Render HTML
         return "page/proposed";
