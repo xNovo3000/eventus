@@ -12,7 +12,7 @@ import io.github.xnovo3000.eventus.mvc.repository.SubscriptionRepository;
 import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EventService;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
-import io.github.xnovo3000.eventus.util.AuthenticationFacade;
+import io.github.xnovo3000.eventus.util.AuthenticationProxy;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,13 +38,13 @@ public class IEventService implements EventService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final SubscriptionRepository subscriptionRepository;
-    private final AuthenticationFacade authenticationFacade;
+    private final AuthenticationProxy<JpaUserDetails> authenticationProxy;
 
     @Value("${io.github.xnovo3000.eventus.event_page_size}") private Integer pageSize;
     
     @Override
     public @NotNull Optional<EventDto> getById(long id) {
-        val username = authenticationFacade.getUserDetails()
+        val username = authenticationProxy.getUserDetails()
                 .map(JpaUserDetails::getUsername)
                 .orElse(null);
         return eventRepository.findById(id)
@@ -62,7 +62,7 @@ public class IEventService implements EventService {
     @Override
     public @NotNull Page<EventCardDto> getFutureEvents(int pageNumber) {
         val now = OffsetDateTime.now();
-        val username = authenticationFacade.getUserDetails()
+        val username = authenticationProxy.getUserDetails()
                 .map(JpaUserDetails::getUsername)
                 .orElse(null);
         val pageable = PageRequest.of(pageNumber - 1, pageSize);
@@ -87,7 +87,7 @@ public class IEventService implements EventService {
 
     @Override
     public @NotNull Page<EventCardDto> getEventsThatUserParticipated(int pageNumber) {
-        val username = authenticationFacade.getUserDetails().map(JpaUserDetails::getUsername).orElse(null);
+        val username = authenticationProxy.getUserDetails().map(JpaUserDetails::getUsername).orElse(null);
         val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByHoldings_User_UsernameOrderByStartDesc(username, pageable)
                 .map(dtoMapper::toEventCardDto);

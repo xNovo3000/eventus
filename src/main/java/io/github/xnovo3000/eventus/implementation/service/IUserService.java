@@ -10,7 +10,7 @@ import io.github.xnovo3000.eventus.mvc.repository.UserRepository;
 import io.github.xnovo3000.eventus.mvc.service.EmailService;
 import io.github.xnovo3000.eventus.mvc.service.UserService;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
-import io.github.xnovo3000.eventus.util.AuthenticationFacade;
+import io.github.xnovo3000.eventus.util.AuthenticationProxy;
 import io.github.xnovo3000.eventus.util.DtoMapper;
 import io.github.xnovo3000.eventus.util.RandomStringGenerator;
 import jakarta.transaction.Transactional;
@@ -39,7 +39,7 @@ public class IUserService implements UserService {
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
     private final RandomStringGenerator randomStringGenerator;
-    private final AuthenticationFacade authenticationFacade;
+    private final AuthenticationProxy<JpaUserDetails> authenticationProxy;
     
     @Value("${io.github.xnovo3000.eventus.user_page_size}") private Integer pageSize;
 
@@ -215,7 +215,7 @@ public class IUserService implements UserService {
     public boolean changePassword(@NotNull ChangePasswordDto dto) {
         log.info("changePassword called with payload: " + dto);
         // Get current username
-        val username = authenticationFacade.getUserDetails()
+        val username = authenticationProxy.getUserDetails()
                 .map(JpaUserDetails::getUsername).orElse(null);
         // Get current user
         val maybeUser = userRepository.findByUsername(username);

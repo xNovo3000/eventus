@@ -2,7 +2,7 @@ package io.github.xnovo3000.eventus.configuration;
 
 import io.github.xnovo3000.eventus.bean.entity.User;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
-import io.github.xnovo3000.eventus.util.AuthenticationFacade;
+import io.github.xnovo3000.eventus.util.AuthenticationProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
@@ -22,12 +22,12 @@ public class EntityAuditingConfiguration {
     /**
      * Create the user auditor
      *
-     * @param authenticationFacade The authentication facade
+     * @param authenticationProxy The authentication facade
      * @return A lambda returning the current logged user if present
      */
     @Bean
-    public AuditorAware<User> auditorAware(AuthenticationFacade authenticationFacade) {
-        return () -> authenticationFacade.getUserDetails().map(JpaUserDetails::getUser);
+    public AuditorAware<User> auditorAware(AuthenticationProxy<JpaUserDetails> authenticationProxy) {
+        return () -> authenticationProxy.getUserDetails().map(JpaUserDetails::getUser);
     }
 
     /**
