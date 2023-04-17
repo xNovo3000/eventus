@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:hsqldb:mem:eventus;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.HSQLDialect
+
+io:
+  github:
+    xnovo3000:
+      eventus:
+        user_page_size: 24
+        event_page_size: 12
