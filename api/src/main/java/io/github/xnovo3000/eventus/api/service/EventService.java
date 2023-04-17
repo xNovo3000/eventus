@@ -127,7 +127,7 @@ public interface EventService {
      * the event is not approved,
      * the event is not finished,
      * the user is not subscribed to the event,
-     * the event has not been rated
+     * the event has already been rated
      *
      * @param eventId The ID of the event
      * @param dto The dto

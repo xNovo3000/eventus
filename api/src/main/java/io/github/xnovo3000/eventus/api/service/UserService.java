@@ -24,7 +24,7 @@ public interface UserService {
 
     /**
      * Get a page of users by page. If the username is null, no filter regarding username is done.
-     * Otherwise, the query will be filtered using 'LIKE %${username}%'
+     * Otherwise, the query will be filtered using 'LIKE %username%'
      *
      * @param pageNumber The page number
      * @param username The username to filter, if not null

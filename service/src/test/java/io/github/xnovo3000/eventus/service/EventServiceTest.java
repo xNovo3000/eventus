@@ -9,7 +9,7 @@ import io.github.xnovo3000.eventus.api.repository.EventRepository;
 import io.github.xnovo3000.eventus.api.repository.SubscriptionRepository;
 import io.github.xnovo3000.eventus.api.repository.UserRepository;
 import io.github.xnovo3000.eventus.api.service.EventService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 @EventusTest
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class EventServiceTest {
 
     private final EventService eventService;
@@ -49,7 +49,7 @@ public class EventServiceTest {
                     event.setStart(now.minusDays(1).plusHours(id));
                     event.setEnd(now.minusDays(1).plusHours(id + 1));
                     event.setSeats(1);
-                    event.setApproved(id < 38);
+                    event.setApproved(id > 0 && id < 38);
                     return event;
                 })
                 .toList();
@@ -60,7 +60,15 @@ public class EventServiceTest {
         event30_user0_Subscription.setEvent(eventRepository.findById(30L).orElseThrow());
         event30_user0_Subscription.setUser(userRepository.findByUsername("user0").orElseThrow());
         subscriptionRepository.save(event30_user0_Subscription);
+        // Set user1 as participant for event ID 12 (already finished, can rate the event)
+        val event12_user1_Subscription = new Subscription();
+        event12_user1_Subscription.setCreationDate(OffsetDateTime.now());
+        event12_user1_Subscription.setEvent(eventRepository.findById(12L).orElseThrow());
+        event12_user1_Subscription.setUser(userRepository.findByUsername("user1").orElseThrow());
+        subscriptionRepository.save(event12_user1_Subscription);
         // Create rate form DTO
+        rateFormDto.setStars(5);
+        rateFormDto.setComment("Comment number 1");
     }
 
     @Test
@@ -241,8 +249,44 @@ public class EventServiceTest {
 
     @Test
     @Order(30)
-    public void rateEvent() {
+    public void rateEvent_InvalidUsername() {
+        Assertions.assertFalse(eventService.rateEvent(14, rateFormDto, "user101"));
+    }
 
+    @Test
+    @Order(30)
+    public void rateEvent_InvalidEvent() {
+        Assertions.assertFalse(eventService.rateEvent(140, rateFormDto, "user1"));
+    }
+
+    @Test
+    @Order(30)
+    public void rateEvent_EventNotApproved() {
+        Assertions.assertFalse(eventService.rateEvent(1, rateFormDto, "user1"));
+    }
+
+    @Test
+    @Order(30)
+    public void rateEvent_EventNotFinished() {
+        Assertions.assertFalse(eventService.rateEvent(32, rateFormDto, "user1"));
+    }
+
+    @Test
+    @Order(30)
+    public void rateEvent_UserNotSubscribed() {
+        Assertions.assertFalse(eventService.rateEvent(14, rateFormDto, "user1"));
+    }
+
+    @Test
+    @Order(31)
+    public void rateEvent_Success() {
+        Assertions.assertTrue(eventService.rateEvent(12, rateFormDto, "user1"));
+    }
+
+    @Test
+    @Order(32)
+    public void rateEvent_AlreadyRated() {
+        Assertions.assertFalse(eventService.rateEvent(12, rateFormDto, "user1"));
     }
 
     @AfterAll
