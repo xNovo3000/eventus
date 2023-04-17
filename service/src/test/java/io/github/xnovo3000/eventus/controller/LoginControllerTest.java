@@ -2,7 +2,7 @@ package io.github.xnovo3000.eventus.controller;
 
 import io.github.xnovo3000.eventus.annotation.EventusWebTest;
 import jakarta.servlet.http.Part;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @EventusWebTest
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class LoginControllerTest {
 
     private final MockMvc mockMvc;
@@ -22,8 +22,8 @@ public class LoginControllerTest {
     @Test
     public void login_Success() throws Exception {
         // Generate form fields
-        Part username = new MockPart("username", "admin".getBytes());
-        Part password = new MockPart("password", "admin".getBytes());
+        Part username = new MockPart("username", "user0".getBytes());
+        Part password = new MockPart("password", "user0".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/login")
                         .part(username, password)
@@ -50,8 +50,8 @@ public class LoginControllerTest {
     @Test
     public void login_InvalidPassword() throws Exception {
         // Generate form fields
-        Part username = new MockPart("username", "admin".getBytes());
-        Part password = new MockPart("password", "admin1".getBytes());
+        Part username = new MockPart("username", "user0".getBytes());
+        Part password = new MockPart("password", "user01".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/login")
                         .part(username, password)

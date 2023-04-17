@@ -3,7 +3,7 @@ package io.github.xnovo3000.eventus.controller;
 import io.github.xnovo3000.eventus.api.repository.UserRepository;
 import io.github.xnovo3000.eventus.annotation.EventusWebTest;
 import jakarta.servlet.http.Part;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 @EventusWebTest
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class RegisterControllerTest {
 
     private final MockMvc mockMvc;
@@ -29,7 +29,7 @@ public class RegisterControllerTest {
     @Order(1)
     public void registerNewUser_Success() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user101@test.com".getBytes());
+        Part email = new MockPart("email", "user101@eventus.com".getBytes());
         Part username = new MockPart("username", "user101".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
@@ -44,7 +44,7 @@ public class RegisterControllerTest {
     @Order(2)
     public void registerNewUser_FailEmailAlreadyExist() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user101@test.com".getBytes());
+        Part email = new MockPart("email", "user101@eventus.com".getBytes());
         Part username = new MockPart("username", "user1".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
@@ -59,7 +59,7 @@ public class RegisterControllerTest {
     @Order(3)
     public void registerNewUser_FailUsernameAlreadyExist() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user1@test.com".getBytes());
+        Part email = new MockPart("email", "user1@eventus.com".getBytes());
         Part username = new MockPart("username", "user101".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
