@@ -7,9 +7,18 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * Proxy class to SecurityContextHolder. Useful for JPA
+ * auditing and null-safe user details getter
+ */
 @Component
 public class JpaAuthenticationProxy {
 
+    /**
+     * Get the current user details
+     *
+     * @return JpaUserDetails of the current user if present, empty otherwise
+     */
     public @NotNull Optional<JpaUserDetails> getUserDetails() {
         val authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
