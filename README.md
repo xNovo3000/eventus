@@ -9,6 +9,17 @@ To run this app locally you need:
 
 To run tests MySQL is not needed
 
+## Getting stared: deploy profile
+
+Required environment variables:
+- DATABASE_FQDN (like ```my-database.server.com```)
+- DATABASE_USERNAME
+- DATABASE_PASSWORD
+- EMAIL_SMTP
+- EMAIL_PORT
+- EMAIL_USERNAME
+- EMAIL_PASSWORD
+
 ### Generate Javadoc
 
 ```mvn javadoc:javadoc```
