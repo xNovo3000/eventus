@@ -1,6 +1,6 @@
 # EVENTUS - Event management system
 
-### Getting started
+## Getting started
 
 To run this app locally you need:
 - MySQL server
@@ -8,3 +8,7 @@ To run this app locally you need:
 - .env file based on .env.example
 
 To run tests MySQL is not needed
+
+### Generate Javadoc
+
+```mvn javadoc:javadoc```
