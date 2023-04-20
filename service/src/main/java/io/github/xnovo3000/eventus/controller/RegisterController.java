@@ -29,7 +29,7 @@ public class RegisterController {
         if (userService.registerNewUser(registerFormDto)) {
             return "redirect:/login?register_success";
         } else {
-            return "redirect:/register?error";
+            return "redirect:/register?user_already_registered";
         }
     }
 

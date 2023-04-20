@@ -39,8 +39,11 @@
                         <div th:if="${param.invalid_email}" class="alert alert-danger" role="alert">
                             Inserisci un indirizzo email valido
                         </div>
-                        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                        <div th:if="${param.user_already_registered}" class="alert alert-danger" role="alert">
                             Username e/o email già in uso
+                        </div>
+                        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                            Errore interno del sistema. Contatta l'amministratore
                         </div>
                     </div>
 
