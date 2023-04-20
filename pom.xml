@@ -27,7 +27,7 @@
         <mapstruct.version>1.5.4.Final</mapstruct.version>
         <java.version>17</java.version>
         <org.jetbrains.annotations.version>24.0.1</org.jetbrains.annotations.version>
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>1.0.0</revision>
     </properties>
 
     <dependencies>
