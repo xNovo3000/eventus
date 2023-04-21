@@ -1,5 +1,6 @@
 package io.github.xnovo3000.eventus.controller;
 
+import io.github.xnovo3000.eventus.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -20,6 +21,16 @@ public class ExceptionControllerAdvice {
         // Set model for exception HTML and render it
         model.addAttribute("header", "400 - Bad Request");
         model.addAttribute("content", "La richiesta inviata non risulta valida. Se si ritiene sia un errore, contattare l'amministratore");
+        return "page/exception";
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleNotFound(Model model) {
+        // This is not an exception, logging not needed because something has not been found
+        // Set model for exception HTML and render it
+        model.addAttribute("header", "404 - Not Found");
+        model.addAttribute("content", "La risorsa che stavi cercando non è stata trovata");
         return "page/exception";
     }
 
