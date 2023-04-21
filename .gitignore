@@ -32,3 +32,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Deploy test specific ###
+docker-compose.yml
+schema.sql

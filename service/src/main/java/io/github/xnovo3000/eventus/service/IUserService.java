@@ -64,13 +64,13 @@ public class IUserService implements UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setActive(true);
         try {
-            // Save user in the database
-            user = userRepository.save(user);
             // Send email with the password
             emailService.sendPasswordViaEmail(user.getEmail(), password);
+            // Save user in the database
+            userRepository.save(user);
             // Return success
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Cannot save user or send password via email", e);
             return false;
         }
