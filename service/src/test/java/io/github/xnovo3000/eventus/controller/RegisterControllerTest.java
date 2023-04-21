@@ -36,7 +36,7 @@ public class RegisterControllerTest {
                         .part(email, username)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/login?register_success"))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/login"))
                 .andDo(MockMvcResultHandlers.log());
     }
 
@@ -51,7 +51,7 @@ public class RegisterControllerTest {
                         .part(email, username)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/register?error"))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/register"))
                 .andDo(MockMvcResultHandlers.log());
     }
 
@@ -66,7 +66,7 @@ public class RegisterControllerTest {
                         .part(email, username)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/register?error"))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/register"))
                 .andDo(MockMvcResultHandlers.log());
     }
 
