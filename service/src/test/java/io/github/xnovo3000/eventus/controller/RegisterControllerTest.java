@@ -56,7 +56,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     public void registerNewUser_FailUsernameAlreadyExist() throws Exception {
         // Generate form fields
         Part email = new MockPart("email", "user1@eventus.com".getBytes());
@@ -71,7 +71,6 @@ public class RegisterControllerTest {
     }
 
     @Test
-    @Order(4)
     public void registerNewUser_InvalidEmail() throws Exception {
         // Generate form fields
         Part email = new MockPart("email", "user101test.com".getBytes());

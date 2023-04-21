@@ -17,3 +17,12 @@ io:
       eventus:
         user_page_size: 24
         event_page_size: 12
+
+logging:
+  level:
+    org:
+      springframework:
+        test:
+          web:
+            servlet:
+              result: debug
