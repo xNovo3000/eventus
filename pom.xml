@@ -24,7 +24,6 @@
 
     <properties>
         <lombok.version>1.18.26</lombok.version>
-        <mapstruct.version>1.5.4.Final</mapstruct.version>
         <java.version>17</java.version>
         <org.jetbrains.annotations.version>24.0.1</org.jetbrains.annotations.version>
         <revision>1.0.0</revision>
@@ -41,11 +40,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
