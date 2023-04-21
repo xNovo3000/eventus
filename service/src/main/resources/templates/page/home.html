@@ -65,10 +65,10 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <label class="form-label" for="pe-name">Nome evento</label>
-                            <input class="form-control mb-2" type="text" id="pe-name" name="name" required>
-                            <label class="form-label" for="pe-description">Descrizione</label>
-                            <textarea class="form-control mb-2" id="pe-description" name="description" required></textarea>
+                            <label class="form-label" for="pe-name">Nome evento (massimo 256 caratteri)</label>
+                            <input class="form-control mb-2" type="text" id="pe-name" name="name" maxlength="256" required>
+                            <label class="form-label" for="pe-description">Descrizione (massimo 2048 caratteri)</label>
+                            <textarea class="form-control mb-2" id="pe-description" name="description" maxlength="2048" required></textarea>
                             <label class="form-label" for="pe-start">Inizio</label>
                             <input class="form-control mb-2" type="datetime-local" id="pe-start" name="start" placeholder="Inizio" required>
                             <label class="form-label" for="pe-end">Fine</label>

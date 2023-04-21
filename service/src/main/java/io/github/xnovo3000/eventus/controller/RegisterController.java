@@ -2,6 +2,7 @@ package io.github.xnovo3000.eventus.controller;
 
 import io.github.xnovo3000.eventus.api.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.api.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,11 +26,16 @@ public class RegisterController {
     }
 
     @PostMapping
-    public String post(@ModelAttribute @Valid RegisterFormDto registerFormDto) {
+    public String post(
+            @ModelAttribute @Valid RegisterFormDto registerFormDto,
+            HttpSession session
+    ) {
         if (userService.registerNewUser(registerFormDto)) {
-            return "redirect:/login?register_success";
+            session.setAttribute("error", "register_success");
+            return "redirect:/login";
         } else {
-            return "redirect:/register?user_already_registered";
+            session.setAttribute("error", "user_already_registered");
+            return "redirect:/register";
         }
     }
 

@@ -22,19 +22,14 @@ public class IEmailServiceDeploy implements EmailService {
 
     @Override
     public void sendPasswordViaEmail(@NotNull String email, @NotNull String password) {
-        try {
-            // Create message
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(username);
-            message.setTo(email);
-            message.setSubject("Password piattaforma Eventus");
-            message.setText("Password per la piattaforma Eventus: " + password);
-            // Send message. Will throw if it cannot send email
-            javaMailSender.send(message);
-        } catch (Exception e) {
-            log.error("Cannot send email", e);
-            throw e;
-        }
+        // Create message
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(username);
+        message.setTo(email);
+        message.setSubject("Password piattaforma Eventus");
+        message.setText("Password per la piattaforma Eventus: " + password);
+        // Send message. Will throw if it cannot send email
+        javaMailSender.send(message);
     }
 
 }

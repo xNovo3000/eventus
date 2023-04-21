@@ -36,10 +36,9 @@
                                 <a th:href="@{/login}" class="btn btn-secondary ms-2">Accedi</a>
                             </div>
                         </form>
-                        <div th:if="${param.invalid_email}" class="alert alert-danger" role="alert">
-                            Inserisci un indirizzo email valido
-                        </div>
-                        <div th:if="${param.user_already_registered}" class="alert alert-danger" role="alert">
+
+                        <!-- Error management -->
+                        <div class="alert alert-danger" th:if="${error == 'user_already_registered'}">
                             Username e/o email già in uso
                         </div>
                         <div th:if="${param.error}" class="alert alert-danger" role="alert">

@@ -35,12 +35,18 @@
                                 <a th:href="@{/register}" class="btn btn-secondary ms-2">Registrati</a>
                             </div>
                         </form>
+
+                        <!-- Error management -->
+                        <div class="alert alert-primary" th:if="${error == 'register_success'}">
+                            Utente registrato, controlla la casella email per la password
+                        </div>
                         <div th:if="${param.error}" class="alert alert-danger" role="alert">
                             Username e/o password errati
                         </div>
                         <div th:if="${param.logout}" class="alert alert-info" role="alert">
                             Logout avvenuto con successo
                         </div>
+
                     </div>
 
                 </div>
