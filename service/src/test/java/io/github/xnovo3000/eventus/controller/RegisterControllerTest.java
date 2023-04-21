@@ -73,7 +73,7 @@ public class RegisterControllerTest {
     @Test
     public void registerNewUser_InvalidEmail() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user101test.com".getBytes());
+        Part email = new MockPart("email", "user101eventus.com".getBytes());
         Part username = new MockPart("username", "user101".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
@@ -81,6 +81,20 @@ public class RegisterControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.log());
+    }
+
+    @Test
+    public void registerNewUser_CrashTest() throws Exception {
+        // Generate form fields
+        Part email = new MockPart("email", "crash_test@eventus.com".getBytes());
+        Part username = new MockPart("username", "user101".getBytes());
+        // Make request
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
+                        .part(email, username)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
                 .andDo(MockMvcResultHandlers.log());
     }
 
