@@ -4,10 +4,12 @@ import io.github.xnovo3000.eventus.api.dto.input.ProposeEventDto;
 import io.github.xnovo3000.eventus.api.dto.input.RateFormDto;
 import io.github.xnovo3000.eventus.api.service.EventService;
 import io.github.xnovo3000.eventus.api.util.DtoMapper;
+import io.github.xnovo3000.eventus.exception.ResourceNotFoundException;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,9 +35,9 @@ public class EventController {
     ) {
         // Inject error
         model.addAttribute("error", error);
-        // Add to the attributes if present
-        eventService.getById(id)
-                .ifPresent(eventDto -> model.addAttribute("event", eventDto));
+        // Add to the attributes if present, throw 404 if not found
+        val eventDto = eventService.getById(id).orElseThrow(ResourceNotFoundException::new);
+        model.addAttribute("event", eventDto);
         // Render HTML
         return "page/event";
     }
