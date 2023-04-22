@@ -19,7 +19,8 @@
         <div class="container-md">
             <h1><span th:text="${header}"></span></h1>
             <p><span th:text="${content}"></span></p>
-            <button type="button" class="btn btn-primary" th:href="@{/}">Torna alla schermata iniziale</button>
+            <p>Errore da segnalare: <span th:text="${error}"></span></p>
+            <a class="btn btn-primary" th:href="@{/}">Torna alla schermata iniziale</a>
         </div>
 
         <!-- Boostrap JS -->
