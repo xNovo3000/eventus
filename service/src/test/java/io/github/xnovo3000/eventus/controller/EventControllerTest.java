@@ -37,7 +37,9 @@ public class EventControllerTest {
         val newAuthority = new Authority();
         newAuthority.setUser(userRepository.findByUsername("user1").orElseThrow());
         newAuthority.setName("EVENT_MANAGER");
-        authorityRepository.save(newAuthority);
+        try {
+            authorityRepository.save(newAuthority);
+        } catch (Exception ignored) {}
     }
 
     @Test

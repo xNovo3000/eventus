@@ -1,6 +1,5 @@
-package io.github.xnovo3000.eventus.controller;
+package io.github.xnovo3000.eventus.exception;
 
-import io.github.xnovo3000.eventus.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
