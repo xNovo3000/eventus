@@ -2,6 +2,7 @@ package io.github.xnovo3000.eventus.controller;
 
 import io.github.xnovo3000.eventus.api.dto.input.ProposeEventDto;
 import io.github.xnovo3000.eventus.api.dto.input.RateFormDto;
+import io.github.xnovo3000.eventus.api.dto.input.RemoveSubscriptionDto;
 import io.github.xnovo3000.eventus.api.service.EventService;
 import io.github.xnovo3000.eventus.api.util.DtoMapper;
 import io.github.xnovo3000.eventus.exception.ResourceNotFoundException;
@@ -102,6 +103,19 @@ public class EventController {
     ) {
         if (!eventService.rejectEvent(id)) {
             session.setAttribute("error", "approve_reject_error");
+        }
+        return String.format("redirect:%s", referer);
+    }
+
+    @PostMapping("/{id}/remove_subscription")
+    public String postRemoveSubscription(
+            @ModelAttribute @Valid RemoveSubscriptionDto dto,
+            @PathVariable Long id,
+            @RequestHeader String referer,
+            HttpSession session
+    ) {
+        if (!eventService.unsubscribeUserToEvent(id, dto.getUsername())) {
+            session.setAttribute("error", "remove_user_subscription_fail");
         }
         return String.format("redirect:%s", referer);
     }
