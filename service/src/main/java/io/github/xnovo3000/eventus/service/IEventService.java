@@ -329,4 +329,17 @@ public class IEventService implements EventService {
         }
     }
 
+    @Override
+    public boolean deleteOldUnapprovedEvents() {
+        log.info("deleteOldUnapprovedEvents called");
+        // Try to remove
+        try {
+            eventRepository.deleteAllByApprovedIsFalseAndStartIsBefore(OffsetDateTime.now());
+            return true;
+        } catch (Exception e) {
+            log.error("Cannot delete in batch", e);
+            return false;
+        }
+    }
+
 }

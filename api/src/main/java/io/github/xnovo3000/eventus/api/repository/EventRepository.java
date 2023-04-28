@@ -16,4 +16,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByApprovedIsTrueAndStartIsBeforeAndEndIsAfter(OffsetDateTime firstDate, OffsetDateTime secondDate);
     Page<Event> findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(OffsetDateTime firstDate, Pageable pageable);
     Page<Event> findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(OffsetDateTime firstDate, Pageable pageable);
+    void deleteAllByApprovedIsFalseAndStartIsBefore(OffsetDateTime now);
 }
