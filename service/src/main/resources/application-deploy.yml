@@ -27,6 +27,7 @@ io:
       eventus:
         user_page_size: 18
         event_page_size: 9
+        old_unapproved_event_removal_task_rate: 86400000
 
 logging:
   level:

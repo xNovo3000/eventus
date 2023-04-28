@@ -136,4 +136,11 @@ public interface EventService {
      */
     boolean rateEvent(long eventId, @NotNull RateFormDto dto, @NotNull String username);
 
+    /**
+     * Batch operation to remove old unapproved events and clean the database
+     *
+     * @return True if success, false otherwise
+     */
+    boolean deleteOldUnapprovedEvents();
+
 }
