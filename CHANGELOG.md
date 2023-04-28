@@ -5,6 +5,7 @@
 - Added better exception handling
 - Added an exception-handling case test
 - More tests, more code coverage
+- After a password change, now users are logged out
 
 ### Version 1.0.0 (current)
 - First release

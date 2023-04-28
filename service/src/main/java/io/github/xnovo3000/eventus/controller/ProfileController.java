@@ -39,10 +39,13 @@ public class ProfileController {
             @RequestHeader String referer,
             HttpSession session
     ) {
-        if (!userService.changePassword(dto)) {
+        if (userService.changePassword(dto)) {
+            session.invalidate();
+            return "redirect:/login";
+        } else {
             session.setAttribute("error", "profile_change_password_error");
+            return String.format("redirect:%s", referer);
         }
-        return String.format("redirect:%s", referer);
     }
 
 }

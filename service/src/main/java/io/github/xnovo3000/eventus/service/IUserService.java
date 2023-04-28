@@ -229,11 +229,13 @@ public class IUserService implements UserService {
         // Try to save
         try {
             userRepository.save(user);
-            return true;
         } catch (Exception e) {
             log.error("Cannot save user", e);
             return false;
         }
+        // Logout the user and return success
+        authenticationProxy.logout();
+        return true;
     }
 
 }
