@@ -31,4 +31,11 @@ public class JpaAuthenticationProxy {
         return Optional.of((JpaUserDetails) principal);
     }
 
+    /**
+     * Log out a user from the current session
+     */
+    public void logout() {
+        SecurityContextHolder.clearContext();
+    }
+
 }
