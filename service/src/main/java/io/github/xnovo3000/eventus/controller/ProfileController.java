@@ -40,7 +40,8 @@ public class ProfileController {
             HttpSession session
     ) {
         if (userService.changePassword(dto)) {
-            return "redirect:login";
+            session.invalidate();
+            return "redirect:/login";
         } else {
             session.setAttribute("error", "profile_change_password_error");
             return String.format("redirect:%s", referer);
