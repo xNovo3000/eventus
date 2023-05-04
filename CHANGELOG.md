@@ -1,6 +1,6 @@
 # Eventus changelog
 
-### Version 1.1.0 (develop)
+### Version 1.1.0 (current)
 - Removed MapStruct, replaced with custom implementation
 - Added better exception handling
 - Added an exception-handling case test
@@ -9,5 +9,5 @@
 - After a password change, now users are logged out
 - Event managers can unsubscribe users to events
 
-### Version 1.0.0 (current)
+### Version 1.0.0
 - First release
