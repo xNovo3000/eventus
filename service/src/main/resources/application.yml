@@ -18,3 +18,4 @@ io:
       eventus:
         user_page_size: 24
         event_page_size: 12
+        old_unapproved_event_removal_task_rate: 300000

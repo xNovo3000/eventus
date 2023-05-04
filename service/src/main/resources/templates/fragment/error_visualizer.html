@@ -37,6 +37,9 @@
         <div class="alert alert-danger" th:if="${error == 'profile_change_password_error'}">
             Non &#232; stato possibile cambiare la password dell'utente. Contatta l'amministratore
         </div>
+        <div class="alert alert-info" th:if="${error == 'remove_user_subscription_fail'}">
+            Non è stato possibile rimuovere questo utente. Sicuro di avere i permessi per farlo?
+        </div>
 
     </div>
 

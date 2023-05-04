@@ -36,7 +36,7 @@ public class RegisterControllerTest {
                         .part(email, username)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/login?register_success"))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/login"))
                 .andDo(MockMvcResultHandlers.log());
     }
 
@@ -51,12 +51,12 @@ public class RegisterControllerTest {
                         .part(email, username)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/register?error"))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/register"))
                 .andDo(MockMvcResultHandlers.log());
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     public void registerNewUser_FailUsernameAlreadyExist() throws Exception {
         // Generate form fields
         Part email = new MockPart("email", "user1@eventus.com".getBytes());
@@ -66,15 +66,14 @@ public class RegisterControllerTest {
                         .part(email, username)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/register?error"))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/register"))
                 .andDo(MockMvcResultHandlers.log());
     }
 
     @Test
-    @Order(4)
     public void registerNewUser_InvalidEmail() throws Exception {
         // Generate form fields
-        Part email = new MockPart("email", "user101test.com".getBytes());
+        Part email = new MockPart("email", "user101eventus.com".getBytes());
         Part username = new MockPart("username", "user101".getBytes());
         // Make request
         mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
@@ -82,6 +81,20 @@ public class RegisterControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.log());
+    }
+
+    @Test
+    public void registerNewUser_CrashTest() throws Exception {
+        // Generate form fields
+        Part email = new MockPart("email", "crash_test@eventus.com".getBytes());
+        Part username = new MockPart("username", "user101".getBytes());
+        // Make request
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/register")
+                        .part(email, username)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
                 .andDo(MockMvcResultHandlers.log());
     }
 

@@ -21,6 +21,7 @@
     <properties>
         <com.mysql.mysql-connector-j.version>8.0.33</com.mysql.mysql-connector-j.version>
         <org.hsqldb.hsqldb.version>2.7.1</org.hsqldb.hsqldb.version>
+        <org.postgresql.postgresql.version>42.6.0</org.postgresql.postgresql.version>
     </properties>
 
     <dependencies>
@@ -94,6 +95,15 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>application.yml</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>

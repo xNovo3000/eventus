@@ -6,7 +6,6 @@ import io.github.xnovo3000.eventus.api.dto.output.EventDto;
 import io.github.xnovo3000.eventus.api.dto.input.ProposeEventDtoZoned;
 import io.github.xnovo3000.eventus.api.entity.Event;
 import io.github.xnovo3000.eventus.api.entity.Subscription;
-import io.github.xnovo3000.eventus.api.entity.User;
 import io.github.xnovo3000.eventus.api.repository.EventRepository;
 import io.github.xnovo3000.eventus.api.repository.SubscriptionRepository;
 import io.github.xnovo3000.eventus.api.repository.UserRepository;
@@ -181,19 +180,19 @@ public class IEventService implements EventService {
     public boolean subscribeUserToEvent(long eventId, @NotNull String username) {
         log.info("subscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
         // Get the event
-        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        val maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
             log.info("Event not found");
             return false;
         }
         Event event = maybeEvent.get();
         // Get the user
-        Optional<User> maybeUser = userRepository.findByUsername(username);
+        val maybeUser = userRepository.findByUsername(username);
         if (maybeUser.isEmpty()) {
             log.info("User not found");
             return false;
         }
-        User user = maybeUser.get();
+        val user = maybeUser.get();
         // The event must be approved
         if (!event.getApproved()) {
             log.info("This event is not approved");
@@ -224,7 +223,7 @@ public class IEventService implements EventService {
             return false;
         }
         // Create the subscription bean
-        Subscription subscription = new Subscription();
+        val subscription = new Subscription();
         subscription.setUser(user);
         subscription.setEvent(event);
         // Try to insert into the datasource
@@ -241,19 +240,19 @@ public class IEventService implements EventService {
     public boolean unsubscribeUserToEvent(long eventId, @NotNull String username) {
         log.info("unsubscribeUserToEvent called with eventId: " + eventId + " and username: " + username);
         // Get the event
-        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        val maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
             log.info("Event not found");
             return false;
         }
         Event event = maybeEvent.get();
         // Get the user
-        Optional<User> maybeUser = userRepository.findByUsername(username);
+        val maybeUser = userRepository.findByUsername(username);
         if (maybeUser.isEmpty()) {
             log.info("User not found");
             return false;
         }
-        User user = maybeUser.get();
+        val user = maybeUser.get();
         // The event must be approved
         if (!event.getApproved()) {
             log.info("This event is not approved");
@@ -265,12 +264,12 @@ public class IEventService implements EventService {
             return false;
         }
         // Get the subscription bean
-        Optional<Subscription> maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);
+        val maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);
         if (maybeSubscription.isEmpty()) {
             log.info("User is not subscribed to the event");
             return false;
         }
-        Subscription subscription = maybeSubscription.get();
+        val subscription = maybeSubscription.get();
         // Try to delete
         try {
             subscriptionRepository.delete(subscription);
@@ -285,7 +284,7 @@ public class IEventService implements EventService {
     public boolean rateEvent(long eventId, @NotNull RateFormDto dto, @NotNull String username) {
         log.info("rateEvent called with eventId: " + eventId + ", payload: " + dto + " and username: " + username);
         // Get the event
-        Optional<Event> maybeEvent = eventRepository.findById(eventId);
+        val maybeEvent = eventRepository.findById(eventId);
         if (maybeEvent.isEmpty()) {
             log.info("Event not found");
             return false;
@@ -298,19 +297,19 @@ public class IEventService implements EventService {
             return false;
         }
         // Get the user
-        Optional<User> maybeUser = userRepository.findByUsername(username);
+        val maybeUser = userRepository.findByUsername(username);
         if (maybeUser.isEmpty()) {
             log.info("User not found");
             return false;
         }
-        User user = maybeUser.get();
+        val user = maybeUser.get();
         // Get subscription
-        Optional<Subscription> maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);
+        val maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);
         if (maybeSubscription.isEmpty()) {
             log.info("Subscription not found");
             return false;
         }
-        Subscription subscription = maybeSubscription.get();
+        val subscription = maybeSubscription.get();
         // Check if the event has already been rated
         if (subscription.getRating() != null || subscription.getComment() != null) {
             log.info("The event has already been rated");
@@ -325,6 +324,19 @@ public class IEventService implements EventService {
             return true;
         } catch (Exception e) {
             log.error("Cannot save subscription", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteOldUnapprovedEvents() {
+        log.info("deleteOldUnapprovedEvents called");
+        // Try to remove
+        try {
+            eventRepository.deleteAllByApprovedIsFalseAndStartIsBefore(OffsetDateTime.now());
+            return true;
+        } catch (Exception e) {
+            log.error("Cannot delete in batch", e);
             return false;
         }
     }
