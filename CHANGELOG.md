@@ -1,6 +1,9 @@
 # Eventus changelog
 
-### Version 1.1.0 (current)
+### Version 1.1.1
+- Fixed CHANGELOG.md, README.md
+
+### Version 1.1.0
 - Removed MapStruct, replaced with custom implementation
 - Added better exception handling
 - Added an exception-handling case test

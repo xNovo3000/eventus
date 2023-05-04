@@ -11,9 +11,9 @@ To run tests MySQL is not needed
 
 ## Getting stared: deploy profile
 
-Required files:
+Required things:
 - ```application-deploy.yml``` to inject into ```/opt/app/config```
-- ```schema.sql``` to inject in the database, a default ```schema-mysql.sql``` can be found inside API resources
+- A working MySQL database with all the required tables
 
 ### Generate Javadoc
 
