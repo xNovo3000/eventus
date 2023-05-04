@@ -11,14 +11,9 @@ To run tests MySQL is not needed
 
 ## Getting stared: deploy profile
 
-Required environment variables:
-- DATABASE_FQDN (like ```my-database.server.com```)
-- DATABASE_USERNAME
-- DATABASE_PASSWORD
-- EMAIL_SMTP
-- EMAIL_PORT
-- EMAIL_USERNAME
-- EMAIL_PASSWORD
+Required things:
+- ```application-deploy.yml``` to inject into ```/opt/app/config```
+- A working MySQL database with all the required tables
 
 ### Generate Javadoc
 
