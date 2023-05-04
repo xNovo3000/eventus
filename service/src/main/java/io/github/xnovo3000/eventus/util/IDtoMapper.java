@@ -55,9 +55,17 @@ public class IDtoMapper implements DtoMapper {
         eventCardDto.setEnd(event.getEnd());
         eventCardDto.setApproved(event.getApproved());
         eventCardDto.setSeats(event.getSeats());
-        eventCardDto.setDescription(event.getDescription().substring(0, Math.min(event.getDescription().length(), 96)));
+        if (event.getDescription().length() < 96) {
+            eventCardDto.setDescription(event.getDescription());
+        } else {
+            eventCardDto.setDescription(event.getDescription().substring(0, 96) + "...");
+        }
         eventCardDto.setOccupiedSeats(event.getHoldings().size());
-        eventCardDto.setCanSubscribe(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)));
+        if (username != null) {
+            eventCardDto.setCanSubscribe(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)));
+        } else {
+            eventCardDto.setCanSubscribe(false);
+        }
         eventCardDto.setCanUnsubscribe(event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)));
         return eventCardDto;
     }
