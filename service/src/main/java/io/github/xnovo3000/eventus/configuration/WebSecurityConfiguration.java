@@ -52,6 +52,7 @@ public class WebSecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/event/*/rate").authenticated()
                 .requestMatchers(HttpMethod.POST, "/event/*/approve").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/event/*/reject").hasAuthority("EVENT_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/event/*/remove_subscription").hasAuthority("EVENT_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/event/propose").authenticated()
                 // HistoryController
                 .requestMatchers(HttpMethod.GET, "/history").hasAuthority("EVENT_MANAGER")

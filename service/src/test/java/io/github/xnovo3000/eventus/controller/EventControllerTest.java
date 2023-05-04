@@ -52,8 +52,8 @@ public class EventControllerTest {
     }
 
     @Test
-    @Order(2)
     @WithUserDetails("user0")
+    @Order(12)
     public void get_Ok() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/event/1")
                         .header("Referer", "/event/1")
@@ -151,6 +151,7 @@ public class EventControllerTest {
 
     @Test
     @WithUserDetails("user1")
+    @Order(11)
     public void approve_Ok() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/event/1/approve")
                         .header("Referer", "/event/1")
@@ -189,6 +190,45 @@ public class EventControllerTest {
 
     @Test
     @WithAnonymousUser
+    public void postRemoveSubscription_NotLogged() throws Exception {
+        val usernamePart = new MockPart("username", "user0".getBytes());
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/event/1/remove_subscription")
+                        .part(usernamePart)
+                        .header("Referer", "/event/1")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andDo(MockMvcResultHandlers.log());
+    }
+
+    @Test
+    @WithUserDetails("user0")
+    public void postRemoveSubscription_NotEventManager() throws Exception {
+        val usernamePart = new MockPart("username", "user0".getBytes());
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/event/1/remove_subscription")
+                        .part(usernamePart)
+                        .header("Referer", "/event/1")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andDo(MockMvcResultHandlers.log());
+    }
+
+    @Test
+    @WithUserDetails("user1")
+    public void postRemoveSubscription_Ok() throws Exception {
+        val usernamePart = new MockPart("username", "user0".getBytes());
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/event/1/remove_subscription")
+                        .part(usernamePart)
+                        .header("Referer", "/event/1")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andDo(MockMvcResultHandlers.log());
+    }
+
+    @Test
+    @WithAnonymousUser
     public void propose_NotLogged() throws Exception {
         val name = new MockPart("name", "Event 1".getBytes());
         val description = new MockPart("description", "Description 1".getBytes());
@@ -204,8 +244,8 @@ public class EventControllerTest {
     }
 
     @Test
-    @Order(1)
     @WithUserDetails("user0")
+    @Order(10)
     public void propose_Ok() throws Exception {
         val name = new MockPart("name", "Event 1".getBytes());
         val description = new MockPart("description", "Description 1".getBytes());
