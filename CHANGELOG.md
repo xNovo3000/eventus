@@ -1,6 +1,9 @@
 # Eventus changelog
 
-### Version 1.1.1
+### Version 1.2.0 (develop)
+- Major code refactoring, now there is only one module
+
+### Version 1.1.1 (main)
 - Fixed CHANGELOG.md, README.md
 
 ### Version 1.1.0
