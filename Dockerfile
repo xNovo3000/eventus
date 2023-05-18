@@ -1,10 +1,7 @@
-FROM maven:3.9.1-eclipse-temurin-17-alpine AS base
+FROM maven:3.9.2-eclipse-temurin-17-alpine AS base
 WORKDIR /workspace
+COPY /src /workspace/src
 COPY pom.xml /workspace/pom.xml
-COPY /api/src /workspace/api/src
-COPY /api/pom.xml /workspace/api/pom.xml
-COPY /service/src /workspace/service/src
-COPY /service/pom.xml /workspace/service/pom.xml
 RUN mvn clean package -Dmaven.test.skip=true
 
 FROM eclipse-temurin:17.0.7_7-jre-ubi9-minimal
