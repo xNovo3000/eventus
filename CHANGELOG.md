@@ -1,7 +1,8 @@
 # Eventus changelog
 
 ### Version 1.2.0 (develop)
-- Major code refactoring, now there is only one module
+- pom.xml refactoring
+- Updated to Spring Boot 3.1.0
 
 ### Version 1.1.1 (main)
 - Fixed CHANGELOG.md, README.md
