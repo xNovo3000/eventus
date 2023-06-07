@@ -1,6 +1,7 @@
 FROM maven:3.9.2-eclipse-temurin-17-alpine AS base
 WORKDIR /workspace
-COPY /src /workspace/src
+COPY /api /workspace/api
+COPY /service /workspace/service
 COPY pom.xml /workspace/pom.xml
 RUN mvn clean package -Dmaven.test.skip=true
 
