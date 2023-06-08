@@ -1,11 +1,13 @@
 # Eventus changelog
 
-### Version 1.2.0 (develop)
+### Version 1.2.0 (main)
 - Complete pom.xml refactoring
 - Updated to Spring Boot 3.1.0
 - Updated Dockerfile
+- Updated dependencies
+- Switched to Postgres in develop
 
-### Version 1.1.1 (main)
+### Version 1.1.1
 - Fixed CHANGELOG.md, README.md
 
 ### Version 1.1.0

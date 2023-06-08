@@ -14,7 +14,7 @@
 
     <groupId>io.github.xnovo3000.eventus</groupId>
     <artifactId>service</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
 
     <properties>
         <com.mysql.mysql-connector-j.version>8.0.33</com.mysql.mysql-connector-j.version>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>io.github.xnovo3000.eventus</groupId>
             <artifactId>api</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
+            <version>1.2.0</version>
         </dependency>
 
         <dependency>
