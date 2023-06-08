@@ -1,6 +1,10 @@
 # Eventus changelog
 
-### Version 1.2.0 (main)
+### Version 1.2.1 (main)
+- Fixed pom.xml output names
+- Now application-*.yml and other patterns are not included in the JAR (see service/pom.xml)
+
+### Version 1.2.0
 - Complete pom.xml refactoring
 - Updated to Spring Boot 3.1.0
 - Updated Dockerfile
