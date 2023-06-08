@@ -14,6 +14,7 @@
 
     <groupId>io.github.xnovo3000.eventus</groupId>
     <artifactId>api</artifactId>
+    <name>eventus-api</name>
     <version>1.2.0</version>
 
     <properties>
@@ -63,11 +64,8 @@
     </dependencies>
 
     <build>
+        <finalName>${project.name}-${project.version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -80,6 +78,10 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
