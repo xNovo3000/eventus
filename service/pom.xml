@@ -14,10 +14,10 @@
 
     <groupId>io.github.xnovo3000.eventus</groupId>
     <artifactId>service</artifactId>
-    <version>1.2.0</version>
+    <name>eventus-service</name>
+    <version>1.2.1</version>
 
     <properties>
-        <com.mysql.mysql-connector-j.version>8.0.33</com.mysql.mysql-connector-j.version>
         <lombok.version>1.18.28</lombok.version>
         <java.version>17</java.version>
         <org.hsqldb.hsqldb.version>2.7.1</org.hsqldb.hsqldb.version>
@@ -116,11 +116,8 @@
     </dependencies>
 
     <build>
+        <finalName>${project.name}-${project.version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -133,6 +130,22 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/application.properties</exclude>
+                        <exclude>**/application-*.properties</exclude>
+                        <exclude>**/application.yml</exclude>
+                        <exclude>**/application-*.yml</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
