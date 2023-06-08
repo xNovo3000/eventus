@@ -7,7 +7,6 @@ import io.github.xnovo3000.eventus.api.service.UserService;
 import io.github.xnovo3000.eventus.exception.EventusDemoException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Primary;
@@ -23,7 +22,6 @@ import java.util.Objects;
 @Primary
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class IUserServiceDefaultProxy implements UserService {
 
     private final IUserService userService;

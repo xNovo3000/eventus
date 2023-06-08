@@ -44,54 +44,55 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set authorization for endpoints
-        http.authorizeHttpRequests()
-                // EventController
-                .requestMatchers(HttpMethod.GET, "/event/*").authenticated()
-                .requestMatchers(HttpMethod.POST, "/event/*/subscribe").authenticated()
-                .requestMatchers(HttpMethod.POST, "/event/*/unsubscribe").authenticated()
-                .requestMatchers(HttpMethod.POST, "/event/*/rate").authenticated()
-                .requestMatchers(HttpMethod.POST, "/event/*/approve").hasAuthority("EVENT_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/event/*/reject").hasAuthority("EVENT_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/event/*/remove_subscription").hasAuthority("EVENT_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/event/propose").authenticated()
-                // HistoryController
-                .requestMatchers(HttpMethod.GET, "/history").hasAuthority("EVENT_MANAGER")
-                // HomeController
-                .requestMatchers(HttpMethod.GET, "/").authenticated()
-                // RegisterController
-                .requestMatchers(HttpMethod.GET, "/register").permitAll()
-                .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                // ProfileController
-                .requestMatchers(HttpMethod.GET, "/profile").authenticated()
-                .requestMatchers(HttpMethod.POST, "/profile/change_password").authenticated()
-                // ProposedController
-                .requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/proposed/change_password").hasAuthority("EVENT_MANAGER")
-                // UserController
-                .requestMatchers(HttpMethod.GET, "/user").hasAuthority("USER_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/user/*/enable").hasAuthority("USER_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/user/*/disable").hasAuthority("USER_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/user/*/reset_password").hasAuthority("USER_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/user/*/update_authorities").hasAuthority("USER_MANAGER")
-                // Error manager
-                .requestMatchers("/error").permitAll()
-                // Less privileges by default
-                .anyRequest().hasAuthority("unreachable");
+        http.authorizeHttpRequests((customizer) -> {
+            customizer.requestMatchers(HttpMethod.GET, "/event/*").authenticated();
+            customizer.requestMatchers(HttpMethod.POST, "/event/*/subscribe").authenticated();
+            customizer.requestMatchers(HttpMethod.POST, "/event/*/unsubscribe").authenticated();
+            customizer.requestMatchers(HttpMethod.POST, "/event/*/rate").authenticated();
+            customizer.requestMatchers(HttpMethod.POST, "/event/*/approve").hasAuthority("EVENT_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/event/*/reject").hasAuthority("EVENT_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/event/*/remove_subscription").hasAuthority("EVENT_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/event/propose").authenticated();
+            // HistoryController
+            customizer.requestMatchers(HttpMethod.GET, "/history").hasAuthority("EVENT_MANAGER");
+            // HomeController
+            customizer.requestMatchers(HttpMethod.GET, "/").authenticated();
+            // RegisterController
+            customizer.requestMatchers(HttpMethod.GET, "/register").permitAll();
+            customizer.requestMatchers(HttpMethod.POST, "/register").permitAll();
+            // ProfileController
+            customizer.requestMatchers(HttpMethod.GET, "/profile").authenticated();
+            customizer.requestMatchers(HttpMethod.POST, "/profile/change_password").authenticated();
+            // ProposedController
+            customizer.requestMatchers(HttpMethod.GET, "/proposed").hasAuthority("EVENT_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/proposed/change_password").hasAuthority("EVENT_MANAGER");
+            // UserController
+            customizer.requestMatchers(HttpMethod.GET, "/user").hasAuthority("USER_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/user/*/enable").hasAuthority("USER_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/user/*/disable").hasAuthority("USER_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/user/*/reset_password").hasAuthority("USER_MANAGER");
+            customizer.requestMatchers(HttpMethod.POST, "/user/*/update_authorities").hasAuthority("USER_MANAGER");
+            // Error manager
+            customizer.requestMatchers("/error").permitAll();
+            // Less privileges by default
+            customizer.anyRequest().hasAuthority("unreachable");
+        });
         // Set error interceptor
         http.addFilterAfter(new ErrorInterceptor(), SwitchUserFilter.class);
         // Set rememberMe cookie
-        http.rememberMe()
-                .key("session");
+        http.rememberMe((customizer) -> customizer.key("session"));
         // Enable login
-        http.formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/", true)
-                .permitAll();
+        http.formLogin((customizer) -> {
+            customizer.loginPage("/login");
+            customizer.defaultSuccessUrl("/", true);
+            customizer.permitAll();
+        });
         // Enable logout
-        http.logout()
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login")
-                .permitAll();
+        http.logout((customizer) -> {
+            customizer.deleteCookies("JSESSIONID");
+            customizer.logoutSuccessUrl("/login");
+            customizer.permitAll();
+        });
         // Build chain
         return http.build();
     }
