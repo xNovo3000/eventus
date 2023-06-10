@@ -11,6 +11,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  task:
+    scheduling:
+      pool:
+        size: 1
 
 io:
   github:

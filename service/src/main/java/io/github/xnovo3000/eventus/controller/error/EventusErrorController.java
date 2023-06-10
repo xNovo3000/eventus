@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Optional;
 
+/**
+ * Controller used in case of error. The error is intercepted and sent to a custom page
+ */
 @Controller
 @RequestMapping("/error")
 @Slf4j

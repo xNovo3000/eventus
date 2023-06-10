@@ -9,6 +9,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
 
+/**
+ * 'Subscription' table
+ */
 @Getter
 @Setter
 @NoArgsConstructor

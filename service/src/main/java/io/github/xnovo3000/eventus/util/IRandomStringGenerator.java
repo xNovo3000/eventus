@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
+/**
+ * Default implementation of RandomStringGenerator
+ */
 @Component
 @AllArgsConstructor
 public class IRandomStringGenerator implements RandomStringGenerator {

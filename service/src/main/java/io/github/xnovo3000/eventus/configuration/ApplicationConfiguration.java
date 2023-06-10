@@ -17,9 +17,9 @@ import java.util.Random;
 public class ApplicationConfiguration {
 
     /**
-     * Create a new Random bean
+     * Defines an implementation of Random, returning a SecureRandom
      *
-     * @return the Random implementation
+     * @return the Random interface
      */
     @Bean
     public Random random() {

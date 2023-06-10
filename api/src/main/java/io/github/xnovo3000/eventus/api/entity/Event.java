@@ -11,6 +11,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+/**
+ * 'Event table'
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -40,7 +43,7 @@ public class Event {
     @Column(nullable = false)
     private OffsetDateTime start;
 
-    @Column(name = "_end", nullable = false)
+    @Column(name = "_end", nullable = false)  // '_end' because on some databases 'end' is a reserved keyword
     private OffsetDateTime end;
 
     @Column(nullable = false)

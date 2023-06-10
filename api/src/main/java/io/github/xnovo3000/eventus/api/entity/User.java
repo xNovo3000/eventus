@@ -7,11 +7,14 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * 'User' table
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "_user")  // '_user' because on some databases 'user' is a reserved keyword
 public class User {
 
     @Id
