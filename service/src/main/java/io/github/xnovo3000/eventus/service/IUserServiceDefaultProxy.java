@@ -4,7 +4,6 @@ import io.github.xnovo3000.eventus.api.dto.input.ChangePasswordDto;
 import io.github.xnovo3000.eventus.api.dto.input.RegisterFormDto;
 import io.github.xnovo3000.eventus.api.dto.output.UserDto;
 import io.github.xnovo3000.eventus.api.service.UserService;
-import io.github.xnovo3000.eventus.exception.EventusDemoException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +29,7 @@ public class IUserServiceDefaultProxy implements UserService {
     public boolean registerNewUser(@NotNull RegisterFormDto registerFormDto) {
         // Crash if email is 'crash_test@eventus.com'
         if (Objects.equals(registerFormDto.getEmail(), "crash_test@eventus.com")) {
-            throw new EventusDemoException();
+            throw new RuntimeException("Eventus demo exception to test error page");
         }
         // Run proxied function
         return userService.registerNewUser(registerFormDto);
