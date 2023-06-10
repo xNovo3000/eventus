@@ -93,8 +93,6 @@ public class WebSecurityConfiguration {
             customizer.logoutSuccessUrl("/login");
             customizer.permitAll();
         });
-        // Handle 403
-        http.exceptionHandling((customizer) -> customizer.accessDeniedPage("/access_denied"));
         // Build chain
         return http.build();
     }

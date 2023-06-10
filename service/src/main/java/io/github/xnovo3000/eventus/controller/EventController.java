@@ -5,7 +5,6 @@ import io.github.xnovo3000.eventus.api.dto.input.RateFormDto;
 import io.github.xnovo3000.eventus.api.dto.input.RemoveSubscriptionDto;
 import io.github.xnovo3000.eventus.api.service.EventService;
 import io.github.xnovo3000.eventus.api.util.DtoMapper;
-import io.github.xnovo3000.eventus.exception.ResourceNotFoundException;
 import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,7 +36,7 @@ public class EventController {
         // Inject error
         model.addAttribute("error", error);
         // Add to the attributes if present, throw 404 if not found
-        val eventDto = eventService.getById(id).orElseThrow(ResourceNotFoundException::new);
+        val eventDto = eventService.getById(id);
         model.addAttribute("event", eventDto);
         // Render HTML
         return "page/event";
