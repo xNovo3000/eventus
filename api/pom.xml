@@ -15,7 +15,7 @@
     <groupId>io.github.xnovo3000.eventus</groupId>
     <artifactId>api</artifactId>
     <name>eventus-api</name>
-    <version>1.2.0</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     <properties>
         <lombok.version>1.18.28</lombok.version>
