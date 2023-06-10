@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+/**
+ * EmailService implementation on 'default' profile
+ */
 @Service
 @Profile("default")
 @Slf4j

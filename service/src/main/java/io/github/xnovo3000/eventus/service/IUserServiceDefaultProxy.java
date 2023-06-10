@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * UserService proxy to test UserService implementation when in 'default' profile
+ */
 @Service
 @Profile("default")
 @Primary

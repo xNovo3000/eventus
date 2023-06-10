@@ -13,8 +13,4 @@ To run tests MySQL is not needed
 
 Required things:
 - ```application-deploy.yml``` to inject into ```/opt/app/config```
-- A working MySQL database with all the required tables
-
-### Generate Javadoc
-
-```mvn javadoc:javadoc```
+- A working PostgreSQL database with all the required tables

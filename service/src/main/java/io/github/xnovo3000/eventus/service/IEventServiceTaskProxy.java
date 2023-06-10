@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * EventService proxy to execute scheduled tasks on an EventService
+ */
 @Component
 @Slf4j
 @RequiredArgsConstructor

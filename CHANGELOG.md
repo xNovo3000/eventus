@@ -2,6 +2,7 @@
 
 ### Version 1.3.0 (develop)
 - Better error management
+- Better Javadoc
 
 ### Version 1.2.1 (main)
 - Fixed pom.xml output names
