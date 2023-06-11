@@ -48,14 +48,13 @@ public class IUserService implements UserService {
 
     @Override
     public boolean registerNewUser(@NotNull RegisterFormDto registerFormDto) {
-        log.info("registerNewUser called with payload: " + registerFormDto);
         // Check if username and/or password already exist in the database
         if (userRepository.findByEmail(registerFormDto.getEmail()).isPresent()) {
-            log.info("Email " + registerFormDto.getEmail() + " already exist");
+            log.info("Email already exist");
             return false;
         }
         if (userRepository.findByUsername(registerFormDto.getUsername()).isPresent()) {
-            log.info("Username " + registerFormDto.getUsername() + " already exist");
+            log.info("Username already exist");
             return false;
         }
         // Generate a new password
@@ -95,7 +94,6 @@ public class IUserService implements UserService {
 
     @Override
     public boolean disable(long userId) {
-        log.info("disable called with userId: " + userId);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
@@ -121,7 +119,6 @@ public class IUserService implements UserService {
 
     @Override
     public boolean enable(long userId) {
-        log.info("enable called with userId: " + userId);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
@@ -147,7 +144,6 @@ public class IUserService implements UserService {
 
     @Override
     public boolean resetPassword(long userId) {
-        log.info("resetPassword called with userId: " + userId);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
@@ -175,7 +171,6 @@ public class IUserService implements UserService {
 
     @Override
     public boolean updateAuthorities(long userId, @NotNull List<String> authorities) {
-        log.info("updatePermissions called with userId: " + userId + " and authorities: " + authorities);
         // Check if user exists
         val maybeUser = userRepository.findById(userId);
         if (maybeUser.isEmpty()) {
@@ -216,7 +211,6 @@ public class IUserService implements UserService {
 
     @Override
     public boolean changePassword(@NotNull ChangePasswordDto dto) {
-        log.info("changePassword called with payload: " + dto);
         // Get current username
         val username = authenticationProxy.getUserDetails()
                 .map(JpaUserDetails::getUsername).orElse(null);
