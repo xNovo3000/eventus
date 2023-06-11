@@ -167,11 +167,9 @@ public class IEventService implements EventService {
             log.info("This event is already approved");
             return false;
         }
-        // Set approved
-        event.setApproved(false);
-        // Try to save
+        // Try to delete
         try {
-            eventRepository.save(event);
+            eventRepository.delete(event);
             return true;
         } catch (Exception e) {
             log.error("Cannot save event", e);

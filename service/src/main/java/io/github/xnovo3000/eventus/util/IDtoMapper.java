@@ -15,6 +15,8 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -26,6 +28,9 @@ public class IDtoMapper implements DtoMapper {
     @Override
     public @NotNull EventDto toEventDto(@NotNull Event event, String username) {
         val eventDto = new EventDto();
+        val isUserSubscribed = event.getHoldings().stream().anyMatch((subscription) -> Objects.equals(username, subscription.getUser().getUsername()));
+        val isEventNotStartedAlready = event.getStart().isAfter(OffsetDateTime.now());
+        val isEventFinished = event.getEnd().isBefore(OffsetDateTime.now());
         eventDto.setCreatorUsername(event.getCreator().getUsername());
         eventDto.setId(event.getId());
         eventDto.setName(event.getName());
@@ -36,6 +41,9 @@ public class IDtoMapper implements DtoMapper {
         eventDto.setApproved(event.getApproved());
         eventDto.setSeats(event.getSeats());
         eventDto.setHoldings(event.getHoldings().stream().map(this::toSubscriptionDto).toList());
+        eventDto.setCanSubscribe(event.getApproved() && isEventNotStartedAlready && !isUserSubscribed);
+        eventDto.setCanUnsubscribe(event.getApproved() && isEventNotStartedAlready && isUserSubscribed);
+        eventDto.setCanRate(event.getApproved() && isEventFinished && isUserSubscribed);
         return eventDto;
     }
 

@@ -9,7 +9,7 @@ import io.github.xnovo3000.eventus.security.JpaUserDetails;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +22,7 @@ import java.util.TimeZone;
 @RequestMapping("/event")
 @Validated
 @AllArgsConstructor
+@Slf4j
 public class EventController {
 
     private final EventService eventService;
@@ -36,10 +37,14 @@ public class EventController {
         // Inject error
         model.addAttribute("error", error);
         // Add to the attributes if present, throw 404 if not found
-        val eventDto = eventService.getById(id);
-        model.addAttribute("event", eventDto);
-        // Render HTML
-        return "page/event";
+        return eventService.getById(id)
+                .map((eventDto) -> {
+                    // Inject event and client timezone
+                    model.addAttribute("event", eventDto);
+                    // Render HTML
+                    return "page/event";
+                })
+                .orElse("page/event_not_found");
     }
 
     @PostMapping("/{id}/subscribe")
@@ -126,6 +131,7 @@ public class EventController {
             HttpSession session,
             TimeZone timeZone
     ) {
+        log.info("postProposed called with dto: " + dto + " and timezone: " + timeZone);
         return eventService.proposeEvent(dtoMapper.toProposeEventDtoZoned(dto, timeZone))
                 .map(eventId -> String.format("redirect:/event/%d", eventId))
                 .orElseGet(() -> {

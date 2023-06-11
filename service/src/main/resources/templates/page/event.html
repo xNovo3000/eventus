@@ -25,7 +25,7 @@
             <!-- Alert when you cannot participate or not participate -->
             <div th:replace="~{fragment/error_visualizer :: error_fragment}"></div>
 
-            <div class="row" th:if="${event != null}">
+            <div class="row">
 
                 <!-- Left side: info about the event -->
                 <div class="col-12 col-lg-6 mb-2">
@@ -65,10 +65,6 @@
                     </ul>
                 </div>
 
-            </div>
-
-            <div class="row" th:if="${event == null}">
-                <h1>Questo evento non esiste</h1>
             </div>
 
         </div>
