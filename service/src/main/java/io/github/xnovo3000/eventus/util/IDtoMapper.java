@@ -28,9 +28,12 @@ public class IDtoMapper implements DtoMapper {
     @Override
     public @NotNull EventDto toEventDto(@NotNull Event event, String username) {
         val eventDto = new EventDto();
-        val isUserSubscribed = event.getHoldings().stream().anyMatch((subscription) -> Objects.equals(username, subscription.getUser().getUsername()));
+        val isUserSubscribed = event.getHoldings().stream().anyMatch(subscription -> Objects.equals(username, subscription.getUser().getUsername()));
         val isEventNotStartedAlready = event.getStart().isAfter(OffsetDateTime.now());
         val isEventFinished = event.getEnd().isBefore(OffsetDateTime.now());
+        val isAlreadyRated = event.getHoldings().stream()
+                .filter(subscription -> Objects.equals(username, subscription.getUser().getUsername()))
+                .anyMatch(subscription -> subscription.getRating() != null && subscription.getComment() != null);
         eventDto.setCreatorUsername(event.getCreator().getUsername());
         eventDto.setId(event.getId());
         eventDto.setName(event.getName());
@@ -43,7 +46,7 @@ public class IDtoMapper implements DtoMapper {
         eventDto.setHoldings(event.getHoldings().stream().map(this::toSubscriptionDto).toList());
         eventDto.setCanSubscribe(event.getApproved() && isEventNotStartedAlready && !isUserSubscribed);
         eventDto.setCanUnsubscribe(event.getApproved() && isEventNotStartedAlready && isUserSubscribed);
-        eventDto.setCanRate(event.getApproved() && isEventFinished && isUserSubscribed);
+        eventDto.setCanRate(event.getApproved() && isEventFinished && !isAlreadyRated && isUserSubscribed);
         return eventDto;
     }
 

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.TimeZone;
+
 @Controller
 @RequestMapping("/history")
 @Validated
@@ -21,10 +23,12 @@ public class HistoryController {
     @GetMapping
     public String get(
             Model model,
-            @RequestParam(defaultValue = "1") @Min(1) Integer page
+            @RequestParam(defaultValue = "1") @Min(1) Integer page,
+            TimeZone timeZone
     ) {
         // Get event history
         model.addAttribute("events", eventService.getHistory(page));
+        model.addAttribute("timezone", timeZone);
         model.addAttribute("page", page);
         // Render HTML
         return "page/history";

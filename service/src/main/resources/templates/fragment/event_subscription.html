@@ -12,7 +12,7 @@
                 <div>
                     <div class="d-flex align-items-center">
                         <span class="h6 m-1 flex-fill" th:text="${subscriptionDto.username}">Test 1</span>
-                        <span class="h6 m-1 text-muted" th:text="${#temporals.format(subscriptionDto.creationDate, 'd/M/yyyy H:mm')}">5/6/2022 12:33</span>
+                        <span class="h6 m-1 text-muted" th:text="${#temporals.format(subscriptionDto.creationDate.atZoneSameInstant(timezone), 'd/M/yyyy H:mm')}">5/6/2022 12:33</span>
                         <form sec:authorize="hasAuthority('EVENT_MANAGER')" th:action="@{/event/{id}/remove_subscription(id=${event.id})}" method="post">
                             <input type="hidden" name="username" id="subscription-username" th:value="${subscriptionDto.username}" required>
                             <button type="submit" class="btn btn-outline-danger"><i class="bi bi-person-dash"></i></button>

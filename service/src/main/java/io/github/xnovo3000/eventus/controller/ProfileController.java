@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.TimeZone;
+
 @Controller
 @RequestMapping("/profile")
 @Validated
@@ -24,11 +26,13 @@ public class ProfileController {
     @GetMapping
     public String get(
             Model model,
-            @RequestParam(defaultValue = "1") @Min(1) Integer page
+            @RequestParam(defaultValue = "1") @Min(1) Integer page,
+            TimeZone timeZone
     ) {
         // Get event history
         model.addAttribute("events", eventService.getEventsThatUserParticipated(page));
         model.addAttribute("page", page);
+        model.addAttribute("timezone", timeZone);
         // Render HTML
         return "page/profile";
     }

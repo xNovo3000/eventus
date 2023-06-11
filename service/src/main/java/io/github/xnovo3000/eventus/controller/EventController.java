@@ -32,7 +32,8 @@ public class EventController {
     public String get(
             Model model,
             @RequestAttribute(required = false) String error,
-            @PathVariable Long id
+            @PathVariable Long id,
+            TimeZone timeZone
     ) {
         // Inject error
         model.addAttribute("error", error);
@@ -41,6 +42,7 @@ public class EventController {
                 .map((eventDto) -> {
                     // Inject event and client timezone
                     model.addAttribute("event", eventDto);
+                    model.addAttribute("timezone", timeZone.toZoneId());
                     // Render HTML
                     return "page/event";
                 })

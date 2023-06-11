@@ -8,6 +8,7 @@
         <div class="row">
 
             <!--/*@thymesVar id="eventDto" type="io.github.xnovo3000.eventus.bean.dto.output.EventCardDto"*/-->
+            <!--/*@thymesVar id="timezone" type="java.util.TimeZone"*/-->
             <div class="card" th:fragment="eventCard">
                 <!-- Body with all the information of the event -->
                 <div class="card-body">
@@ -17,8 +18,8 @@
                     <p class="card-text">Posti occupati: <span th:text="${eventDto.occupiedSeats}"></span>/<span th:text="${eventDto.seats}"></span></p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Inizio: <span th:text="${#temporals.format(eventDto.start, 'd/M/yyyy H:mm')}"></span></li>
-                    <li class="list-group-item">Fine: <span th:text="${#temporals.format(eventDto.end, 'd/M/yyyy H:mm')}"></span></li>
+                    <li class="list-group-item">Inizio: <span th:text="${#temporals.format(eventDto.start.atZoneSameInstant(timezone), 'd/M/yyyy H:mm')}"></span></li>
+                    <li class="list-group-item">Fine: <span th:text="${#temporals.format(eventDto.end.atZoneSameInstant(timezone), 'd/M/yyyy H:mm')}"></span></li>
                 </ul>
                 <!-- Actions -->
                 <div class="card-body d-flex flex-wrap">

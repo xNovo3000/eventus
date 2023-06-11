@@ -36,9 +36,9 @@
                     <!-- Description -->
                     <p class="fs-5 my-2"><span th:text="${event.description}"></span></p>
                     <!-- Start date -->
-                    <h6 class="mb-1 text-muted">Inizio: <span th:text="${#temporals.format(event.start, 'd/M/yyyy H:mm')}"></span></h6>
+                    <h6 class="mb-1 text-muted">Inizio: <span th:text="${#temporals.format(event.start.atZoneSameInstant(timezone), 'd/M/yyyy H:mm')}"></span></h6>
                     <!-- End date -->
-                    <h6 class="text-muted">Fine: <span th:text="${#temporals.format(event.end, 'd/M/yyyy H:mm')}"></span></h6>
+                    <h6 class="text-muted">Fine: <span th:text="${#temporals.format(event.end.atZoneSameInstant(timezone), 'd/M/yyyy H:mm')}"></span></h6>
                     <!-- Actions -->
                     <div class="d-flex flex-wrap my-2">
                         <!-- Subscribe button -->

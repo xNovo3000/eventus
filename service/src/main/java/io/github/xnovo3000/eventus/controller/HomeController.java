@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.TimeZone;
+
 @Controller
 @RequestMapping("/")
 @Validated
@@ -20,7 +22,8 @@ public class HomeController {
     public String get(
             Model model,
             @RequestAttribute(required = false) String error,
-            @RequestParam(defaultValue = "1") @Min(1) Integer page
+            @RequestParam(defaultValue = "1") @Min(1) Integer page,
+            TimeZone timeZone
     ) {
         // Inject error
         model.addAttribute("error", error);
@@ -28,6 +31,8 @@ public class HomeController {
         model.addAttribute("page", page);
         model.addAttribute("ongoing_events", eventService.getOngoingEvents());
         model.addAttribute("future_events", eventService.getFutureEvents(page));
+        // Set timezone
+        model.addAttribute("timezone", timeZone);
         // Render HTML
         return "page/home";
     }
