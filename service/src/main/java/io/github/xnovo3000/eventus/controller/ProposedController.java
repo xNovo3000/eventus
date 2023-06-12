@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.TimeZone;
 
+/**
+ * Controller that handles '/proposed'
+ */
 @Controller
 @RequestMapping("/proposed")
 @AllArgsConstructor
@@ -16,6 +19,15 @@ public class ProposedController {
 
     private final EventService eventService;
 
+    /**
+     * Get the proposed events. EVENT_MANAGER is required
+     *
+     * @param model The UI model
+     * @param error The error attribute, if exists
+     * @param page The requested page
+     * @param timeZone The timezone of the client
+     * @return The page to render
+     */
     @GetMapping
     public String get(
             Model model,

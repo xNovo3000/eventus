@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.TimeZone;
 
+/**
+ * Controller that handles '/'
+ */
 @Controller
 @RequestMapping("/")
 @Validated
@@ -18,6 +21,15 @@ public class HomeController {
 
     private final EventService eventService;
 
+    /**
+     * Get the home page
+     *
+     * @param model The UI model
+     * @param error The error attribute, if exists
+     * @param page The requested page
+     * @param timeZone The timezone of the client
+     * @return The page to render
+     */
     @GetMapping
     public String get(
             Model model,

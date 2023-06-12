@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.TimeZone;
 
+/**
+ * Controller that handles '/history'
+ */
 @Controller
 @RequestMapping("/history")
 @Validated
@@ -20,6 +23,14 @@ public class HistoryController {
 
     private final EventService eventService;
 
+    /**
+     * Get the history with the page
+     *
+     * @param model The UI model
+     * @param page The requested page
+     * @param timeZone The timezone of the client
+     * @return The page to render
+     */
     @GetMapping
     public String get(
             Model model,

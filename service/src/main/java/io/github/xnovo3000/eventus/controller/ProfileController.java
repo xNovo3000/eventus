@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.TimeZone;
 
+/**
+ * Controller that handles '/profile'
+ */
 @Controller
 @RequestMapping("/profile")
 @Validated
@@ -23,6 +26,14 @@ public class ProfileController {
     private final EventService eventService;
     private final UserService userService;
 
+    /**
+     * Get the user's profile
+     *
+     * @param model The UI model
+     * @param page The requested page of event that user attended
+     * @param timeZone The timezone of the client
+     * @return The page to render
+     */
     @GetMapping
     public String get(
             Model model,
@@ -37,6 +48,14 @@ public class ProfileController {
         return "page/profile";
     }
 
+    /**
+     * Get the history with the page
+     *
+     * @param dto The change password DTO
+     * @param referer The page originating the request
+     * @param session The user's session
+     * @return The page to render
+     */
     @PostMapping("/change_password")
     public String postChangePassword(
             @ModelAttribute @Valid ChangePasswordDto dto,
