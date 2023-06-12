@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ErrorInterceptor</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.util</a>
+</div>
+
+<h1>Coverage Summary for Class: ErrorInterceptor (io.github.xnovo3000.eventus.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ErrorInterceptor</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71,4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.util;
+&nbsp;
+&nbsp;import jakarta.servlet.FilterChain;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;import lombok.val;
+&nbsp;import org.jetbrains.annotations.NotNull;
+&nbsp;import org.springframework.web.filter.OncePerRequestFilter;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Interceptor that runs for each HTTP request, removes the error attribute
+&nbsp; * from the session and injects it in the request attribute. This way
+&nbsp; * the error can be intercepted from Thymeleaf
+&nbsp; */
+<b class="fc">&nbsp;public class ErrorInterceptor extends OncePerRequestFilter {</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doFilterInternal(
+&nbsp;            @NotNull HttpServletRequest request,
+&nbsp;            @NotNull HttpServletResponse response,
+&nbsp;            @NotNull FilterChain filterChain
+&nbsp;    ) throws ServletException, IOException {
+&nbsp;        // Get session
+<b class="fc">&nbsp;        val session = request.getSession();</b>
+&nbsp;        // Remove error from session and set to the single request
+<b class="fc">&nbsp;        val error = session.getAttribute(&quot;error&quot;);</b>
+<b class="fc">&nbsp;        if (error != null) {</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;error&quot;, error);</b>
+<b class="nc">&nbsp;            session.removeAttribute(&quot;error&quot;);</b>
+&nbsp;        }
+&nbsp;        // Continue filter chain
+<b class="fc">&nbsp;        filterChain.doFilter(request, response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

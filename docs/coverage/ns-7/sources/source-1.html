@@ -1,0 +1,332 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EventController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: EventController (io.github.xnovo3000.eventus.controller)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventController</td>
+<td class="coverageStat">
+  <span class="percent">
+    91,7%
+  </span>
+  <span class="absValue">
+    (11/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84,8%
+  </span>
+  <span class="absValue">
+    (28/33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EventController$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    91,7%
+  </span>
+  <span class="absValue">
+    (11/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84,8%
+  </span>
+  <span class="absValue">
+    (28/33)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.controller;
+&nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.ProposeEventDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.RateFormDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.RemoveSubscriptionDto;
+&nbsp;import io.github.xnovo3000.eventus.api.service.EventService;
+&nbsp;import io.github.xnovo3000.eventus.api.util.DtoMapper;
+&nbsp;import io.github.xnovo3000.eventus.security.JpaUserDetails;
+&nbsp;import jakarta.servlet.http.HttpSession;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.springframework.security.core.annotation.AuthenticationPrincipal;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.ui.Model;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.TimeZone;
+&nbsp;
+&nbsp;/**
+&nbsp; * Controller that handles &#39;/event&#39;
+&nbsp; */
+&nbsp;@Controller
+&nbsp;@RequestMapping(&quot;/event&quot;)
+&nbsp;@Validated
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;public class EventController {
+&nbsp;
+&nbsp;    private final EventService eventService;
+&nbsp;    private final DtoMapper dtoMapper;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Display an event by its ID, if exists
+&nbsp;     *
+&nbsp;     * @param model The UI model
+&nbsp;     * @param error The error attribute, if exists
+&nbsp;     * @param id The event ID
+&nbsp;     * @param timeZone The timezone of the client
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public String get(
+&nbsp;            Model model,
+&nbsp;            @RequestAttribute(required = false) String error,
+&nbsp;            @PathVariable Long id,
+&nbsp;            TimeZone timeZone
+&nbsp;    ) {
+&nbsp;        // Inject error
+<b class="fc">&nbsp;        model.addAttribute(&quot;error&quot;, error);</b>
+&nbsp;        // Add to the attributes if present, throw 404 if not found
+<b class="fc">&nbsp;        return eventService.getById(id)</b>
+<b class="fc">&nbsp;                .map((eventDto) -&gt; {</b>
+&nbsp;                    // Inject event and client timezone
+<b class="fc">&nbsp;                    model.addAttribute(&quot;event&quot;, eventDto);</b>
+<b class="fc">&nbsp;                    model.addAttribute(&quot;timezone&quot;, timeZone.toZoneId());</b>
+&nbsp;                    // Render HTML
+<b class="fc">&nbsp;                    return &quot;page/event&quot;;</b>
+&nbsp;                })
+<b class="fc">&nbsp;                .orElse(&quot;page/event_not_found&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Subscribe to an event by its ID
+&nbsp;     *
+&nbsp;     * @param id The event ID
+&nbsp;     * @param referer The page originating the request
+&nbsp;     * @param userDetails The logged user
+&nbsp;     * @param session The user&#39;s session
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/{id}/subscribe&quot;)
+&nbsp;    public String postSubscribe(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestHeader String referer,
+&nbsp;            @AuthenticationPrincipal JpaUserDetails userDetails,
+&nbsp;            HttpSession session
+&nbsp;    ) {
+<b class="fc">&nbsp;        if (!eventService.subscribeUserToEvent(id, userDetails.getUsername())) {</b>
+<b class="nc">&nbsp;            session.setAttribute(&quot;error&quot;, &quot;subscribe_event_fail&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return String.format(&quot;redirect:%s&quot;, referer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unsubscribe to an event by its ID
+&nbsp;     *
+&nbsp;     * @param id The event ID
+&nbsp;     * @param referer The page originating the request
+&nbsp;     * @param userDetails The logged user
+&nbsp;     * @param session The user&#39;s session
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/{id}/unsubscribe&quot;)
+&nbsp;    public String postUnsubscribe(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestHeader String referer,
+&nbsp;            @AuthenticationPrincipal JpaUserDetails userDetails,
+&nbsp;            HttpSession session
+&nbsp;    ) {
+<b class="fc">&nbsp;        if (!eventService.unsubscribeUserToEvent(id, userDetails.getUsername())) {</b>
+<b class="fc">&nbsp;            session.setAttribute(&quot;error&quot;, &quot;unsubscribe_event_fail&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return String.format(&quot;redirect:%s&quot;, referer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rate to an event by its ID
+&nbsp;     *
+&nbsp;     * @param id The event ID
+&nbsp;     * @param referer The page originating the request
+&nbsp;     * @param userDetails The logged user
+&nbsp;     * @param session The user&#39;s session
+&nbsp;     * @param dto The rating DTO
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/{id}/rate&quot;)
+&nbsp;    public String postRate(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestHeader String referer,
+&nbsp;            @AuthenticationPrincipal JpaUserDetails userDetails,
+&nbsp;            @ModelAttribute @Valid RateFormDto dto,
+&nbsp;            HttpSession session
+&nbsp;    ) {
+<b class="fc">&nbsp;        if (!eventService.rateEvent(id, dto, userDetails.getUsername())) {</b>
+<b class="fc">&nbsp;            session.setAttribute(&quot;error&quot;, &quot;error_rate_event&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return String.format(&quot;redirect:%s&quot;, referer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Approve to an event by its ID. Reserved to EVENT_MANAGER
+&nbsp;     *
+&nbsp;     * @param id The event ID
+&nbsp;     * @param referer The page originating the request
+&nbsp;     * @param session The user&#39;s session
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/{id}/approve&quot;)
+&nbsp;    public String postApprove(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestHeader String referer,
+&nbsp;            HttpSession session
+&nbsp;    ) {
+<b class="fc">&nbsp;        if (!eventService.approveEvent(id)) {</b>
+<b class="nc">&nbsp;            session.setAttribute(&quot;error&quot;, &quot;approve_reject_error&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return String.format(&quot;redirect:%s&quot;, referer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reject to an event by its ID. Reserved to EVENT_MANAGER
+&nbsp;     *
+&nbsp;     * @param id The event ID
+&nbsp;     * @param referer The page originating the request
+&nbsp;     * @param session The user&#39;s session
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/{id}/reject&quot;)
+&nbsp;    public String postReject(
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestHeader String referer,
+&nbsp;            HttpSession session
+&nbsp;    ) {
+<b class="fc">&nbsp;        if (!eventService.rejectEvent(id)) {</b>
+<b class="fc">&nbsp;            session.setAttribute(&quot;error&quot;, &quot;approve_reject_error&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return String.format(&quot;redirect:%s&quot;, referer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unsubscribe a user to an event by its ID. Reserved to EVENT_MANAGER
+&nbsp;     *
+&nbsp;     * @param dto The user to remove
+&nbsp;     * @param id The event ID
+&nbsp;     * @param referer The page originating the request
+&nbsp;     * @param session The user&#39;s session
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/{id}/remove_subscription&quot;)
+&nbsp;    public String postRemoveSubscription(
+&nbsp;            @ModelAttribute @Valid RemoveSubscriptionDto dto,
+&nbsp;            @PathVariable Long id,
+&nbsp;            @RequestHeader String referer,
+&nbsp;            HttpSession session
+&nbsp;    ) {
+<b class="fc">&nbsp;        if (!eventService.unsubscribeUserToEvent(id, dto.getUsername())) {</b>
+<b class="nc">&nbsp;            session.setAttribute(&quot;error&quot;, &quot;remove_user_subscription_fail&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return String.format(&quot;redirect:%s&quot;, referer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Propose an event
+&nbsp;     *
+&nbsp;     * @param dto The DTO of the proposal
+&nbsp;     * @param referer The page originating the request
+&nbsp;     * @param session The user&#39;s session
+&nbsp;     * @param timeZone The timezone of the client
+&nbsp;     * @return The page to render
+&nbsp;     */
+&nbsp;    @PostMapping(&quot;/propose&quot;)
+&nbsp;    public String postPropose(
+&nbsp;            @ModelAttribute @Valid ProposeEventDto dto,
+&nbsp;            @RequestHeader String referer,
+&nbsp;            HttpSession session,
+&nbsp;            TimeZone timeZone
+&nbsp;    ) {
+<b class="fc">&nbsp;        log.info(&quot;postProposed called with dto: &quot; + dto + &quot; and timezone: &quot; + timeZone);</b>
+<b class="fc">&nbsp;        return eventService.proposeEvent(dtoMapper.toProposeEventDtoZoned(dto, timeZone))</b>
+<b class="fc">&nbsp;                .map(eventId -&gt; String.format(&quot;redirect:/event/%d&quot;, eventId))</b>
+<b class="fc">&nbsp;                .orElseGet(() -&gt; {</b>
+<b class="nc">&nbsp;                    session.setAttribute(&quot;error&quot;, &quot;propose_event_error&quot;);</b>
+<b class="nc">&nbsp;                    return String.format(&quot;redirect:%s&quot;, referer);</b>
+&nbsp;                });
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

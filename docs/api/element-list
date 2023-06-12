@@ -1,0 +1,8 @@
+io.github.xnovo3000.eventus.api
+io.github.xnovo3000.eventus.api.dto
+io.github.xnovo3000.eventus.api.dto.input
+io.github.xnovo3000.eventus.api.dto.output
+io.github.xnovo3000.eventus.api.entity
+io.github.xnovo3000.eventus.api.repository
+io.github.xnovo3000.eventus.api.service
+io.github.xnovo3000.eventus.api.util
