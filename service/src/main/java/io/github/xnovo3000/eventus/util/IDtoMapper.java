@@ -13,8 +13,11 @@ import io.github.xnovo3000.eventus.api.entity.User;
 import io.github.xnovo3000.eventus.api.util.DtoMapper;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -23,9 +26,21 @@ import java.util.TimeZone;
 @Component
 public class IDtoMapper implements DtoMapper {
 
+    @Value("${io.github.xnovo3000.eventus.event_description_max_length}") private Integer maxLength;
+
     @Override
     public @NotNull EventDto toEventDto(@NotNull Event event, String username) {
+        // Create the DTO
         val eventDto = new EventDto();
+        // Get all the required variables
+        val isUserSubscribed = event.getHoldings().stream().anyMatch(subscription -> Objects.equals(username, subscription.getUser().getUsername()));
+        val isEventNotStartedAlready = event.getStart().isAfter(OffsetDateTime.now());
+        val isEventFinished = event.getEnd().isBefore(OffsetDateTime.now());
+        val isAlreadyRated = event.getHoldings().stream()
+                .filter(subscription -> Objects.equals(username, subscription.getUser().getUsername()))
+                .anyMatch(subscription -> subscription.getRating() != null && subscription.getComment() != null);
+        val isNotFull = event.getHoldings().size() < event.getSeats();
+        // Set eventDto
         eventDto.setCreatorUsername(event.getCreator().getUsername());
         eventDto.setId(event.getId());
         eventDto.setName(event.getName());
@@ -36,6 +51,10 @@ public class IDtoMapper implements DtoMapper {
         eventDto.setApproved(event.getApproved());
         eventDto.setSeats(event.getSeats());
         eventDto.setHoldings(event.getHoldings().stream().map(this::toSubscriptionDto).toList());
+        eventDto.setCanSubscribe(event.getApproved() && isEventNotStartedAlready && !isUserSubscribed && isNotFull);
+        eventDto.setCanUnsubscribe(event.getApproved() && isEventNotStartedAlready && isUserSubscribed);
+        eventDto.setCanRate(event.getApproved() && isEventFinished && !isAlreadyRated && isUserSubscribed);
+        // Return DTO
         return eventDto;
     }
 
@@ -46,7 +65,12 @@ public class IDtoMapper implements DtoMapper {
 
     @Override
     public @NotNull EventCardDto toEventCardDto(@NotNull Event event, String username) {
+        // Create the DTO
         val eventCardDto = new EventCardDto();
+        val isUserSubscribed = event.getHoldings().stream().anyMatch(subscription -> Objects.equals(username, subscription.getUser().getUsername()));
+        val isEventNotStartedAlready = event.getStart().isAfter(OffsetDateTime.now());
+        val isNotFull = event.getHoldings().size() < event.getSeats();
+        // Get all the required variables
         eventCardDto.setCreatorUsername(event.getCreator().getUsername());
         eventCardDto.setId(event.getId());
         eventCardDto.setName(event.getName());
@@ -55,18 +79,16 @@ public class IDtoMapper implements DtoMapper {
         eventCardDto.setEnd(event.getEnd());
         eventCardDto.setApproved(event.getApproved());
         eventCardDto.setSeats(event.getSeats());
-        if (event.getDescription().length() < 96) {
+        eventCardDto.setOccupiedSeats(event.getHoldings().size());
+        eventCardDto.setCanSubscribe(event.getApproved() && isEventNotStartedAlready && !isUserSubscribed && isNotFull);
+        eventCardDto.setCanUnsubscribe(event.getApproved() && isEventNotStartedAlready && isUserSubscribed);
+        // Set description according to max length size
+        if (event.getDescription().length() < maxLength) {
             eventCardDto.setDescription(event.getDescription());
         } else {
             eventCardDto.setDescription(event.getDescription().substring(0, 96) + "...");
         }
-        eventCardDto.setOccupiedSeats(event.getHoldings().size());
-        if (username != null) {
-            eventCardDto.setCanSubscribe(event.getHoldings().stream().noneMatch(it -> it.getUser().getUsername().equals(username)));
-        } else {
-            eventCardDto.setCanSubscribe(false);
-        }
-        eventCardDto.setCanUnsubscribe(event.getHoldings().stream().anyMatch(it -> it.getUser().getUsername().equals(username)));
+        // Return DTO
         return eventCardDto;
     }
 

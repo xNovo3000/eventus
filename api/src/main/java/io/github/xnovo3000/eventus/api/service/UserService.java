@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 /**
- * Service class that handles all the operations regarding users
+ * Service class that handles users and registration
  */
 public interface UserService {
 

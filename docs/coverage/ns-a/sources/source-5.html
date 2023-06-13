@@ -1,0 +1,351 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > IUserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.service</a>
+</div>
+
+<h1>Coverage Summary for Class: IUserService (io.github.xnovo3000.eventus.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IUserService</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,4%
+  </span>
+  <span class="absValue">
+    (73/110)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">IUserService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,4%
+  </span>
+  <span class="absValue">
+    (73/110)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.service;
+&nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.ChangePasswordDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.RegisterFormDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.output.UserDto;
+&nbsp;import io.github.xnovo3000.eventus.api.entity.Authority;
+&nbsp;import io.github.xnovo3000.eventus.api.entity.User;
+&nbsp;import io.github.xnovo3000.eventus.api.repository.AuthorityRepository;
+&nbsp;import io.github.xnovo3000.eventus.api.repository.UserRepository;
+&nbsp;import io.github.xnovo3000.eventus.api.service.EmailService;
+&nbsp;import io.github.xnovo3000.eventus.api.service.UserService;
+&nbsp;import io.github.xnovo3000.eventus.api.util.DtoMapper;
+&nbsp;import io.github.xnovo3000.eventus.api.util.RandomStringGenerator;
+&nbsp;import io.github.xnovo3000.eventus.security.JpaUserDetails;
+&nbsp;import io.github.xnovo3000.eventus.security.JpaAuthenticationProxy;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import lombok.val;
+&nbsp;import org.jetbrains.annotations.NotNull;
+&nbsp;import org.jetbrains.annotations.Nullable;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.PageRequest;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * UserService default implementation
+&nbsp; */
+&nbsp;@Service
+&nbsp;@Transactional
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;public class IUserService implements UserService {
+&nbsp;
+&nbsp;    private final DtoMapper dtoMapper;
+&nbsp;    private final EmailService emailService;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final AuthorityRepository authorityRepository;
+&nbsp;    private final PasswordEncoder passwordEncoder;
+&nbsp;    private final RandomStringGenerator randomStringGenerator;
+&nbsp;    private final JpaAuthenticationProxy authenticationProxy;
+&nbsp;    
+&nbsp;    @Value(&quot;${io.github.xnovo3000.eventus.user_page_size}&quot;) private Integer pageSize;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean registerNewUser(@NotNull RegisterFormDto registerFormDto) {
+&nbsp;        // Check if username and/or password already exist in the database
+<b class="fc">&nbsp;        if (userRepository.findByEmail(registerFormDto.getEmail()).isPresent()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Email already exist&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (userRepository.findByUsername(registerFormDto.getUsername()).isPresent()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Username already exist&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Generate a new password
+<b class="fc">&nbsp;        String password = randomStringGenerator.generateSafeAlphanumericString(8);</b>
+&nbsp;        // Generate the new user
+<b class="fc">&nbsp;        User user = new User();</b>
+<b class="fc">&nbsp;        user.setEmail(registerFormDto.getEmail());</b>
+<b class="fc">&nbsp;        user.setUsername(registerFormDto.getUsername());</b>
+<b class="fc">&nbsp;        user.setPassword(passwordEncoder.encode(password));</b>
+<b class="fc">&nbsp;        user.setActive(true);</b>
+&nbsp;        try {
+&nbsp;            // Send email with the password
+<b class="fc">&nbsp;            emailService.sendPasswordViaEmail(user.getEmail(), password);</b>
+&nbsp;            // Save user in the database
+<b class="fc">&nbsp;            userRepository.save(user);</b>
+&nbsp;            // Return success
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Throwable e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot save user or send password via email&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull Page&lt;UserDto&gt; getByFilter(int pageNumber, @Nullable String username) {
+&nbsp;        // Create the page request
+<b class="nc">&nbsp;        val pageable = PageRequest.of(pageNumber - 1, pageSize);</b>
+&nbsp;        // Return if username is null or not
+<b class="nc">&nbsp;        if (username != null) {</b>
+<b class="nc">&nbsp;            return userRepository.findAllByUsernameContainingIgnoreCaseOrderByUsernameAsc(username, pageable)</b>
+<b class="nc">&nbsp;                    .map(dtoMapper::toUserDto);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return userRepository.findAllByOrderByUsernameAsc(pageable)</b>
+<b class="nc">&nbsp;                    .map(dtoMapper::toUserDto);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean disable(long userId) {
+&nbsp;        // Check if user exists
+<b class="fc">&nbsp;        val maybeUser = userRepository.findById(userId);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="nc">&nbsp;            log.info(&quot;User does not exist&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // Validate
+<b class="fc">&nbsp;        if (user.getUsername().equals(&quot;admin&quot;)) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Admin user cannot be disabled&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Disable the user and try to save
+<b class="fc">&nbsp;        user.setActive(false);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            userRepository.save(user);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot update user&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean enable(long userId) {
+&nbsp;        // Check if user exists
+<b class="fc">&nbsp;        val maybeUser = userRepository.findById(userId);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="nc">&nbsp;            log.info(&quot;User does not exist&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // Validate
+<b class="fc">&nbsp;        if (user.getUsername().equals(&quot;admin&quot;)) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Admin user cannot be enabled&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Enable the user and try to save
+<b class="fc">&nbsp;        user.setActive(true);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            userRepository.save(user);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot update user&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean resetPassword(long userId) {
+&nbsp;        // Check if user exists
+<b class="fc">&nbsp;        val maybeUser = userRepository.findById(userId);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="nc">&nbsp;            log.info(&quot;User does not exist&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // Validate
+<b class="fc">&nbsp;        if (user.getUsername().equals(&quot;admin&quot;)) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Admin user&#39;s password cannot be reset&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Get a new password, send it via email and save
+<b class="fc">&nbsp;        val newPassword = randomStringGenerator.generateSafeAlphanumericString(8);</b>
+<b class="fc">&nbsp;        emailService.sendPasswordViaEmail(user.getEmail(), newPassword);</b>
+<b class="fc">&nbsp;        user.setPassword(passwordEncoder.encode(newPassword));</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            userRepository.save(user);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot update user&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean updateAuthorities(long userId, @NotNull List&lt;String&gt; authorities) {
+&nbsp;        // Check if user exists
+<b class="fc">&nbsp;        val maybeUser = userRepository.findById(userId);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="nc">&nbsp;            log.info(&quot;User does not exist&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // Validate
+<b class="fc">&nbsp;        if (user.getUsername().equals(&quot;admin&quot;)) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Admin user&#39;s authorities cannot be changed&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Remove all authorities for the specific user
+&nbsp;        try {
+<b class="fc">&nbsp;            authorityRepository.deleteAllByUser(user);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot delete authorities&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        // Create new authorities
+<b class="fc">&nbsp;        val newAuthorities = authorities.stream()</b>
+<b class="fc">&nbsp;                .map(authorityName -&gt; {</b>
+<b class="fc">&nbsp;                    val newAuthority = new Authority();</b>
+<b class="fc">&nbsp;                    newAuthority.setName(authorityName);</b>
+<b class="fc">&nbsp;                    newAuthority.setUser(user);</b>
+<b class="fc">&nbsp;                    return newAuthority;</b>
+&nbsp;                })
+<b class="fc">&nbsp;                .toList();</b>
+&nbsp;        // Update authorities
+&nbsp;        try {
+<b class="fc">&nbsp;            authorityRepository.saveAll(newAuthorities);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot create new authorities&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean changePassword(@NotNull ChangePasswordDto dto) {
+&nbsp;        // Get current username
+<b class="fc">&nbsp;        val username = authenticationProxy.getUserDetails()</b>
+<b class="fc">&nbsp;                .map(JpaUserDetails::getUsername).orElse(null);</b>
+&nbsp;        // Get current user
+<b class="fc">&nbsp;        val maybeUser = userRepository.findByUsername(username);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Logged user not found: &quot; + username);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // Update the password
+<b class="fc">&nbsp;        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));</b>
+&nbsp;        // Try to save
+&nbsp;        try {
+<b class="fc">&nbsp;            userRepository.save(user);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot save user&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        // Logout the user and return success
+<b class="fc">&nbsp;        authenticationProxy.logout();</b>
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

@@ -3,7 +3,7 @@ package io.github.xnovo3000.eventus.api.service;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Service class that handles all the operations regarding events
+ * Service class used to send emails
  */
 public interface EmailService {
 

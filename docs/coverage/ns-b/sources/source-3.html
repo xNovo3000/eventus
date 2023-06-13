@@ -1,0 +1,153 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > IRandomStringGenerator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.util</a>
+</div>
+
+<h1>Coverage Summary for Class: IRandomStringGenerator (io.github.xnovo3000.eventus.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IRandomStringGenerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38,5%
+  </span>
+  <span class="absValue">
+    (5/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.util;
+&nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.util.RandomStringGenerator;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import org.jetbrains.annotations.NotNull;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import java.util.Random;
+&nbsp;
+&nbsp;/**
+&nbsp; * Default implementation of RandomStringGenerator
+&nbsp; */
+&nbsp;@Component
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+&nbsp;public class IRandomStringGenerator implements RandomStringGenerator {
+&nbsp;
+&nbsp;    private static final String RND_ALPHABET = &quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;;
+&nbsp;    private static final String LOWERCASE_RND_ALPHABET = &quot;0123456789abcdefghijklmnopqrstuvwxyz&quot;;
+&nbsp;    private static final String SAFE_RND_ALPHABET = &quot;123456789abcdefghimnopqrstuvzABCDEFGHLMNPQRSTUVZ&quot;;
+&nbsp;
+&nbsp;    private final Random random;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull String generateAlphanumericString(int characters) {
+<b class="nc">&nbsp;        StringBuilder stringBuilder = new StringBuilder(characters);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; characters; i++) {</b>
+<b class="nc">&nbsp;            stringBuilder.append(RND_ALPHABET.charAt(random.nextInt(RND_ALPHABET.length())));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return stringBuilder.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull String generateLowercaseAlphanumericString(int characters) {
+<b class="nc">&nbsp;        StringBuilder stringBuilder = new StringBuilder(characters);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; characters; i++) {</b>
+<b class="nc">&nbsp;            stringBuilder.append(LOWERCASE_RND_ALPHABET.charAt(random.nextInt(LOWERCASE_RND_ALPHABET.length())));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return stringBuilder.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull String generateSafeAlphanumericString(int characters) {
+<b class="fc">&nbsp;        StringBuilder stringBuilder = new StringBuilder(characters);</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; characters; i++) {</b>
+<b class="fc">&nbsp;            stringBuilder.append(SAFE_RND_ALPHABET.charAt(random.nextInt(SAFE_RND_ALPHABET.length())));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return stringBuilder.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

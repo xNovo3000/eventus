@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > IUserServiceDefaultProxy</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.service</a>
+</div>
+
+<h1>Coverage Summary for Class: IUserServiceDefaultProxy (io.github.xnovo3000.eventus.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IUserServiceDefaultProxy</td>
+<td class="coverageStat">
+  <span class="percent">
+    88,9%
+  </span>
+  <span class="absValue">
+    (8/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,1%
+  </span>
+  <span class="absValue">
+    (16/17)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">IUserServiceDefaultProxy$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    88,9%
+  </span>
+  <span class="absValue">
+    (8/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,1%
+  </span>
+  <span class="absValue">
+    (16/17)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.service;
+&nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.ChangePasswordDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.RegisterFormDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.output.UserDto;
+&nbsp;import io.github.xnovo3000.eventus.api.service.UserService;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.jetbrains.annotations.NotNull;
+&nbsp;import org.jetbrains.annotations.Nullable;
+&nbsp;import org.springframework.context.annotation.Primary;
+&nbsp;import org.springframework.context.annotation.Profile;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;/**
+&nbsp; * UserService proxy to test UserService implementation when in &#39;default&#39; profile
+&nbsp; */
+&nbsp;@Service
+&nbsp;@Profile(&quot;default&quot;)
+&nbsp;@Primary
+&nbsp;@Transactional
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;public class IUserServiceDefaultProxy implements UserService {
+&nbsp;
+&nbsp;    private final IUserService userService;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean registerNewUser(@NotNull RegisterFormDto registerFormDto) {
+<b class="fc">&nbsp;        log.info(&quot;registerNewUser called with payload: &quot; + registerFormDto);</b>
+&nbsp;        // Crash if email is &#39;crash_test@eventus.com&#39;
+<b class="fc">&nbsp;        if (Objects.equals(registerFormDto.getEmail(), &quot;crash_test@eventus.com&quot;)) {</b>
+<b class="fc">&nbsp;            throw new RuntimeException(&quot;Eventus demo exception to test error page&quot;);</b>
+&nbsp;        }
+&nbsp;        // Run proxied function
+<b class="fc">&nbsp;        return userService.registerNewUser(registerFormDto);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull Page&lt;UserDto&gt; getByFilter(int pageNumber, @Nullable String username) {
+&nbsp;        // Run proxied function
+<b class="nc">&nbsp;        return userService.getByFilter(pageNumber, username);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean disable(long userId) {
+<b class="fc">&nbsp;        log.info(&quot;disable called with userId: &quot; + userId);</b>
+&nbsp;        // Run proxied function
+<b class="fc">&nbsp;        return userService.disable(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean enable(long userId) {
+<b class="fc">&nbsp;        log.info(&quot;enable called with userId: &quot; + userId);</b>
+&nbsp;        // Run proxied function
+<b class="fc">&nbsp;        return userService.enable(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean resetPassword(long userId) {
+<b class="fc">&nbsp;        log.info(&quot;resetPassword called with userId: &quot; + userId);</b>
+&nbsp;        // Run proxied function
+<b class="fc">&nbsp;        return userService.resetPassword(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean updateAuthorities(long userId, @NotNull List&lt;String&gt; authorities) {
+<b class="fc">&nbsp;        log.info(&quot;updatePermissions called with userId: &quot; + userId + &quot; and authorities: &quot; + authorities);</b>
+&nbsp;        // Run proxied function
+<b class="fc">&nbsp;        return userService.updateAuthorities(userId, authorities);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean changePassword(@NotNull ChangePasswordDto dto) {
+<b class="fc">&nbsp;        log.info(&quot;changePassword called with payload: &quot; + dto);</b>
+&nbsp;        // Run proxied function
+<b class="fc">&nbsp;        return userService.changePassword(dto);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

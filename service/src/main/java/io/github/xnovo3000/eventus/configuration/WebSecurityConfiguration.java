@@ -98,7 +98,8 @@ public class WebSecurityConfiguration {
     }
 
     /**
-     * Override the UserDetailsService of Spring Security with a custom implementation
+     * Override the UserDetailsService of Spring Security with a custom implementation.
+     * In this case JpaUserDetailsService is returned
      *
      * @param userRepository The user repository
      * @return The UserDetailsService implementation
@@ -109,7 +110,8 @@ public class WebSecurityConfiguration {
     }
 
     /**
-     * Override the PasswordEncoder of Spring Security with a custom implementation
+     * Override the PasswordEncoder of Spring Security with a safer implementation.
+     * In this case BCryptPasswordEncoder is returned
      *
      * @return The PasswordEncoder implementation
      */

@@ -1,0 +1,162 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EntityAuditingConfiguration</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.configuration</a>
+</div>
+
+<h1>Coverage Summary for Class: EntityAuditingConfiguration (io.github.xnovo3000.eventus.configuration)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EntityAuditingConfiguration</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EntityAuditingConfiguration$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">EntityAuditingConfiguration$$SpringCGLIB$$1</td>
+  </tr>
+  <tr>
+    <td class="name">EntityAuditingConfiguration$$SpringCGLIB$$2</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.configuration;
+&nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.entity.User;
+&nbsp;import io.github.xnovo3000.eventus.security.JpaAuthenticationProxy;
+&nbsp;import io.github.xnovo3000.eventus.security.JpaUserDetails;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.data.auditing.DateTimeProvider;
+&nbsp;import org.springframework.data.domain.AuditorAware;
+&nbsp;import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+&nbsp;
+&nbsp;import java.time.OffsetDateTime;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * Configuration for anything related to entity auditing
+&nbsp; */
+&nbsp;@Configuration
+&nbsp;@EnableJpaAuditing(auditorAwareRef = &quot;auditorAware&quot;, dateTimeProviderRef = &quot;dateTimeProvider&quot;)
+<b class="fc">&nbsp;public class EntityAuditingConfiguration {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create the user auditor
+&nbsp;     *
+&nbsp;     * @param authenticationProxy The authentication facade
+&nbsp;     * @return A lambda returning the current logged user if present
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public AuditorAware&lt;User&gt; auditorAware(JpaAuthenticationProxy authenticationProxy) {
+<b class="fc">&nbsp;        return () -&gt; authenticationProxy.getUserDetails().map(JpaUserDetails::getUser);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Create the date auditor
+&nbsp;     *
+&nbsp;     * @return A lambda returning the current OffsetDateTime
+&nbsp;     */
+&nbsp;    @Bean
+&nbsp;    public DateTimeProvider dateTimeProvider() {
+<b class="fc">&nbsp;        return () -&gt; Optional.of(OffsetDateTime.now());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

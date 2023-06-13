@@ -1,0 +1,8 @@
+io.github.xnovo3000.eventus
+io.github.xnovo3000.eventus.bootstrap
+io.github.xnovo3000.eventus.configuration
+io.github.xnovo3000.eventus.controller
+io.github.xnovo3000.eventus.controller.error
+io.github.xnovo3000.eventus.security
+io.github.xnovo3000.eventus.service
+io.github.xnovo3000.eventus.util

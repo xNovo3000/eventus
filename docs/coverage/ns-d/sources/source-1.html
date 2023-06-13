@@ -1,0 +1,102 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > RandomStringGenerator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.api.util</a>
+</div>
+
+<h1>Coverage Summary for Class: RandomStringGenerator (io.github.xnovo3000.eventus.api.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">RandomStringGenerator</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.api.util;
+&nbsp;
+&nbsp;import org.jetbrains.annotations.NotNull;
+&nbsp;import org.jetbrains.annotations.Range;
+&nbsp;
+&nbsp;/**
+&nbsp; * Utility class used to generate random strings
+&nbsp; */
+&nbsp;public interface RandomStringGenerator {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Generates an alphanumeric string
+&nbsp;     *
+&nbsp;     * @param characters The number of characters to generate
+&nbsp;     * @return The resulting string
+&nbsp;     */
+&nbsp;    @NotNull String generateAlphanumericString(@Range(from = 0, to = Integer.MAX_VALUE) int characters);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Generates a lowercase alphanumeric string
+&nbsp;     *
+&nbsp;     * @param characters The number of characters to generate
+&nbsp;     * @return The resulting string
+&nbsp;     */
+&nbsp;    @NotNull String generateLowercaseAlphanumericString(@Range(from = 0, to = Integer.MAX_VALUE) int characters);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Generates a user-safe alphanumeric string
+&nbsp;     *
+&nbsp;     * @param characters The number of characters to generate
+&nbsp;     * @return The resulting string
+&nbsp;     */
+&nbsp;    @NotNull String generateSafeAlphanumericString(@Range(from = 0, to = Integer.MAX_VALUE) int characters);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

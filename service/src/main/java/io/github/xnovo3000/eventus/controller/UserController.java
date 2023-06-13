@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+/**
+ * Controller that handles '/user'
+ */
 @Controller
 @RequestMapping("/user")
 @Validated
@@ -22,6 +25,15 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Get the user manager page. Requires USER_MANAGER
+     *
+     * @param model The UI model
+     * @param error The error, if exists
+     * @param page The request page
+     * @param usernameToFind The username to filter
+     * @return The page
+     */
     @GetMapping
     public String get(
             Model model,
@@ -39,6 +51,14 @@ public class UserController {
         return "page/user";
     }
 
+    /**
+     * Disable a user by its ID
+     *
+     * @param id The user's ID
+     * @param referer The page originating the request
+     * @param session The user's session
+     * @return The redirect page
+     */
     @PostMapping("/{id}/disable")
     public String postDisable(
             @PathVariable Long id,
@@ -51,6 +71,14 @@ public class UserController {
         return String.format("redirect:%s", referer);
     }
 
+    /**
+     * Enable a user by its ID
+     *
+     * @param id The user's ID
+     * @param referer The page originating the request
+     * @param session The user's session
+     * @return The redirect page
+     */
     @PostMapping("/{id}/enable")
     public String postEnable(
             @PathVariable Long id,
@@ -63,6 +91,14 @@ public class UserController {
         return String.format("redirect:%s", referer);
     }
 
+    /**
+     * Reset a user's password by its ID
+     *
+     * @param id The user's ID
+     * @param referer The page originating the request
+     * @param session The user's session
+     * @return The redirect page
+     */
     @PostMapping("/{id}/reset_password")
     public String postResetPassword(
             @PathVariable Long id,
@@ -75,6 +111,15 @@ public class UserController {
         return String.format("redirect:%s", referer);
     }
 
+    /**
+     * Update user's authorities by its ID
+     *
+     * @param id The user's ID
+     * @param referer The page originating the request
+     * @param session The user's session
+     * @param dto The user's new authorities
+     * @return The redirect page
+     */
     @PostMapping("/{id}/update_authorities")
     public String postUpdateAuthorities(
             @PathVariable Long id,

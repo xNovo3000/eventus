@@ -1,0 +1,134 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EventRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.api.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: EventRepository (io.github.xnovo3000.eventus.api.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">EventRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.api.repository;
+&nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.entity.Event;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;
+&nbsp;import java.time.OffsetDateTime;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Event repository interface. Must not be implemented because Hibernate will.
+&nbsp; */
+&nbsp;public interface EventRepository extends JpaRepository&lt;Event, Long&gt; {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a page of events ordered by start date descending
+&nbsp;     *
+&nbsp;     * @param pageable The page request
+&nbsp;     * @return The page of events
+&nbsp;     */
+&nbsp;    Page&lt;Event&gt; findAllByOrderByStartDesc(Pageable pageable);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a page of events that the user will attend ordered by start date descending
+&nbsp;     *
+&nbsp;     * @param username The user&#39;s username
+&nbsp;     * @param pageable The page request
+&nbsp;     * @return The page of events
+&nbsp;     */
+&nbsp;    Page&lt;Event&gt; findAllByHoldings_User_UsernameOrderByStartDesc(String username, Pageable pageable);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a page of ongoing events
+&nbsp;     *
+&nbsp;     * @param firstDate The date before start
+&nbsp;     * @param secondDate The date after end
+&nbsp;     * @return The list of events
+&nbsp;     */
+&nbsp;    List&lt;Event&gt; findAllByApprovedIsTrueAndStartIsBeforeAndEndIsAfter(OffsetDateTime firstDate, OffsetDateTime secondDate);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a page of future events
+&nbsp;     *
+&nbsp;     * @param firstDate The date to start from
+&nbsp;     * @param pageable The page request
+&nbsp;     * @return The page of events
+&nbsp;     */
+&nbsp;    Page&lt;Event&gt; findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(OffsetDateTime firstDate, Pageable pageable);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a page of proposed events
+&nbsp;     *
+&nbsp;     * @param firstDate The date to start from
+&nbsp;     * @param pageable The page request
+&nbsp;     * @return The page of events
+&nbsp;     */
+&nbsp;    Page&lt;Event&gt; findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(OffsetDateTime firstDate, Pageable pageable);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Delete all expired, unapproved events
+&nbsp;     *
+&nbsp;     * @param now Current date and time
+&nbsp;     */
+&nbsp;    void deleteAllByApprovedIsFalseAndStartIsBefore(OffsetDateTime now);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>
