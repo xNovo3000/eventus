@@ -1,0 +1,124 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EventCardDto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.api.dto.output</a>
+</div>
+
+<h1>Coverage Summary for Class: EventCardDto (io.github.xnovo3000.eventus.api.dto.output)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventCardDto</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    15,4%
+  </span>
+  <span class="absValue">
+    (2/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    15,4%
+  </span>
+  <span class="absValue">
+    (2/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.api.dto.output;
+&nbsp;
+&nbsp;import lombok.Data;
+&nbsp;
+&nbsp;import java.time.OffsetDateTime;
+&nbsp;
+<b class="fc">&nbsp;@Data</b>
+&nbsp;public class EventCardDto {
+<b class="fc">&nbsp;    private Long id;</b>
+<b class="nc">&nbsp;    private String name;</b>
+<b class="nc">&nbsp;    private String description;</b>
+<b class="nc">&nbsp;    private String creatorUsername;</b>
+<b class="nc">&nbsp;    private OffsetDateTime creationDate;</b>
+<b class="nc">&nbsp;    private OffsetDateTime start;</b>
+<b class="nc">&nbsp;    private OffsetDateTime end;</b>
+<b class="nc">&nbsp;    private Boolean approved;</b>
+<b class="nc">&nbsp;    private Integer seats;</b>
+<b class="nc">&nbsp;    private Integer occupiedSeats;</b>
+<b class="nc">&nbsp;    private Boolean canSubscribe;</b>
+<b class="nc">&nbsp;    private Boolean canUnsubscribe;</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

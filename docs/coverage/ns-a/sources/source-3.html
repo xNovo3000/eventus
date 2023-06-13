@@ -1,0 +1,458 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > IEventService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.github.xnovo3000.eventus.service</a>
+</div>
+
+<h1>Coverage Summary for Class: IEventService (io.github.xnovo3000.eventus.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IEventService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83,8%
+  </span>
+  <span class="absValue">
+    (150/179)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">IEventService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83,8%
+  </span>
+  <span class="absValue">
+    (150/179)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.service;
+&nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.RateFormDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.output.EventCardDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.output.EventDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.ProposeEventDtoZoned;
+&nbsp;import io.github.xnovo3000.eventus.api.entity.Event;
+&nbsp;import io.github.xnovo3000.eventus.api.entity.Subscription;
+&nbsp;import io.github.xnovo3000.eventus.api.repository.EventRepository;
+&nbsp;import io.github.xnovo3000.eventus.api.repository.SubscriptionRepository;
+&nbsp;import io.github.xnovo3000.eventus.api.repository.UserRepository;
+&nbsp;import io.github.xnovo3000.eventus.api.service.EventService;
+&nbsp;import io.github.xnovo3000.eventus.api.util.DtoMapper;
+&nbsp;import io.github.xnovo3000.eventus.security.JpaAuthenticationProxy;
+&nbsp;import io.github.xnovo3000.eventus.security.JpaUserDetails;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import lombok.val;
+&nbsp;import org.jetbrains.annotations.NotNull;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.PageRequest;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.time.OffsetDateTime;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * EventService implementation
+&nbsp; */
+&nbsp;@Service
+&nbsp;@Transactional
+<b class="fc">&nbsp;@RequiredArgsConstructor</b>
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;public class IEventService implements EventService {
+&nbsp;
+&nbsp;    private final EventRepository eventRepository;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final DtoMapper dtoMapper;
+&nbsp;    private final SubscriptionRepository subscriptionRepository;
+&nbsp;    private final JpaAuthenticationProxy authenticationProxy;
+&nbsp;
+<b class="fc">&nbsp;    @Value(&quot;${io.github.xnovo3000.eventus.event_page_size}&quot;) private Integer pageSize = 12;</b>
+&nbsp;    
+&nbsp;    @Override
+&nbsp;    public @NotNull Optional&lt;EventDto&gt; getById(long id) {
+<b class="fc">&nbsp;        val username = authenticationProxy.getUserDetails()</b>
+<b class="fc">&nbsp;                .map(JpaUserDetails::getUsername)</b>
+<b class="fc">&nbsp;                .orElse(null);</b>
+<b class="fc">&nbsp;        return eventRepository.findById(id)</b>
+<b class="fc">&nbsp;                .map(event -&gt; dtoMapper.toEventDto(event, username));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull List&lt;EventCardDto&gt; getOngoingEvents() {
+<b class="fc">&nbsp;        val now = OffsetDateTime.now();</b>
+<b class="fc">&nbsp;        return eventRepository.findAllByApprovedIsTrueAndStartIsBeforeAndEndIsAfter(now, now)</b>
+<b class="fc">&nbsp;                .stream().map(dtoMapper::toEventCardDto)</b>
+<b class="fc">&nbsp;                .toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull Page&lt;EventCardDto&gt; getFutureEvents(int pageNumber) {
+<b class="fc">&nbsp;        val now = OffsetDateTime.now();</b>
+<b class="fc">&nbsp;        val username = authenticationProxy.getUserDetails()</b>
+<b class="fc">&nbsp;                .map(JpaUserDetails::getUsername)</b>
+<b class="fc">&nbsp;                .orElse(null);</b>
+<b class="fc">&nbsp;        val pageable = PageRequest.of(pageNumber - 1, pageSize);</b>
+<b class="fc">&nbsp;        return eventRepository.findAllByApprovedIsTrueAndStartIsAfterOrderByStartAsc(now, pageable)</b>
+<b class="fc">&nbsp;                .map(event -&gt; dtoMapper.toEventCardDto(event, username));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull Page&lt;EventCardDto&gt; getProposedEvents(int pageNumber) {
+<b class="fc">&nbsp;        val now = OffsetDateTime.now();</b>
+<b class="fc">&nbsp;        val pageable = PageRequest.of(pageNumber - 1, pageSize);</b>
+<b class="fc">&nbsp;        return eventRepository.findAllByApprovedIsFalseAndStartIsAfterOrderByStartAsc(now, pageable)</b>
+<b class="fc">&nbsp;                .map(dtoMapper::toEventCardDto);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull Page&lt;EventCardDto&gt; getHistory(int pageNumber) {
+<b class="fc">&nbsp;        val pageable = PageRequest.of(pageNumber - 1, pageSize);</b>
+<b class="fc">&nbsp;        return eventRepository.findAllByOrderByStartDesc(pageable)</b>
+<b class="fc">&nbsp;                .map(dtoMapper::toEventCardDto);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull Page&lt;EventCardDto&gt; getEventsThatUserParticipated(int pageNumber) {
+<b class="fc">&nbsp;        val username = authenticationProxy.getUserDetails().map(JpaUserDetails::getUsername).orElse(null);</b>
+<b class="fc">&nbsp;        val pageable = PageRequest.of(pageNumber - 1, pageSize);</b>
+<b class="fc">&nbsp;        return eventRepository.findAllByHoldings_User_UsernameOrderByStartDesc(username, pageable)</b>
+<b class="fc">&nbsp;                .map(dtoMapper::toEventCardDto);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public @NotNull Optional&lt;Long&gt; proposeEvent(@NotNull ProposeEventDtoZoned proposeEventDto) {
+<b class="fc">&nbsp;        log.info(&quot;proposeEvent called with payload: &quot; + proposeEventDto);</b>
+&nbsp;        // Ensure start is before end
+<b class="fc">&nbsp;        if (!proposeEventDto.getStart().isBefore(proposeEventDto.getEnd())) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Event start must be always before end&quot;);</b>
+<b class="fc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;        // Create the event
+<b class="fc">&nbsp;        Event event = new Event();</b>
+<b class="fc">&nbsp;        event.setName(proposeEventDto.getName());</b>
+<b class="fc">&nbsp;        event.setDescription(proposeEventDto.getDescription());</b>
+<b class="fc">&nbsp;        event.setStart(proposeEventDto.getStart());</b>
+<b class="fc">&nbsp;        event.setEnd(proposeEventDto.getEnd());</b>
+<b class="fc">&nbsp;        event.setSeats(proposeEventDto.getSeats());</b>
+<b class="fc">&nbsp;        event.setApproved(false);</b>
+&nbsp;        // Try to insert into the database
+&nbsp;        try {
+<b class="fc">&nbsp;            event = eventRepository.save(event);</b>
+<b class="fc">&nbsp;            return Optional.of(event.getId());</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot save event&quot;, e);</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean approveEvent(long eventId) {
+<b class="fc">&nbsp;        log.info(&quot;approveEvent called with eventId: &quot; + eventId);</b>
+&nbsp;        // Get the event
+<b class="fc">&nbsp;        val maybeEvent = eventRepository.findById(eventId);</b>
+<b class="fc">&nbsp;        if (maybeEvent.isEmpty()) {</b>
+<b class="nc">&nbsp;            log.info(&quot;The event does not exist&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val event = maybeEvent.get();</b>
+&nbsp;        // Check if it is already started
+<b class="fc">&nbsp;        if (event.getStart().isBefore(OffsetDateTime.now())) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is already started&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Check if it is already approved
+<b class="fc">&nbsp;        if (event.getApproved()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is already approved&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Set approved and try to save
+<b class="fc">&nbsp;        event.setApproved(true);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            eventRepository.save(event);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot save event&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean rejectEvent(long eventId) {
+<b class="fc">&nbsp;        log.info(&quot;rejectEvent called with eventId: &quot; + eventId);</b>
+&nbsp;        // Get the event
+<b class="fc">&nbsp;        val maybeEvent = eventRepository.findById(eventId);</b>
+<b class="fc">&nbsp;        if (maybeEvent.isEmpty()) {</b>
+<b class="nc">&nbsp;            log.info(&quot;The event does not exist&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val event = maybeEvent.get();</b>
+&nbsp;        // Check if it is already approved
+<b class="fc">&nbsp;        if (event.getApproved()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is already approved&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Try to delete
+&nbsp;        try {
+<b class="fc">&nbsp;            eventRepository.delete(event);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot save event&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean subscribeUserToEvent(long eventId, @NotNull String username) {
+<b class="fc">&nbsp;        log.info(&quot;subscribeUserToEvent called with eventId: &quot; + eventId + &quot; and username: &quot; + username);</b>
+&nbsp;        // Get the event
+<b class="fc">&nbsp;        val maybeEvent = eventRepository.findById(eventId);</b>
+<b class="fc">&nbsp;        if (maybeEvent.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Event not found&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Event event = maybeEvent.get();</b>
+&nbsp;        // Get the user
+<b class="fc">&nbsp;        val maybeUser = userRepository.findByUsername(username);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;User not found&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // The event must be approved
+<b class="fc">&nbsp;        if (!event.getApproved()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is not approved&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Check if it is already started
+<b class="fc">&nbsp;        if (event.getStart().isBefore(OffsetDateTime.now())) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is already started&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // The event must not be full
+<b class="fc">&nbsp;        if (event.getHoldings().size() &gt;= event.getSeats()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is full&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Check if already subscribed
+<b class="fc">&nbsp;        if (event.getHoldings().stream().anyMatch(s -&gt; s.getUser().getUsername().equals(username))) {</b>
+<b class="nc">&nbsp;            log.info(&quot;User already subscribed&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Check if user is already subscribed to an event that collides with
+<b class="fc">&nbsp;        val overlappingEvents = user.getHoldings().stream()</b>
+<b class="fc">&nbsp;                .map(Subscription::getEvent)</b>
+<b class="fc">&nbsp;                .filter(it -&gt; it.getStart().isBefore(event.getEnd()) &amp;&amp; it.getEnd().isAfter(event.getStart()))</b>
+<b class="fc">&nbsp;                .toList();</b>
+<b class="fc">&nbsp;        if (overlappingEvents.size() &gt; 0) {</b>
+<b class="nc">&nbsp;            log.info(&quot;Event overlaps with: &quot; + overlappingEvents);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Create the subscription bean
+<b class="fc">&nbsp;        val subscription = new Subscription();</b>
+<b class="fc">&nbsp;        subscription.setUser(user);</b>
+<b class="fc">&nbsp;        subscription.setEvent(event);</b>
+&nbsp;        // Try to insert into the datasource
+&nbsp;        try {
+<b class="fc">&nbsp;            subscriptionRepository.save(subscription);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot save subscription&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean unsubscribeUserToEvent(long eventId, @NotNull String username) {
+<b class="fc">&nbsp;        log.info(&quot;unsubscribeUserToEvent called with eventId: &quot; + eventId + &quot; and username: &quot; + username);</b>
+&nbsp;        // Get the event
+<b class="fc">&nbsp;        val maybeEvent = eventRepository.findById(eventId);</b>
+<b class="fc">&nbsp;        if (maybeEvent.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Event not found&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Event event = maybeEvent.get();</b>
+&nbsp;        // Get the user
+<b class="fc">&nbsp;        val maybeUser = userRepository.findByUsername(username);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;User not found&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // The event must be approved
+<b class="fc">&nbsp;        if (!event.getApproved()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is not approved&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Check if it is already started
+<b class="fc">&nbsp;        if (event.getStart().isBefore(OffsetDateTime.now())) {</b>
+<b class="fc">&nbsp;            log.info(&quot;This event is already started&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Get the subscription bean
+<b class="fc">&nbsp;        val maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);</b>
+<b class="fc">&nbsp;        if (maybeSubscription.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;User is not subscribed to the event&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val subscription = maybeSubscription.get();</b>
+&nbsp;        // Try to delete
+&nbsp;        try {
+<b class="fc">&nbsp;            subscriptionRepository.delete(subscription);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot delete subscription&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean rateEvent(long eventId, @NotNull RateFormDto dto, @NotNull String username) {
+<b class="fc">&nbsp;        log.info(&quot;rateEvent called with eventId: &quot; + eventId + &quot;, payload: &quot; + dto + &quot; and username: &quot; + username);</b>
+&nbsp;        // Get the event
+<b class="fc">&nbsp;        val maybeEvent = eventRepository.findById(eventId);</b>
+<b class="fc">&nbsp;        if (maybeEvent.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Event not found&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Event event = maybeEvent.get();</b>
+&nbsp;        // Check if the event is terminated. End must be before now
+<b class="fc">&nbsp;        val now = OffsetDateTime.now();</b>
+<b class="fc">&nbsp;        if (!(event.getEnd().isBefore(now))) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Event is not finished&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Get the user
+<b class="fc">&nbsp;        val maybeUser = userRepository.findByUsername(username);</b>
+<b class="fc">&nbsp;        if (maybeUser.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;User not found&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val user = maybeUser.get();</b>
+&nbsp;        // Get subscription
+<b class="fc">&nbsp;        val maybeSubscription = subscriptionRepository.findByUserAndEvent(user, event);</b>
+<b class="fc">&nbsp;        if (maybeSubscription.isEmpty()) {</b>
+<b class="fc">&nbsp;            log.info(&quot;Subscription not found&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        val subscription = maybeSubscription.get();</b>
+&nbsp;        // Check if the event has already been rated
+<b class="fc">&nbsp;        if (subscription.getRating() != null || subscription.getComment() != null) {</b>
+<b class="fc">&nbsp;            log.info(&quot;The event has already been rated&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;        // Rate the comment
+<b class="fc">&nbsp;        subscription.setRating(dto.getStars());</b>
+<b class="fc">&nbsp;        subscription.setComment(dto.getComment());</b>
+&nbsp;        // Save in the database
+&nbsp;        try {
+<b class="fc">&nbsp;            subscriptionRepository.save(subscription);</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot save subscription&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean deleteOldUnapprovedEvents() {
+<b class="fc">&nbsp;        log.info(&quot;deleteOldUnapprovedEvents called&quot;);</b>
+&nbsp;        // Try to remove
+&nbsp;        try {
+<b class="fc">&nbsp;            eventRepository.deleteAllByApprovedIsFalseAndStartIsBefore(OffsetDateTime.now());</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Cannot delete in batch&quot;, e);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-12 16:26</div>
+</div>
+</body>
+</html>

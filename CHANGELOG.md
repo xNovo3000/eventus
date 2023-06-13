@@ -1,10 +1,10 @@
 # Eventus changelog
 
-### Version 1.3.0 (develop)
+### Version 1.3.0 (main)
 - Better error management
 - Better Javadoc
 
-### Version 1.2.1 (main)
+### Version 1.2.1
 - Fixed pom.xml output names
 - Now application-*.yml and other patterns are not included in the JAR (see service/pom.xml)
 
