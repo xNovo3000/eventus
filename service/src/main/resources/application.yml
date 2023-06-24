@@ -21,6 +21,6 @@ io:
     xnovo3000:
       eventus:
         event_description_max_length: 96
-        user_page_size: 24
-        event_page_size: 12
+        user_page_size: 3
+        event_page_size: 3
         old_unapproved_event_removal_task_rate: 300000
