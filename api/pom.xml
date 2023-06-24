@@ -8,14 +8,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <relativePath/>
     </parent>
 
     <groupId>io.github.xnovo3000.eventus</groupId>
     <artifactId>api</artifactId>
     <name>eventus-api</name>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <properties>
         <lombok.version>1.18.28</lombok.version>

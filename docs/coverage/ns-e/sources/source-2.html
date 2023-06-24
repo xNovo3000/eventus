@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > EmailService</title>
+  <title>Coverage Report > UserService</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,14 +21,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">io.github.xnovo3000.eventus.api.service</a>
 </div>
 
-<h1>Coverage Summary for Class: EmailService (io.github.xnovo3000.eventus.api.service)</h1>
+<h1>Coverage Summary for Class: UserService (io.github.xnovo3000.eventus.api.service)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">EmailService</td>
+  <td class="name">UserService</td>
 </tr>
 
 </table>
@@ -40,21 +40,79 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.api.service;
 &nbsp;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.ChangePasswordDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.input.RegisterFormDto;
+&nbsp;import io.github.xnovo3000.eventus.api.dto.output.UserDto;
 &nbsp;import org.jetbrains.annotations.NotNull;
+&nbsp;import org.jetbrains.annotations.Nullable;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;
+&nbsp;import java.util.List;
 &nbsp;
 &nbsp;/**
-&nbsp; * Service class used to send emails
+&nbsp; * Service class that handles users and registration
 &nbsp; */
-&nbsp;public interface EmailService {
+&nbsp;public interface UserService {
 &nbsp;
 &nbsp;    /**
-&nbsp;     * Send a password via email.
-&nbsp;     * Used for registration and password reset systems
+&nbsp;     * Register a new user
 &nbsp;     *
-&nbsp;     * @param email The e-mail address to send the password to
-&nbsp;     * @param password The password
+&nbsp;     * @param registerFormDto The payload
+&nbsp;     * @return True if the user has been created, false if email and/or username is already taken
 &nbsp;     */
-&nbsp;    void sendPasswordViaEmail(@NotNull String email, @NotNull String password);
+&nbsp;    boolean registerNewUser(@NotNull RegisterFormDto registerFormDto);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get a page of users by page. If the username is null, no filter regarding username is done.
+&nbsp;     * Otherwise, the query will be filtered using &#39;LIKE %username%&#39;
+&nbsp;     *
+&nbsp;     * @param pageNumber The page number
+&nbsp;     * @param username The username to filter, if not null
+&nbsp;     * @return A page of filtered users
+&nbsp;     */
+&nbsp;    @NotNull Page&lt;UserDto&gt; getByFilter(int pageNumber, @Nullable String username);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Disable a user by its ID
+&nbsp;     *
+&nbsp;     * @param userId The user ID
+&nbsp;     * @return True if disabled, false otherwise
+&nbsp;     */
+&nbsp;    boolean disable(long userId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Enable a user by its ID
+&nbsp;     *
+&nbsp;     * @param userId The user ID
+&nbsp;     * @return True if enabled, false otherwise
+&nbsp;     */
+&nbsp;    boolean enable(long userId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reset user&#39;s password by its ID. The password is generated from
+&nbsp;     * the system and sent via email or displayed in some ways
+&nbsp;     *
+&nbsp;     * @param userId The user ID
+&nbsp;     * @return True if success, false otherwise
+&nbsp;     */
+&nbsp;    boolean resetPassword(long userId);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Override user&#39;s authorities by its id and new authorities
+&nbsp;     *
+&nbsp;     * @param userId The user ID
+&nbsp;     * @param authorities The new authorities
+&nbsp;     * @return True if authorities override success, false otherwise
+&nbsp;     */
+&nbsp;    boolean updateAuthorities(long userId, @NotNull List&lt;String&gt; authorities);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Change password for the current logged user
+&nbsp;     *
+&nbsp;     * @param dto The old and new password
+&nbsp;     * @return True if changed, false otherwise
+&nbsp;     */
+&nbsp;    boolean changePassword(@NotNull ChangePasswordDto dto);
 &nbsp;
 &nbsp;}
 </code>
@@ -80,7 +138,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-06-12 16:26</div>
+    <div style="float:right;">generated on 2023-06-24 18:18</div>
 </div>
 </body>
 </html>
