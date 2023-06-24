@@ -92,7 +92,7 @@ public class IEventService implements EventService {
         val username = authenticationProxy.getUserDetails().map(JpaUserDetails::getUsername).orElse(null);
         val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByHoldings_User_UsernameOrderByStartDesc(username, pageable)
-                .map(dtoMapper::toEventCardDto);
+                .map(event -> dtoMapper.toEventCardDto(event, username));
     }
 
     @Override
