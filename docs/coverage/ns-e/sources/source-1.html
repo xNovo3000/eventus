@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html id="htmlId">
 <head>
-  <title>Coverage Report > EventService</title>
+  <title>Coverage Report > EmailService</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -21,14 +21,14 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">io.github.xnovo3000.eventus.api.service</a>
 </div>
 
-<h1>Coverage Summary for Class: EventService (io.github.xnovo3000.eventus.api.service)</h1>
+<h1>Coverage Summary for Class: EmailService (io.github.xnovo3000.eventus.api.service)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">EventService</td>
+  <td class="name">EmailService</td>
 </tr>
 
 </table>
@@ -40,148 +40,21 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package io.github.xnovo3000.eventus.api.service;
 &nbsp;
-&nbsp;import io.github.xnovo3000.eventus.api.dto.input.RateFormDto;
-&nbsp;import io.github.xnovo3000.eventus.api.dto.output.EventCardDto;
-&nbsp;import io.github.xnovo3000.eventus.api.dto.output.EventDto;
-&nbsp;import io.github.xnovo3000.eventus.api.dto.input.ProposeEventDtoZoned;
 &nbsp;import org.jetbrains.annotations.NotNull;
-&nbsp;import org.springframework.data.domain.Page;
-&nbsp;
-&nbsp;import java.util.List;
-&nbsp;import java.util.Optional;
 &nbsp;
 &nbsp;/**
-&nbsp; * Service class that handles all the operations regarding events
+&nbsp; * Service class used to send emails
 &nbsp; */
-&nbsp;public interface EventService {
+&nbsp;public interface EmailService {
 &nbsp;
 &nbsp;    /**
-&nbsp;     * Return an event by its ID
+&nbsp;     * Send a password via email.
+&nbsp;     * Used for registration and password reset systems
 &nbsp;     *
-&nbsp;     * @param id The ID of the event
-&nbsp;     * @return The event if it exists, empty otherwise
+&nbsp;     * @param email The e-mail address to send the password to
+&nbsp;     * @param password The password
 &nbsp;     */
-&nbsp;    @NotNull Optional&lt;EventDto&gt; getById(long id);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Get all events that started but not finished yet, ordered by start date descending
-&nbsp;     *
-&nbsp;     * @return A list of ongoing events
-&nbsp;     */
-&nbsp;    @NotNull List&lt;EventCardDto&gt; getOngoingEvents();
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Get a page of events that haven&#39;t started yet, ordered by start date descending
-&nbsp;     *
-&nbsp;     * @param pageNumber The page number of the paginated result - starts from 1
-&nbsp;     * @return A page of future events
-&nbsp;     */
-&nbsp;    @NotNull Page&lt;EventCardDto&gt; getFutureEvents(int pageNumber);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Get a page of events that are in the &#39;proposed&#39; state
-&nbsp;     * (not started but not accepted from an EVENT_MASTER),
-&nbsp;     * ordered by start date descending
-&nbsp;     *
-&nbsp;     * @param pageNumber The page number of the paginated result - starts from 1
-&nbsp;     * @return A page of proposed events
-&nbsp;     */
-&nbsp;    @NotNull Page&lt;EventCardDto&gt; getProposedEvents(int pageNumber);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Get all events ordered by start date descending
-&nbsp;     *
-&nbsp;     * @param pageNumber The page number of the paginated result - starts from 1
-&nbsp;     * @return A page of events
-&nbsp;     */
-&nbsp;    @NotNull Page&lt;EventCardDto&gt; getHistory(int pageNumber);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Get all events that current user participated ordered by start date descending
-&nbsp;     *
-&nbsp;     * @param pageNumber The page number of the paginated result - starts from 1
-&nbsp;     * @return A page of events
-&nbsp;     */
-&nbsp;    @NotNull Page&lt;EventCardDto&gt; getEventsThatUserParticipated(int pageNumber);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Create a new unapproved event. The event start must
-&nbsp;     * be before end and after now
-&nbsp;     *
-&nbsp;     * @param proposeEventDto The event DTO
-&nbsp;     * @return The created event ID
-&nbsp;     */
-&nbsp;    @NotNull Optional&lt;Long&gt; proposeEvent(@NotNull ProposeEventDtoZoned proposeEventDto);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Approve an event by its ID, the event must be non-approved
-&nbsp;     * and start must be after now
-&nbsp;     *
-&nbsp;     * @param eventId The event ID
-&nbsp;     * @return True if the event can be approved, false otherwise
-&nbsp;     */
-&nbsp;    boolean approveEvent(long eventId);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Reject an event by its id, the event must be non-approved
-&nbsp;     *
-&nbsp;     * @param eventId The event id
-&nbsp;     * @return True if the event can be rejected, false otherwise
-&nbsp;     */
-&nbsp;    boolean rejectEvent(long eventId);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Subscribe a user to an event, fail if:
-&nbsp;     * the username does not exist,
-&nbsp;     * the event does not exist,
-&nbsp;     * the event is full,
-&nbsp;     * the event is not approved,
-&nbsp;     * the user is already subscribed,
-&nbsp;     * the event start is before now,
-&nbsp;     * user is subscribed to another event with same time
-&nbsp;     *
-&nbsp;     * @param eventId The event ID
-&nbsp;     * @param username The user&#39;s username
-&nbsp;     * @return True if has been subscribed, false otherwise
-&nbsp;     */
-&nbsp;    boolean subscribeUserToEvent(long eventId, @NotNull String username);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Unsubscribe a user to an event, fails if:
-&nbsp;     * the username does not exist,
-&nbsp;     * the event does not exist,
-&nbsp;     * the event is not approved,
-&nbsp;     * the user is already unsubscribed
-&nbsp;     * the event start is before now
-&nbsp;     *
-&nbsp;     * @param eventId The event ID
-&nbsp;     * @param username The user&#39;s username
-&nbsp;     * @return True if has been unsubscribed, false otherwise
-&nbsp;     */
-&nbsp;    boolean unsubscribeUserToEvent(long eventId, @NotNull String username);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Rate a finished event, fails if:
-&nbsp;     * the username does not exist,
-&nbsp;     * the event does not exist,
-&nbsp;     * the event is not approved,
-&nbsp;     * the event is not finished,
-&nbsp;     * the user is not subscribed to the event,
-&nbsp;     * the event has already been rated
-&nbsp;     *
-&nbsp;     * @param eventId The ID of the event
-&nbsp;     * @param dto The dto
-&nbsp;     * @param username The user that wants to rate the event
-&nbsp;     * @return True if the event has been rated, false otherwise
-&nbsp;     */
-&nbsp;    boolean rateEvent(long eventId, @NotNull RateFormDto dto, @NotNull String username);
-&nbsp;
-&nbsp;    /**
-&nbsp;     * Batch operation to remove old unapproved events and clean the database
-&nbsp;     *
-&nbsp;     * @return True if success, false otherwise
-&nbsp;     */
-&nbsp;    boolean deleteOldUnapprovedEvents();
+&nbsp;    void sendPasswordViaEmail(@NotNull String email, @NotNull String password);
 &nbsp;
 &nbsp;}
 </code>
@@ -207,7 +80,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-06-12 16:26</div>
+    <div style="float:right;">generated on 2023-06-24 18:18</div>
 </div>
 </body>
 </html>

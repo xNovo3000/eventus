@@ -48,15 +48,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    83,8%
+    84,1%
   </span>
   <span class="absValue">
-    (150/179)
+    (153/182)
   </span>
 </td>
 </tr>
   <tr>
     <td class="name">IEventService$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">IEventService$$SpringCGLIB$$1</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
@@ -70,10 +73,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    83,8%
+    84,1%
   </span>
   <span class="absValue">
-    (150/179)
+    (153/182)
   </span>
 </td>
 </tr>
@@ -168,9 +171,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public @NotNull Page&lt;EventCardDto&gt; getHistory(int pageNumber) {
+<b class="fc">&nbsp;        val username = authenticationProxy.getUserDetails()</b>
+<b class="fc">&nbsp;                .map(JpaUserDetails::getUsername)</b>
+<b class="fc">&nbsp;                .orElse(null);</b>
 <b class="fc">&nbsp;        val pageable = PageRequest.of(pageNumber - 1, pageSize);</b>
 <b class="fc">&nbsp;        return eventRepository.findAllByOrderByStartDesc(pageable)</b>
-<b class="fc">&nbsp;                .map(dtoMapper::toEventCardDto);</b>
+<b class="fc">&nbsp;                .map(event -&gt; dtoMapper.toEventCardDto(event, username));</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Override
@@ -178,7 +184,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;        val username = authenticationProxy.getUserDetails().map(JpaUserDetails::getUsername).orElse(null);</b>
 <b class="fc">&nbsp;        val pageable = PageRequest.of(pageNumber - 1, pageSize);</b>
 <b class="fc">&nbsp;        return eventRepository.findAllByHoldings_User_UsernameOrderByStartDesc(username, pageable)</b>
-<b class="fc">&nbsp;                .map(dtoMapper::toEventCardDto);</b>
+<b class="fc">&nbsp;                .map(event -&gt; dtoMapper.toEventCardDto(event, username));</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Override
@@ -452,7 +458,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-06-12 16:26</div>
+    <div style="float:right;">generated on 2023-06-24 18:18</div>
 </div>
 </body>
 </html>
