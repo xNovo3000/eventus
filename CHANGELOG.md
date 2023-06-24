@@ -1,6 +1,9 @@
 # Eventus changelog
 
-### Version 1.3.0 (main)
+### Version 1.3.1 (main)
+- Data visualization fixes
+
+### Version 1.3.0
 - Better error management
 - Better Javadoc
 

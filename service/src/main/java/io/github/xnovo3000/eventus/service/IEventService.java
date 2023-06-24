@@ -82,9 +82,12 @@ public class IEventService implements EventService {
 
     @Override
     public @NotNull Page<EventCardDto> getHistory(int pageNumber) {
+        val username = authenticationProxy.getUserDetails()
+                .map(JpaUserDetails::getUsername)
+                .orElse(null);
         val pageable = PageRequest.of(pageNumber - 1, pageSize);
         return eventRepository.findAllByOrderByStartDesc(pageable)
-                .map(dtoMapper::toEventCardDto);
+                .map(event -> dtoMapper.toEventCardDto(event, username));
     }
 
     @Override
