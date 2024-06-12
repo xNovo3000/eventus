@@ -17,17 +17,23 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn compile'
+                withMaven {
+                    sh 'mvn compile'
+                }
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                withMaven {
+                    sh 'mvn test'
+                }
             }
         }
         stage('Package') {
             steps {
-                sh 'mvn package'
+                withMaven {
+                    sh 'mvn package'
+                }
             }
         }
         stage('Deploy') {
