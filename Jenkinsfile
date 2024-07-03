@@ -1,46 +1,94 @@
+#!/usr/bin/env groovy
+
 pipeline {
 
-    agent { label 'agent' }
+    agent { label 'worker-medium' }
 
     tools {
-        jdk '17'
+        jdk '17-temurin'
         maven '3'
     }
 
     stages {
+
         stage('Clean') {
             steps {
-                withMaven {
-                    sh 'mvn clean'
+                cache(
+                    defaultBranch: 'develop',
+                    caches: [arbitraryFileCache(path: '/home/jenkins/.m2/repository')]
+                ) {
+                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
+                        sh 'mvn clean'
+                    }
                 }
             }
         }
+
         stage('Build') {
             steps {
-                withMaven {
-                    sh 'mvn compile'
+                cache(
+                    defaultBranch: 'develop',
+                    caches: [arbitraryFileCache(path: '/home/jenkins/.m2/repository')]
+                ) {
+                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
+                        sh 'mvn compile'
+                    }
                 }
             }
         }
+
         stage('Test') {
             steps {
-                withMaven {
-                    sh 'mvn test'
+                cache(
+                    defaultBranch: 'develop',
+                    caches: [arbitraryFileCache(path: '/home/jenkins/.m2/repository')]
+                ) {
+                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
+                        sh 'mvn test'
+                    }
                 }
             }
         }
+
         stage('Package') {
             steps {
-                withMaven {
-                    sh 'mvn package'
+                cache(
+                    defaultBranch: 'develop',
+                    caches: [arbitraryFileCache(path: '/home/jenkins/.m2/repository')]
+                ) {
+                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
+                        sh 'mvn package -Dmaven.test.skip=true'
+                    }
                 }
             }
         }
-        stage('Deploy') {
+
+        stage('Verify') {
             steps {
-                echo 'Fake deploying...'
+                cache(
+                    defaultBranch: 'develop',
+                    caches: [arbitraryFileCache(path: '/home/jenkins/.m2/repository')]
+                ) {
+                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
+                        sh 'mvn verify'
+                    }
+                }
             }
         }
+
+        stage('Install') {
+            steps {
+                cache(
+                    defaultBranch: 'develop',
+                    caches: [arbitraryFileCache(path: '/home/jenkins/.m2/repository')]
+                ) {
+                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
+                        sh 'mvn install -Dmaven.test.skip=true'
+                    }
+                }
+            }
+        }
+        
     }
     
 }
