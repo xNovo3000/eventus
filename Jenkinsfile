@@ -55,7 +55,7 @@ pipeline {
                     }
                 }
                 stage('Docker: Build') {
-                    agent { label 'worker-medium && docker' }
+                    agent { label 'worker-medium-docker' }
                     steps {
                         unstash name: 'target'
                         sh 'docker build . -t eventus:1.3.1'
