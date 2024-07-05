@@ -2,7 +2,7 @@
 
 pipeline {
 
-    agent { label 'worker-medium-2' }
+    agent { label 'worker-medium' }
 
     tools {
         jdk '17-temurin'
@@ -11,51 +11,64 @@ pipeline {
 
     stages {
 
-        stage('Clean') {
+        stage('Maven: Clean') {
             steps {
-                withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
-                    sh 'mvn clean'
+                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
+                    sh 'mvn clean -s $MVN_SETTINGS'
                 }
             }
         }
 
-        stage('Build') {
+        stage('Maven: Build') {
             steps {
-                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
-                        sh 'mvn compile'
-                    }
+                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
+                    sh 'mvn compile -s $MVN_SETTINGS'
+                }
             }
         }
 
-        stage('Test') {
+        stage('Maven: Test') {
             steps {
-                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
-                        sh 'mvn test'
-                    }
+                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
+                    sh 'mvn test -s $MVN_SETTINGS'
+                }
             }
         }
 
-        stage('Package') {
+        stage('Maven: Package') {
             steps {
-                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
-                        sh 'mvn package -Dmaven.test.skip=true'
-                    }
+                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
+                    sh 'mvn package -Dmaven.test.skip=true -s $MVN_SETTINGS'
+                }
+                stash name: 'target', includes: '**/target/**'
             }
         }
 
-        stage('Verify') {
+        stage('Maven: Verify') {
             steps {
-                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
-                        sh 'mvn verify'
-                    }
+                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
+                    sh 'mvn verify -s $MVN_SETTINGS'
+                }
             }
         }
 
-        stage('Install') {
-            steps {
-                    withMaven(mavenSettingsConfig: 'soldo-maven-settings') {
-                        sh 'mvn install -Dmaven.test.skip=true'
+        stage('Build and push artifacts') {
+            parallel {
+                stage('Maven: Install') {
+                    steps {
+                        unstash name: 'target'
+                        configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
+                            sh 'mvn install -Dmaven.test.skip=true -s $MVN_SETTINGS'
+                        }
                     }
+                }
+                stage('Docker: Build') {
+                    agent { label 'worker-medium && docker' }
+                    steps {
+                        unstash name: 'target'
+                        sh 'docker build . -t eventus:1.3.1'
+                    }
+                }
             }
         }
         
