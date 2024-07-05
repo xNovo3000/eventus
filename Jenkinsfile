@@ -11,14 +11,6 @@ pipeline {
 
     stages {
 
-        stage('Maven: Clean') {
-            steps {
-                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
-                    sh 'mvn clean -s $MVN_SETTINGS'
-                }
-            }
-        }
-
         stage('Maven: Build') {
             steps {
                 configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
@@ -63,7 +55,7 @@ pipeline {
                     }
                 }
                 stage('Docker: Build') {
-                    agent { label 'worker-medium && docker' }
+                    agent { label 'worker-medium-docker' }
                     steps {
                         unstash name: 'target'
                         sh 'docker build . -t eventus:1.3.1'
