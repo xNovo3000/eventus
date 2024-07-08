@@ -13,24 +13,24 @@ pipeline {
 
         stage('Maven: Build') {
             steps {
-                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
-                    sh 'mvn compile -s $MVN_SETTINGS'
+                withMaven {
+                    sh 'mvn compile'
                 }
             }
         }
 
         stage('Maven: Test') {
             steps {
-                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
-                    sh 'mvn test -s $MVN_SETTINGS'
+                withMaven {
+                    sh 'mvn test'
                 }
             }
         }
 
         stage('Maven: Package') {
             steps {
-                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
-                    sh 'mvn package -Dmaven.test.skip=true -s $MVN_SETTINGS'
+                withMaven {
+                    sh 'mvn package -Dmaven.test.skip=true'
                 }
                 stash name: 'target', includes: '**/target/**'
             }
@@ -38,8 +38,8 @@ pipeline {
 
         stage('Maven: Verify') {
             steps {
-                configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
-                    sh 'mvn verify -s $MVN_SETTINGS'
+                withMaven {
+                    sh 'mvn verify'
                 }
             }
         }
@@ -49,14 +49,13 @@ pipeline {
                 stage('Maven: Install') {
                     steps {
                         unstash name: 'target'
-                        configFileProvider([configFile(fileId: 'soldo-maven-settings', variable: 'MVN_SETTINGS')]) {
-                            sh 'mvn install -Dmaven.test.skip=true -s $MVN_SETTINGS'
+                        withMaven {
+                            sh 'mvn install -Dmaven.test.skip=true'
                         }
                     }
                 }
                 stage('Docker: Build') {
                     agent { label 'worker-medium-docker' }
-                    tools {}
                     steps {
                         unstash name: 'target'
                         sh 'docker build . -t eventus:1.3.1'
