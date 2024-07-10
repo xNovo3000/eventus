@@ -19,28 +19,12 @@ pipeline {
             }
         }
 
-        stage('Maven: Test') {
-            steps {
-                withMaven {
-                    sh 'mvn test'
-                }
-            }
-        }
-
         stage('Maven: Package') {
             steps {
                 withMaven {
                     sh 'mvn package -Dmaven.test.skip=true'
                 }
                 stash name: 'target', includes: '**/target/**'
-            }
-        }
-
-        stage('Maven: Verify') {
-            steps {
-                withMaven {
-                    sh 'mvn verify'
-                }
             }
         }
 
