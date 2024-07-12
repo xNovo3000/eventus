@@ -19,19 +19,20 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency Check') {
-            steps {
-                dependencyCheck odcInstallation: '8'
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-        }
-
         stage('Maven: Package') {
             steps {
                 withMaven {
                     sh 'mvn package -Dmaven.test.skip=true'
                 }
                 stash name: 'target', includes: '**/target/**'
+            }
+        }
+
+        stage('OWASP Dependency Check') {
+            steps {
+                unstash name: 'target'
+                dependencyCheck odcInstallation: '8'
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
 
