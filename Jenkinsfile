@@ -46,7 +46,6 @@ pipeline {
 
         stage('OWASP Dependency Check') {
             steps {
-                unstash name: 'target'
                 dependencyCheck odcInstallation: '8'
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
